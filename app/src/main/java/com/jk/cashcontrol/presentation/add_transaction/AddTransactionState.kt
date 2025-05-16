@@ -1,0 +1,22 @@
+package com.jk.cashcontrol.presentation.add_transaction
+
+import com.jk.cashcontrol.domain.model.TransactionType
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.util.Locale
+
+data class AddTransactionState(
+    val transactionType: TransactionType? = null,
+    val category : String = "Other",
+    val amountTextFieldValue : String = "",
+    val isDatePickerDialogOpen : Boolean = false,
+    val timestamp : String = System.currentTimeMillis().toString().formatMillisToDate()
+)
+
+fun String.formatMillisToDate() : String {
+    val formatter = DateTimeFormatter.ofPattern("dd MMM, yyyy", Locale.getDefault())
+    return Instant.ofEpochMilli(this.toLong())
+        .atZone(ZoneId.systemDefault())
+        .format(formatter)
+}
