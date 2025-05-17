@@ -16,6 +16,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.jk.cashcontrol.R
 import com.jk.cashcontrol.domain.model.User
+import com.jk.cashcontrol.domain.repository.TransactionRepository
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -24,7 +25,9 @@ import kotlinx.coroutines.tasks.await
 import java.security.MessageDigest
 import java.util.UUID
 
-class LoginViewModel : ViewModel() {
+class LoginViewModel(
+    private val repository: TransactionRepository
+) : ViewModel() {
 
     val user = MutableLiveData<User>(null)
 
@@ -46,6 +49,8 @@ class LoginViewModel : ViewModel() {
                                 email = currentUser.email!!
                             )
 
+                            insertUser()
+
                             Toast.makeText(context,"Logged In", Toast.LENGTH_SHORT).show()
                             navigateToHome()
                         }
@@ -58,7 +63,7 @@ class LoginViewModel : ViewModel() {
         }
     }
 
-    private suspend fun googleSignIn(context: Context) : Flow<Result<AuthResult>> {
+    private fun googleSignIn(context: Context) : Flow<Result<AuthResult>> {
 
         val firebaseAuth = FirebaseAuth.getInstance()
 
@@ -105,6 +110,12 @@ class LoginViewModel : ViewModel() {
             }
 
             awaitClose {  }
+        }
+    }
+
+    fun insertUser() {
+        viewModelScope.launch {
+            repository.insertUser()
         }
     }
 }

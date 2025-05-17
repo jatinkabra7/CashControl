@@ -107,18 +107,3 @@ fun TransactionCard(
 
     }
 }
-
-@Preview
-@Composable
-private fun p() {
-    val transaction = Transaction(
-        timestamp = "12th may 2025",
-        category = "Food",
-        name = "New Transaction New Transaction New Transaction",
-        type = TransactionType.INCOME,
-        amount = 20f
-    )
-    TransactionCard(
-        transaction = transaction
-    )
-}

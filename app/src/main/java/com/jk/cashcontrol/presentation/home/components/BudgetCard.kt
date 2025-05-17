@@ -54,9 +54,8 @@ fun BudgetCard(
     budget : Float
 ) {
 
-    var progress by rememberSaveable {
-        mutableFloatStateOf(if (budget == 0f) 0f else expense / budget)
-    }
+    val progress = if (budget == 0f) 0f else expense / budget
+
 
 
     Card(

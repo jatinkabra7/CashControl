@@ -19,6 +19,7 @@ import com.jk.cashcontrol.presentation.add_transaction.AddTransactionScreen
 import com.jk.cashcontrol.presentation.add_transaction.AddTransactionViewModel
 import com.jk.cashcontrol.presentation.home.HomeScreen
 import com.jk.cashcontrol.presentation.home.HomeState
+import com.jk.cashcontrol.presentation.home.HomeViewModel
 import com.jk.cashcontrol.presentation.login.LoginScreen
 import com.jk.cashcontrol.presentation.login.LoginViewModel
 import com.jk.cashcontrol.presentation.profile.ProfileScreen
@@ -48,10 +49,12 @@ fun NavGraph(
 
         composable<Route.Home> {
 
-            val homeState = HomeState()
+            val viewModel = koinViewModel<HomeViewModel>()
+
+            val state = viewModel.state.collectAsStateWithLifecycle().value
 
             HomeScreen(
-                state = homeState,
+                state = state,
                 user = user
             )
         }

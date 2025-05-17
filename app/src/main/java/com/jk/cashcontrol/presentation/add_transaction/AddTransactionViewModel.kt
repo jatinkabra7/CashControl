@@ -2,20 +2,24 @@ package com.jk.cashcontrol.presentation.add_transaction
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jk.cashcontrol.data.mapper.toTransactionDto
 import com.jk.cashcontrol.domain.model.TransactionType
+import com.jk.cashcontrol.domain.repository.TransactionRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class AddTransactionViewModel : ViewModel() {
+class AddTransactionViewModel(
+    private val repository: TransactionRepository
+) : ViewModel() {
 
     private val _state = MutableStateFlow(AddTransactionState())
     val state = _state.asStateFlow()
 
     fun onAction(action : AddTransactionAction) {
         when(action) {
-            is AddTransactionAction.OnTextFieldValueChange -> {
+            is AddTransactionAction.OnAmountTextFieldValueChange -> {
 
                 val newValue = action.amountTextFieldValue
 
@@ -50,6 +54,18 @@ class AddTransactionViewModel : ViewModel() {
 
             is AddTransactionAction.OnCategorySelection -> {
                 _state.update { it.copy(category = action.category) }
+            }
+
+            is AddTransactionAction.OnNameTextFieldValueChange -> {
+                _state.update {
+                    it.copy(nameTextFieldValue = action.nameTextFieldValue)
+                }
+            }
+
+            is AddTransactionAction.OnSubmit -> {
+                viewModelScope.launch {
+                    repository.insertTransaction(action.transaction)
+                }
             }
         }
     }

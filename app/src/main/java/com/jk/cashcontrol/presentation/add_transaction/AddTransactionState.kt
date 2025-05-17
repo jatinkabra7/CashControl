@@ -11,7 +11,8 @@ data class AddTransactionState(
     val category : String = "Other",
     val amountTextFieldValue : String = "",
     val isDatePickerDialogOpen : Boolean = false,
-    val timestamp : String = System.currentTimeMillis().toString().formatMillisToDate()
+    val timestamp : String = System.currentTimeMillis().toString().formatMillisToDate(),
+    val nameTextFieldValue : String = "New Transaction"
 )
 
 fun String.formatMillisToDate() : String {

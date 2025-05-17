@@ -2,7 +2,6 @@ package com.jk.cashcontrol.presentation.add_transaction
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -25,7 +24,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerDialog
-import androidx.compose.material3.DatePickerFormatter
 import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -42,16 +40,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jk.cashcontrol.R
 import com.jk.cashcontrol.domain.model.Category
+import com.jk.cashcontrol.domain.model.Transaction
 import com.jk.cashcontrol.domain.model.TransactionType
 import com.jk.cashcontrol.presentation.add_transaction.components.AddTransactionTopBar
 import com.jk.cashcontrol.presentation.theme.CustomDarkBlue
@@ -97,6 +94,13 @@ fun AddTransactionScreen(
 
         Spacer(Modifier.height(20.dp))
 
+        NameSection(
+            state = state,
+            onAction = {onAction(it)}
+        )
+
+        Spacer(Modifier.height(20.dp))
+
         CategorySection(
             state = state,
             onAction = {onAction(it)}
@@ -115,7 +119,22 @@ fun AddTransactionScreen(
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color.Transparent
             ),
-            onClick = {},
+            onClick = {
+                onAction(
+                    AddTransactionAction.OnSubmit(
+                        Transaction(
+                            timestamp = state.timestamp,
+                            timestampMillis = System.currentTimeMillis().toString(),
+                            category = state.category,
+                            name = state.nameTextFieldValue,
+                            type = state.transactionType!!,
+                            amount = state.amountTextFieldValue.toFloat()
+                        )
+                    )
+                )
+
+                navigateToHome()
+            },
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .width(200.dp)
@@ -170,12 +189,12 @@ private fun AmountSection(
                 modifier = Modifier
                     .fillMaxWidth(),
                 value = state.amountTextFieldValue,
-                onValueChange = {onAction(AddTransactionAction.OnTextFieldValueChange(it))},
+                onValueChange = {onAction(AddTransactionAction.OnAmountTextFieldValueChange(it))},
                 singleLine = true,
                 label = {
                     Text(
                         text = "Enter Amount",
-                        fontSize = 24.sp,
+                        fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(bottom = 10.dp)
                     )
@@ -198,6 +217,62 @@ private fun AmountSection(
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Decimal
                 )
+            )
+        }
+    }
+}
+
+@Composable
+private fun NameSection(
+    modifier: Modifier = Modifier,
+    state: AddTransactionState,
+    onAction : (AddTransactionAction) -> Unit
+) {
+
+    val brush = Brush.verticalGradient(listOf(Color.Red.copy(0.7f),Color.Red))
+
+    Column(modifier) {
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .clip(RoundedCornerShape(20.dp))
+                .align(Alignment.CenterHorizontally)
+                .fillMaxWidth()
+                .background(
+                    brush
+                )
+
+        ) {
+
+            TextField(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                value = state.nameTextFieldValue,
+                onValueChange = {onAction(AddTransactionAction.OnNameTextFieldValueChange(it))},
+                singleLine = true,
+                label = {
+                    Text(
+                        text = "Transaction Name",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(bottom = 10.dp)
+                    )
+                },
+                colors = TextFieldDefaults.colors(
+                    disabledContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                    focusedContainerColor = Color.Transparent,
+                    cursorColor = Color.Black,
+                    focusedLabelColor = Color.White,
+                    unfocusedLabelColor = Color.White,
+                    unfocusedTextColor = Color.White,
+                    focusedTextColor = Color.White,
+                    errorIndicatorColor = Color.Transparent,
+                    focusedIndicatorColor = Color.Transparent,
+                    disabledIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent
+                ),
+                textStyle = TextStyle(fontSize = 20.sp)
             )
         }
     }
