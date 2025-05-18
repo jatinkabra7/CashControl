@@ -1,5 +1,9 @@
 package com.jk.cashcontrol.presentation.home.components
 
+import androidx.compose.animation.core.EaseInOut
+import androidx.compose.animation.core.EaseInOut
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Indication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -24,6 +28,7 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -49,7 +54,20 @@ fun BudgetCard(
 
     val progress = if (budget == 0f) 0f else expense / budget
 
+    val animatedProgress by animateFloatAsState(
+        targetValue = progress.coerceIn(0f,1f),
+        animationSpec = tween(durationMillis = 500, easing = EaseInOut)
+    )
 
+    val animatedExpense by animateFloatAsState(
+        targetValue = expense,
+        animationSpec = tween(durationMillis = 1000, easing = EaseInOut)
+    )
+
+    val animatedBudget by animateFloatAsState(
+        targetValue = budget,
+        animationSpec = tween(durationMillis = 1000,easing = EaseInOut)
+    )
 
     Card(
         colors = CardDefaults.cardColors(
@@ -94,14 +112,14 @@ fun BudgetCard(
         ) {
 
             Text(
-                text = "$expense",
+                text = "%.2f".format(animatedExpense),
                 style = MaterialTheme.typography.titleLarge,
                 color = Color.White,
                 fontWeight = Bold
             )
 
             Text(
-                text = "$budget",
+                text = "%.2f".format(animatedBudget),
                 style = MaterialTheme.typography.titleLarge,
                 color = Color.White,
                 fontWeight = Bold
@@ -116,7 +134,7 @@ fun BudgetCard(
                 .padding(start = 10.dp, end = 10.dp)
                 .fillMaxWidth()
                 .height(6.dp),
-            progress = { progress },
+            progress = { animatedProgress },
             color = Color.White.copy(0.9f),
             trackColor = Color.White.copy(0.5f)
         )

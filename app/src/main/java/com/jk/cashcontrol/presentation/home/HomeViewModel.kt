@@ -68,8 +68,8 @@ class HomeViewModel(
                 _state.update { it.copy(isNewBudgetDialogOpen = false) }
 
                 viewModelScope.launch {
-                    repository.updateBudget(action.newBudget)
                     repository.updateExpense(0f)
+                    repository.updateBudget(action.newBudget)
                 }
             }
             HomeAction.OnNewBudgetDismiss -> {

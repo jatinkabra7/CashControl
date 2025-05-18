@@ -11,6 +11,7 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
@@ -57,7 +58,8 @@ fun BottomBar(
     ) {
 
         BottomAppBar(
-            containerColor = Color.Black
+            containerColor = Color.Black,
+            modifier = Modifier.height(60.dp)
         ) {
 
             list.forEach {
