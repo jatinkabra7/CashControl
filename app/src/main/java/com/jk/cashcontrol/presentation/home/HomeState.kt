@@ -11,6 +11,5 @@ data class HomeState(
     val isEditBudgetDialogOpen : Boolean = false,
     val editBudgetTextFieldValue : String = "0",
     val isNewBudgetDialogOpen : Boolean = false,
-    val newBudgetTextFieldValue : String = "0",
-    val allTransactions : List<Transaction> = emptyList()
+    val newBudgetTextFieldValue : String = "0"
 )

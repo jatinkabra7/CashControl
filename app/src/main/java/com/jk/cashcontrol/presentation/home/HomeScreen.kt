@@ -56,7 +56,6 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     state: HomeState,
     user : FirebaseUser?,
-    homeViewModel: HomeViewModel = koinViewModel<HomeViewModel>(),
     onAction: (HomeAction) -> Unit
 ) {
 
