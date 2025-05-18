@@ -2,6 +2,7 @@ package com.jk.cashcontrol.presentation.navigation
 
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -34,11 +35,8 @@ fun BottomBar(
     show : Boolean,
     modifier: Modifier = Modifier,
     onClick : (Route) -> Unit,
-    navController: NavHostController
+    currentRoute : String?
 ) {
-
-    val navBackStackEntry = navController.currentBackStackEntryAsState().value
-    val currentRoute = navBackStackEntry?.destination?.route
 
     Log.d("currentRoute",currentRoute.toString())
 
@@ -48,8 +46,14 @@ fun BottomBar(
 
     AnimatedVisibility(
         show,
-        exit = fadeOut() + slideOutVertically(targetOffsetY = {it}, animationSpec = tween(easing = LinearEasing)),
-        enter = fadeIn() + slideInVertically(initialOffsetY = {it}, animationSpec = tween(easing = LinearEasing))
+        exit = fadeOut() + slideOutVertically(
+            targetOffsetY = { it },
+            animationSpec = tween(durationMillis = 500, easing = LinearEasing)
+        ),
+        enter = fadeIn() + slideInVertically(
+            initialOffsetY = { it },
+            animationSpec = tween(durationMillis = 500, easing = LinearEasing)
+        )
     ) {
 
         BottomAppBar(
@@ -77,7 +81,11 @@ fun BottomBar(
                         }
                     },
                     selected = currentRoute?.contains(it::class.simpleName.toString()) == true,
-                    onClick = {onClick(it)},
+                    onClick = {
+                        if(currentRoute?.contains(it::class.simpleName.toString()) == false) {
+                            onClick(it)
+                        }
+                    },
                     icon = {
                         when(it) {
                             Route.AddTransactionEntry -> {

@@ -2,7 +2,7 @@ package com.jk.cashcontrol.domain.model
 
 data class Transaction(
     val timestamp : String,
-    val timestampMillis : String,
+    val timestampMillis : Long,
     val category: String,
     val name : String,
     val type : TransactionType,

@@ -3,7 +3,6 @@ package com.jk.cashcontrol.presentation.navigation
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -12,24 +11,29 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.google.firebase.Firebase
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.jk.cashcontrol.domain.model.Transaction
+import com.jk.cashcontrol.domain.model.TransactionType
 import com.jk.cashcontrol.domain.model.User
 import com.jk.cashcontrol.presentation.add_transaction.AddTransactionScreen
 import com.jk.cashcontrol.presentation.add_transaction.AddTransactionViewModel
+import com.jk.cashcontrol.presentation.history.HistoryScreen
+import com.jk.cashcontrol.presentation.home.HomeAction
 import com.jk.cashcontrol.presentation.home.HomeScreen
-import com.jk.cashcontrol.presentation.home.HomeState
 import com.jk.cashcontrol.presentation.home.HomeViewModel
+import com.jk.cashcontrol.presentation.home.components.TransactionCard
 import com.jk.cashcontrol.presentation.login.LoginScreen
 import com.jk.cashcontrol.presentation.login.LoginViewModel
 import com.jk.cashcontrol.presentation.profile.ProfileScreen
 import org.koin.androidx.compose.koinViewModel
-import kotlin.math.log
 
 @Composable
 fun NavGraph(
     navController: NavHostController,
-    paddingValues: PaddingValues
+    paddingValues: PaddingValues,
+    homeViewModel: HomeViewModel = koinViewModel<HomeViewModel>(),
+    loginViewModel: LoginViewModel = koinViewModel<LoginViewModel>()
 ) {
 
     val user = Firebase.auth.currentUser
@@ -39,23 +43,22 @@ fun NavGraph(
             Route.Home
         } else Route.Login
 
-
-
     NavHost(
-        modifier = Modifier.padding(paddingValues),
         navController = navController,
         startDestination = start
     ) {
 
+
+
         composable<Route.Home> {
 
-            val viewModel = koinViewModel<HomeViewModel>()
-
-            val state = viewModel.state.collectAsStateWithLifecycle().value
+            val state = homeViewModel.state.collectAsStateWithLifecycle().value
 
             HomeScreen(
                 state = state,
-                user = user
+                user = user,
+                modifier = Modifier.padding(paddingValues),
+                onAction = { homeViewModel.onAction(it) }
             )
         }
 
@@ -63,15 +66,17 @@ fun NavGraph(
 
             val transactionType = it.toRoute<Route.AddTransaction>().transactionType
 
-            val viewModel = koinViewModel<AddTransactionViewModel>()
+            val addTransactionViewModel = koinViewModel<AddTransactionViewModel>()
 
-            viewModel.updateTransactionType(transactionType)
+            addTransactionViewModel.updateTransactionType(transactionType)
 
-            val state = viewModel.state.collectAsStateWithLifecycle().value
+            val state = addTransactionViewModel.state.collectAsStateWithLifecycle().value
 
             AddTransactionScreen(
                 state = state,
-                onAction = {viewModel.onAction(it)},
+                onAction = {addTransactionViewModel.onAction(it)},
+                onEvent = {addTransactionViewModel.onEvent(it)},
+                event = addTransactionViewModel.event,
                 navigateToHome = {
                     navController.navigate(Route.Home) {
                         popUpTo(Route.AddTransaction(transactionType)){inclusive = true}
@@ -86,6 +91,13 @@ fun NavGraph(
 
         composable<Route.History> {
 
+            val homeState = homeViewModel.state.collectAsStateWithLifecycle().value
+
+            HistoryScreen(
+                modifier = Modifier.padding(paddingValues),
+                transactions = homeState.allTransactions
+
+            )
         }
 
         composable<Route.Profile> {
@@ -98,33 +110,36 @@ fun NavGraph(
                     email = user.email.toString()
                 )
             } else User()
+
             ProfileScreen(
                 user = appUser,
                 onLogout = {
-                    Firebase.auth.signOut()
+                    //Firebase.auth.signOut()
                     navController.navigate(Route.Login) {
                         popUpTo(Route.Profile) {inclusive = true}
                     }
-                }
+                },
+                modifier = Modifier.padding(paddingValues)
             )
         }
 
         composable<Route.Login> {
-            val loginViewModel = koinViewModel<LoginViewModel>()
             val context = LocalContext.current
 
-            LoginScreen(onClick = {
-                loginViewModel.handleGoogleSignIn(
-                    context,
-                    navigateToHome =  {
-                        navController.navigate(Route.Home) {
-                            popUpTo(Route.Login){inclusive = true}
-                        }
-                    }
-                )
-            })
+            LoginScreen(
+                modifier = Modifier.padding(paddingValues),
+                onClick = {
 
+                    loginViewModel.handleGoogleSignIn(
+                        context,
+                        navigateToHome =  {
+                            navController.navigate(Route.Home) {
+                                popUpTo(Route.Login){inclusive = true}
+                            }
+                        }
+                    )
+                }
+            )
         }
     }
-
 }

@@ -1,5 +1,7 @@
 package com.jk.cashcontrol.presentation.home.components
 
+import androidx.compose.foundation.MarqueeAnimationMode
+import androidx.compose.foundation.MarqueeSpacing
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Box
@@ -89,7 +91,9 @@ fun TransactionCard(
                 text = transaction.timestamp + " - " + transaction.category,
                 style = MaterialTheme.typography.bodyMedium,
                 color = Color.White.copy(0.7f),
-                fontSize = 16.sp
+                fontSize = 16.sp,
+                modifier = Modifier
+                    .basicMarquee()
             )
         }
 

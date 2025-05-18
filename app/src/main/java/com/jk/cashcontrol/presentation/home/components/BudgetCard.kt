@@ -1,8 +1,9 @@
 package com.jk.cashcontrol.presentation.home.components
 
-import android.widget.Space
+import androidx.compose.foundation.Indication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.indication
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -16,8 +17,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -25,11 +24,6 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,11 +32,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.jk.cashcontrol.presentation.theme.CustomDarkGreen
-import com.jk.cashcontrol.presentation.theme.CustomLightGreen
+import com.jk.cashcontrol.presentation.home.HomeAction
 import com.jk.cashcontrol.presentation.theme.CustomLightRed
 import com.jk.cashcontrol.presentation.theme.CustomPink
 import com.jk.cashcontrol.presentation.theme.CustomPurple
@@ -51,7 +43,8 @@ import com.jk.cashcontrol.presentation.theme.CustomPurple
 fun BudgetCard(
     modifier: Modifier = Modifier,
     expense : Float,
-    budget : Float
+    budget : Float,
+    onAction : (HomeAction) -> Unit
 ) {
 
     val progress = if (budget == 0f) 0f else expense / budget
@@ -144,11 +137,15 @@ fun BudgetCard(
                 .padding(end = 10.dp)
         ) {
 
+            // New Button
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
-                    .clickable {
-
+                    .clickable(
+                        indication = null,
+                        interactionSource = null
+                    ) {
+                        onAction(HomeAction.OnNewBudgetClick)
                     }
                     .background(shape = RoundedCornerShape(20.dp), color = Color.White.copy(0.4f))
                     .padding(10.dp)
@@ -180,11 +177,15 @@ fun BudgetCard(
 
             Spacer(Modifier.width(10.dp))
 
+            // edit button
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
-                    .clickable {
-
+                    .clickable(
+                        indication = null,
+                        interactionSource = null
+                    ) {
+                        onAction(HomeAction.OnEditBudgetClick)
                     }
                     .background(shape = RoundedCornerShape(20.dp), color = Color.White.copy(0.4f))
                     .padding(10.dp)

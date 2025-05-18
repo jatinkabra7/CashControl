@@ -2,6 +2,7 @@ package com.jk.cashcontrol.presentation.add_transaction
 
 import com.jk.cashcontrol.domain.model.TransactionType
 import java.time.Instant
+import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -20,4 +21,13 @@ fun String.formatMillisToDate() : String {
     return Instant.ofEpochMilli(this.toLong())
         .atZone(ZoneId.systemDefault())
         .format(formatter)
+}
+
+fun String.toMillis() : Long {
+    val formatter = DateTimeFormatter.ofPattern("dd MMM, yyyy", Locale.getDefault())
+    return LocalDate
+        .parse(this, formatter)
+        .atStartOfDay(ZoneId.systemDefault())
+        .toInstant()
+        .toEpochMilli()
 }

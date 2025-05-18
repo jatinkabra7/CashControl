@@ -1,5 +1,7 @@
 package com.jk.cashcontrol.presentation.add_transaction
 
+import android.widget.Toast
+import androidx.activity.SystemBarStyle
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -9,12 +11,15 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
@@ -35,11 +40,13 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -60,6 +67,7 @@ import com.jk.cashcontrol.presentation.theme.CustomLightOrange
 import com.jk.cashcontrol.presentation.theme.CustomLightRed
 import com.jk.cashcontrol.presentation.theme.CustomPink
 import com.jk.cashcontrol.presentation.theme.CustomPurple
+import kotlinx.coroutines.flow.Flow
 import java.time.LocalDateTime
 import java.time.ZoneId
 
@@ -70,14 +78,25 @@ fun AddTransactionScreen(
     modifier: Modifier = Modifier,
     state: AddTransactionState,
     onAction: (AddTransactionAction) -> Unit,
-    navigateToHome : () -> Unit
+    navigateToHome : () -> Unit,
+    onEvent : (AddTransactionEvent) -> Unit,
+    event : Flow<AddTransactionEvent>
 ) {
+
+    val context = LocalContext.current
+
+    LaunchedEffect(event) {
+        event.collect {
+            Toast.makeText(context,"Amount cannot be 0", Toast.LENGTH_SHORT).show()
+        }
+
+    }
 
     Column(
         modifier = modifier
             .fillMaxSize()
             .background(Color.Black)
-            .padding(start = 10.dp, end = 10.dp)
+            .windowInsetsPadding(WindowInsets.systemBars)
     )
     {
         AddTransactionTopBar(
@@ -120,20 +139,25 @@ fun AddTransactionScreen(
                 containerColor = Color.Transparent
             ),
             onClick = {
-                onAction(
-                    AddTransactionAction.OnSubmit(
-                        Transaction(
-                            timestamp = state.timestamp,
-                            timestampMillis = System.currentTimeMillis().toString(),
-                            category = state.category,
-                            name = state.nameTextFieldValue,
-                            type = state.transactionType!!,
-                            amount = state.amountTextFieldValue.toFloat()
+                if(state.amountTextFieldValue.isBlank() || state.amountTextFieldValue.toFloatOrNull() == 0f) {
+                    onEvent(AddTransactionEvent.ShowToast)
+                }
+                else {
+
+                    onAction(
+                        AddTransactionAction.OnSubmit(
+                            Transaction(
+                                timestamp = state.timestamp,
+                                timestampMillis = System.currentTimeMillis(),
+                                category = state.category,
+                                name = state.nameTextFieldValue,
+                                type = state.transactionType!!,
+                                amount = state.amountTextFieldValue.toFloat()
+                            )
                         )
                     )
-                )
-
-                navigateToHome()
+                    navigateToHome()
+                }
             },
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
@@ -247,7 +271,7 @@ private fun NameSection(
             TextField(
                 modifier = Modifier
                     .fillMaxWidth(),
-                value = state.nameTextFieldValue,
+                value = if(state.nameTextFieldValue == "New Transaction") "" else state.nameTextFieldValue,
                 onValueChange = {onAction(AddTransactionAction.OnNameTextFieldValueChange(it))},
                 singleLine = true,
                 label = {
@@ -410,7 +434,7 @@ private fun DatePickerSection(
             confirmButton = {
                 TextButton(
                     onClick = {
-                        if(datePickerState.selectedDateMillis != null) {
+                        if(datePickerState.selectedDateMillis != null && datePickerState.selectedDateMillis!! <= dateTime.toMillis()) {
                             onAction(AddTransactionAction.OnPickDateConfirmButton(datePickerState.selectedDateMillis.toString()))
                         }
                         else {
@@ -433,7 +457,6 @@ private fun DatePickerSection(
             )
         ) {
             DatePicker(
-
                 state = datePickerState,
                 colors = DatePickerDefaults.colors(
                     containerColor = Color.DarkGray,

@@ -50,7 +50,7 @@ fun ProfileScreen(
     val context = LocalContext.current
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(Color.Black)
             .padding(10.dp)

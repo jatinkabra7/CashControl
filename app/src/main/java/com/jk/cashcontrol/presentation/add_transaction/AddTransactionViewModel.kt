@@ -1,21 +1,30 @@
 package com.jk.cashcontrol.presentation.add_transaction
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import com.jk.cashcontrol.data.mapper.toTransactionDto
 import com.jk.cashcontrol.domain.model.TransactionType
 import com.jk.cashcontrol.domain.repository.TransactionRepository
+import com.jk.cashcontrol.presentation.home.HomeState
+import com.jk.cashcontrol.presentation.home.HomeViewModel
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class AddTransactionViewModel(
-    private val repository: TransactionRepository
+    private val repository: TransactionRepository,
+    private val homeViewModel: HomeViewModel
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(AddTransactionState())
     val state = _state.asStateFlow()
+
+    private val _event = Channel<AddTransactionEvent>()
+    val event = _event.receiveAsFlow()
 
     fun onAction(action : AddTransactionAction) {
         when(action) {
@@ -65,7 +74,17 @@ class AddTransactionViewModel(
             is AddTransactionAction.OnSubmit -> {
                 viewModelScope.launch {
                     repository.insertTransaction(action.transaction)
+
+                    homeViewModel.updateExpense(expense = action.transaction.amount, type = action.transaction.type)
                 }
+            }
+        }
+    }
+
+    fun onEvent(event : AddTransactionEvent) {
+        when(event) {
+            is AddTransactionEvent.ShowToast -> {
+                _event.trySend(event)
             }
         }
     }

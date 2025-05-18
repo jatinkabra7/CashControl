@@ -58,11 +58,12 @@ class MainActivity : ComponentActivity() {
                 val bottomSheetState = rememberModalBottomSheetState()
 
                 Scaffold(
+                    containerColor = Color.Black,
                     bottomBar = {
 
                         BottomBar(
                             show = showBottomBar,
-                            navController = navController,
+                            currentRoute = currentRoute,
                             onClick = {
                                 when (it) {
                                     is Route.AddTransactionEntry -> showSheet = true
