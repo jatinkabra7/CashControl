@@ -29,6 +29,8 @@ import com.jk.cashcontrol.presentation.home.HomeViewModel
 import com.jk.cashcontrol.presentation.login.LoginScreen
 import com.jk.cashcontrol.presentation.login.LoginViewModel
 import com.jk.cashcontrol.presentation.profile.ProfileScreen
+import com.jk.cashcontrol.presentation.statistics.StatisticsScreen
+import com.jk.cashcontrol.presentation.statistics.StatisticsState
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -94,6 +96,7 @@ fun NavGraph(
 
         composable<Route.Statistics> {
 
+            StatisticsScreen(modifier = Modifier.padding(paddingValues), state = StatisticsState())
         }
 
         composable<Route.History> {

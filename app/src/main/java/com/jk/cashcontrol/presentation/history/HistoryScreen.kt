@@ -71,6 +71,7 @@ fun HistoryScreen(
         transaction.name.lowercase().contains(query) ||
         transaction.amount.toString().contains(query) ||
         transaction.timestamp.lowercase().contains(query) ||
+        transaction.timestamp.lowercase().replace(",","").contains(query) ||
         transaction.category.lowercase().contains(query)
     }
 
