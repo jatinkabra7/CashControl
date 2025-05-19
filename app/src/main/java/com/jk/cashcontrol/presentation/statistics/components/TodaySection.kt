@@ -55,32 +55,6 @@ fun TodaySection(
     onAction : (StatisticsAction) -> Unit
 ) {
 
-    val incomeCategories = listOf<Category>(
-        Category(name = "Salary", icon = R.drawable.salary),
-        Category(name = "Business", icon = R.drawable.business),
-        Category(name = "Investment", icon = R.drawable.investment),
-        Category(name = "Gifts", icon = R.drawable.gifts),
-        Category(name = "Other", icon = R.drawable.other),
-        Category(name = "", icon = R.drawable.other)
-    )
-
-    val expenseCategories = listOf<Category>(
-        Category(name = "Food", icon = R.drawable.food),
-        Category(name = "Business", icon = R.drawable.business),
-        Category(name = "Movies", icon = R.drawable.entertainment),
-        Category(name = "Transport", icon = R.drawable.transport),
-        Category(name = "Shopping", icon = R.drawable.shopping),
-        Category(name = "Bills", icon = R.drawable.bills),
-        Category(name = "Education", icon = R.drawable.education),
-        Category(name = "Other", icon = R.drawable.other),
-        Category(name = "", icon = R.drawable.other)
-    )
-
-    val topIncomeCategoryIcon =
-        incomeCategories.find { it.name == state.todayTopIncomeCategory }!!.icon
-    val topExpenseCategoryIcon =
-        incomeCategories.find { it.name == state.todayTopExpenseCategory }!!.icon
-
     val scrollState = rememberScrollState()
 
     Column(
@@ -99,7 +73,7 @@ fun TodaySection(
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
+            horizontalArrangement = Arrangement.Start,
             modifier = Modifier
                 .fillMaxWidth()
         ) {
@@ -110,20 +84,13 @@ fun TodaySection(
                 color = Color.White,
                 fontWeight = FontWeight.Bold
             )
-
-            Image(
-                painter = painterResource(topIncomeCategoryIcon),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(40.dp)
-            )
         }
 
         Spacer(Modifier.height(10.dp))
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
+            horizontalArrangement = Arrangement.Start,
             modifier = Modifier
                 .fillMaxWidth()
         ) {
@@ -133,13 +100,6 @@ fun TodaySection(
                 fontSize = 20.sp,
                 color = Color.White,
                 fontWeight = FontWeight.Bold
-            )
-
-            Image(
-                painter = painterResource(topExpenseCategoryIcon),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(40.dp)
             )
         }
 

@@ -58,8 +58,7 @@ fun BottomBar(
     ) {
 
         BottomAppBar(
-            containerColor = Color.Black,
-            modifier = Modifier.height(60.dp)
+            containerColor = Color.Black
         ) {
 
             list.forEach {

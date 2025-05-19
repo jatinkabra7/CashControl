@@ -4,7 +4,6 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     kotlin("plugin.serialization") version "2.1.21"
     alias(libs.plugins.google.gms.google.services)
-
 }
 
 android {
@@ -85,6 +84,8 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
     implementation("com.google.ai.client.generativeai:generativeai:0.9.0")
+    implementation("com.google.firebase:firebase-analytics")
+
 
 
 

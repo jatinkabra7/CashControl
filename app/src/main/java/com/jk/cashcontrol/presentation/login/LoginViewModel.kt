@@ -2,6 +2,7 @@ package com.jk.cashcontrol.presentation.login
 
 import android.content.Context
 import android.widget.Toast
+import androidx.credentials.ClearCredentialStateRequest
 import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
@@ -71,17 +72,12 @@ class LoginViewModel(
             try {
                 val credentialManager = CredentialManager.create(context)
 
-                val ranNonce: String = UUID.randomUUID().toString()
-                val bytes: ByteArray = ranNonce.toByteArray()
-                val md: MessageDigest = MessageDigest.getInstance("SHA-256")
-                val digest: ByteArray = md.digest(bytes)
-                val hashedNonce: String = digest.fold("") { str, it -> str + "%02x".format(it) }
+                credentialManager.clearCredentialState(request = ClearCredentialStateRequest())
 
                 val googleIdOption = GetGoogleIdOption.Builder()
                     .setFilterByAuthorizedAccounts(false)
-                    .setServerClientId(context.getString(R.string.web_client_id))
-                    .setNonce(hashedNonce)
                     .setAutoSelectEnabled(false)
+                    .setServerClientId(context.getString(R.string.web_client_id))
                     .build()
 
                 val request = GetCredentialRequest.Builder()

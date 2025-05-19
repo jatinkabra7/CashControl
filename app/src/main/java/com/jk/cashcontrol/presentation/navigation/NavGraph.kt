@@ -17,7 +17,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import co.yml.charts.common.extensions.isNotNull
 import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 import com.jk.cashcontrol.domain.model.User
 import com.jk.cashcontrol.presentation.add_transaction.AddTransactionScreen
@@ -43,8 +45,9 @@ fun NavGraph(
     historyViewModel: HistoryViewModel = koinViewModel<HistoryViewModel>(),
     statisticsViewModel: StatisticsViewModel = koinViewModel<StatisticsViewModel>()
 ) {
+    val context = LocalContext.current
 
-    val user = Firebase.auth.currentUser
+    val user = FirebaseAuth.getInstance().currentUser
 
     val start =
         if (user != null) {
@@ -134,7 +137,7 @@ fun NavGraph(
             ProfileScreen(
                 user = appUser,
                 onLogout = {
-                    Firebase.auth.signOut()
+                    FirebaseAuth.getInstance().signOut()
                     navController.navigate(Route.Login) {
                         popUpTo(Route.Profile) { inclusive = true }
                     }
@@ -144,7 +147,7 @@ fun NavGraph(
         }
 
         composable<Route.Login> {
-            val context = LocalContext.current
+
 
             LoginScreen(
                 modifier = Modifier.padding(paddingValues),
