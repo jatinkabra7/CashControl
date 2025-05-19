@@ -1,6 +1,7 @@
 package com.jk.cashcontrol.domain.repository
 
 import com.jk.cashcontrol.domain.model.Transaction
+import com.jk.cashcontrol.presentation.statistics.StatisticsState
 import kotlinx.coroutines.flow.Flow
 
 interface TransactionRepository {
@@ -14,4 +15,6 @@ interface TransactionRepository {
     suspend fun updateBudget(budget : Float) : Result<Boolean>
     suspend fun updateExpense(expense : Float) : Result<Boolean>
     suspend fun makeNewBudget(budget : Float) : Result<Boolean>
+
+    suspend fun getIncomeExpense() : Flow<StatisticsState>
 }

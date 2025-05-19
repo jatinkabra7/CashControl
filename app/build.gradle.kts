@@ -84,6 +84,7 @@ dependencies {
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
+    implementation("com.google.ai.client.generativeai:generativeai:0.9.0")
 
 
 

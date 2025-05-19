@@ -31,6 +31,7 @@ import com.jk.cashcontrol.presentation.login.LoginViewModel
 import com.jk.cashcontrol.presentation.profile.ProfileScreen
 import com.jk.cashcontrol.presentation.statistics.StatisticsScreen
 import com.jk.cashcontrol.presentation.statistics.StatisticsState
+import com.jk.cashcontrol.presentation.statistics.StatisticsViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -39,7 +40,8 @@ fun NavGraph(
     paddingValues: PaddingValues,
     homeViewModel: HomeViewModel = koinViewModel<HomeViewModel>(),
     loginViewModel: LoginViewModel = koinViewModel<LoginViewModel>(),
-    historyViewModel: HistoryViewModel = koinViewModel<HistoryViewModel>()
+    historyViewModel: HistoryViewModel = koinViewModel<HistoryViewModel>(),
+    statisticsViewModel: StatisticsViewModel = koinViewModel<StatisticsViewModel>()
 ) {
 
     val user = Firebase.auth.currentUser
@@ -96,7 +98,14 @@ fun NavGraph(
 
         composable<Route.Statistics> {
 
-            StatisticsScreen(modifier = Modifier.padding(paddingValues), state = StatisticsState())
+            val state = statisticsViewModel.state.collectAsStateWithLifecycle().value
+
+            StatisticsScreen(
+                modifier = Modifier.padding(paddingValues),
+                state = state,
+                user = user,
+                onAction = {statisticsViewModel.onAction(it)}
+            )
         }
 
         composable<Route.History> {
