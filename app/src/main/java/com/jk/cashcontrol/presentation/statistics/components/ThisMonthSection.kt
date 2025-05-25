@@ -56,7 +56,6 @@ fun ThisMonthSection(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
             .background(Color.Black)
-            .padding(10.dp)
             .verticalScroll(scrollState)
     ) {
         StatsCard(

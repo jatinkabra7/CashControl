@@ -26,7 +26,6 @@ import com.jk.cashcontrol.domain.model.TransactionType
 import com.jk.cashcontrol.presentation.navigation.BottomBar
 import com.jk.cashcontrol.presentation.navigation.BottomSheetContent
 import com.jk.cashcontrol.presentation.navigation.NavGraph
-import com.jk.cashcontrol.presentation.navigation.NavigationState
 import com.jk.cashcontrol.presentation.navigation.Route
 import com.jk.cashcontrol.presentation.theme.CashControlTheme
 

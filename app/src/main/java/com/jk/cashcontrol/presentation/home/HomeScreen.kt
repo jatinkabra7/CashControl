@@ -180,10 +180,6 @@ fun HomeScreen(
             color = Color.White
         )
 
-        Spacer(Modifier.height(20.dp))
-
-        HorizontalDivider()
-
         Spacer(Modifier.height(10.dp))
 
         RecentTransactions(state = state)
@@ -271,10 +267,6 @@ fun RecentTransactions(
                 TransactionCard(
                     transaction = it
                 )
-
-                Spacer(Modifier.height(10.dp))
-
-                HorizontalDivider()
 
                 Spacer(Modifier.height(10.dp))
             }

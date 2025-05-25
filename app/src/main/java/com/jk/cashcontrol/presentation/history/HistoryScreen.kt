@@ -154,10 +154,6 @@ fun HistoryScreen(
                         )
 
                         Spacer(Modifier.height(10.dp))
-
-                        HorizontalDivider()
-
-                        Spacer(Modifier.height(10.dp))
                     }
                 }
             }

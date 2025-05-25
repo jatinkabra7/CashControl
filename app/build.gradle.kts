@@ -85,6 +85,7 @@ dependencies {
     implementation(libs.coil.network.okhttp)
     implementation("com.google.ai.client.generativeai:generativeai:0.9.0")
     implementation("com.google.firebase:firebase-analytics")
+    implementation("com.meticha:permissions_compose:0.0.1+4")
 
 
 

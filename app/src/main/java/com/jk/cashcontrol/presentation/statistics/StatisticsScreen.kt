@@ -112,6 +112,7 @@ fun StatisticsScreen(
         Spacer(Modifier.height(20.dp))
 
         HorizontalPager(
+            pageSpacing = 20.dp,
             state = pagerState,
             modifier = Modifier
                 .fillMaxHeight()
