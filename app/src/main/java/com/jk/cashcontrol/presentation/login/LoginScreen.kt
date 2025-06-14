@@ -111,3 +111,11 @@ fun LoginScreen(
         }
     }
 }
+
+@Preview
+@Composable
+private fun p() {
+    LoginScreen(
+        onClick = {}
+    )
+}

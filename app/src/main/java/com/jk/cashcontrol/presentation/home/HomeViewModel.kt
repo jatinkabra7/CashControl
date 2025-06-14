@@ -118,7 +118,7 @@ class HomeViewModel(
             repository.getExpense()
                 .collect { expense ->
                     _state.update {
-                        it.copy(expense = expense)
+                        it.copy(expense = expense, remaining = state.value.budget - expense)
                     }
                 }
         }

@@ -23,8 +23,10 @@ credentials = "1.5.0"
 firebaseBom = "33.13.0"
 googleid = "1.1.1"
 firebaseFirestore = "25.1.4"
+accompanistPermissions = "0.37.3"
 
 [libraries]
+accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissions" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }

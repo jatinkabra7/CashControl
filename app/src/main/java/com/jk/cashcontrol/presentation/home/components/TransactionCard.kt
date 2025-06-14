@@ -35,6 +35,8 @@ import androidx.compose.ui.unit.sp
 import com.jk.cashcontrol.R
 import com.jk.cashcontrol.domain.model.Transaction
 import com.jk.cashcontrol.domain.model.TransactionType
+import com.jk.cashcontrol.presentation.theme.CustomDarkOrange
+import com.jk.cashcontrol.presentation.theme.CustomLightOrange
 import java.nio.file.WatchEvent
 
 @Composable
@@ -49,7 +51,7 @@ fun TransactionCard(
 
     val transactionColor =
         if(transaction.type == TransactionType.INCOME) Color.Green
-        else Color.Red
+        else CustomDarkOrange
 
 
     Row(

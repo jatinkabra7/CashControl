@@ -1,7 +1,11 @@
 package com.jk.cashcontrol.presentation.login
 
 import android.content.Context
+import android.content.Intent
+import android.provider.Settings
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.compose.runtime.remember
 import androidx.credentials.ClearCredentialStateRequest
 import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
@@ -10,6 +14,7 @@ import androidx.credentials.exceptions.GetCredentialCancellationException
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.firebase.auth.AuthResult
@@ -56,8 +61,15 @@ class LoginViewModel(
                             navigateToHome()
                         }
                     },
-                    onFailure = {e ->
-                        Toast.makeText(context,"Something went wrong : ${e.message}", Toast.LENGTH_LONG).show()
+                    onFailure = {
+
+                        try {
+                            context.startActivity(Intent(Settings.ACTION_ADD_ACCOUNT).apply {
+                                putExtra(Settings.EXTRA_ACCOUNT_TYPES, arrayOf("com.google"))
+                            })
+                        } catch (e : Exception) {
+                            Toast.makeText(context,"Something went wrong : ${it.message}", Toast.LENGTH_LONG).show()
+                        }
                     }
                 )
             }

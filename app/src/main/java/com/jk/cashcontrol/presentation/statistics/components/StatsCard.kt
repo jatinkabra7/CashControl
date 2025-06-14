@@ -30,6 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jk.cashcontrol.R
+import com.jk.cashcontrol.presentation.theme.CustomDarkOrange
 import kotlin.math.exp
 
 @Composable
@@ -131,7 +132,7 @@ private fun ExpenseItem(
             Icon(
                 painter = painterResource(R.drawable.baseline_arrow_upward_24),
                 contentDescription = null,
-                tint = Color.Red,
+                tint = CustomDarkOrange,
                 modifier = Modifier.size(30.dp)
             )
         }
@@ -139,8 +140,8 @@ private fun ExpenseItem(
         Spacer(Modifier.width(20.dp))
 
         Text(
-            text = "${expense}",
-            color = Color.Red,
+            text = "$expense",
+            color = CustomDarkOrange,
             fontSize = 30.sp
         )
     }

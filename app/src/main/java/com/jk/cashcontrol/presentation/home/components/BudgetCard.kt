@@ -29,6 +29,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -49,6 +52,7 @@ fun BudgetCard(
     modifier: Modifier = Modifier,
     expense : Float,
     budget : Float,
+    remaining : Float,
     onAction : (HomeAction) -> Unit
 ) {
 
@@ -139,15 +143,31 @@ fun BudgetCard(
             trackColor = Color.White.copy(0.5f)
         )
 
-        Text(
-            text = (progress*100).toInt().toString() + "%",
-            style = MaterialTheme.typography.bodySmall,
-            fontSize = 16.sp,
-            color = Color.White.copy(0.8f),
-            fontWeight = FontWeight.Normal,
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
-                .padding(start = 10.dp, top = 5.dp)
-        )
+                .fillMaxWidth()
+                .padding(vertical = 10.dp, horizontal = 5.dp)
+        ) {
+
+            Text(
+                text = (progress*100).toInt().toString() + "%",
+                style = MaterialTheme.typography.bodySmall,
+                fontSize = 16.sp,
+                color = Color.White.copy(0.8f),
+                fontWeight = FontWeight.Normal
+            )
+
+            Text(
+                text = "Remaining: $remaining",
+                style = MaterialTheme.typography.bodySmall,
+                fontSize = 16.sp,
+                color = Color.White.copy(0.8f),
+                fontWeight = FontWeight.Normal
+            )
+        }
+
 
         Row(
             modifier = Modifier

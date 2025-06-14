@@ -24,6 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jk.cashcontrol.R
+import com.jk.cashcontrol.presentation.theme.CustomDarkOrange
 
 @Composable
 fun BottomSheetContent(
@@ -86,7 +87,7 @@ fun BottomSheetContent(
                 Icon(
                     painter = painterResource(R.drawable.baseline_arrow_upward_24),
                     contentDescription = null,
-                    tint = Color.Red,
+                    tint = CustomDarkOrange,
                     modifier = Modifier.size(30.dp)
                 )
 

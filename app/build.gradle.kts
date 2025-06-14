@@ -86,6 +86,8 @@ dependencies {
     implementation("com.google.ai.client.generativeai:generativeai:0.9.0")
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.meticha:permissions_compose:0.0.1+4")
+    implementation("androidx.compose.material3:material3-adaptive-navigation-suite")
+    implementation(libs.accompanist.permissions)
 
 
 
