@@ -62,7 +62,7 @@ class AddTransactionViewModel(
             }
 
             is AddTransactionAction.OnCategorySelection -> {
-                _state.update { it.copy(category = action.category) }
+                _state.update { it.copy(category = action.category.trim()) }
             }
 
             is AddTransactionAction.OnNameTextFieldValueChange -> {

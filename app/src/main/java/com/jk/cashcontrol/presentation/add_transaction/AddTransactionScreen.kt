@@ -1,6 +1,7 @@
 package com.jk.cashcontrol.presentation.add_transaction
 
 import android.widget.Toast
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -211,32 +212,24 @@ private fun AmountSection(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(5.dp)
+                    .padding(3.dp)
             ) {
-                Text(
-                    text = "Enter Amount",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White,
-                    modifier = Modifier
-                        .align(Alignment.Start)
-                        .padding(start = 5.dp, top = 5.dp, bottom = 5.dp)
-                        .shadow(ambientColor = Color.White, elevation = 20.dp)
-                )
 
                 TextField(
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(
-                            shape = RoundedCornerShape(
-                                topStart = 10.dp,
-                                topEnd = 10.dp,
-                                bottomStart = 20.dp,
-                                bottomEnd = 20.dp
-                            ),
+                            shape = RoundedCornerShape(18.dp),
                             color = Color.Black
                         ),
                     value = state.amountTextFieldValue,
+                    placeholder = {
+                        Text(
+                            text = "Enter Amount",
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Normal
+                        )
+                    },
                     onValueChange = {onAction(AddTransactionAction.OnAmountTextFieldValueChange(it))},
                     singleLine = true,
                     colors = TextFieldDefaults.colors(
@@ -251,7 +244,8 @@ private fun AmountSection(
                         errorIndicatorColor = Color.Transparent,
                         focusedIndicatorColor = Color.Transparent,
                         disabledIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent
+                        unfocusedIndicatorColor = Color.Transparent,
+                        focusedPlaceholderColor = Color.White
                     ),
                     textStyle = TextStyle(fontSize = 24.sp),
                     keyboardOptions = KeyboardOptions(
@@ -295,32 +289,24 @@ private fun NameSection(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(5.dp)
+                    .padding(3.dp)
             ) {
-                Text(
-                    text = "Transaction Name",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White,
-                    modifier = Modifier
-                        .align(Alignment.Start)
-                        .padding(start = 5.dp, top = 5.dp, bottom = 5.dp)
-                        .shadow(ambientColor = Color.White, elevation = 10.dp)
-                )
 
                 TextField(
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(
-                            shape = RoundedCornerShape(
-                                topStart = 10.dp,
-                                topEnd = 10.dp,
-                                bottomStart = 20.dp,
-                                bottomEnd = 20.dp
-                            ),
+                            shape = RoundedCornerShape(18.dp),
                             color = Color.Black
                         ),
                     value = if(state.nameTextFieldValue == "New Transaction") "" else state.nameTextFieldValue,
+                    placeholder = {
+                        Text(
+                            text = "Transaction Name",
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Normal
+                        )
+                    },
                     onValueChange = {onAction(AddTransactionAction.OnNameTextFieldValueChange(it))},
                     singleLine = true,
                     colors = TextFieldDefaults.colors(
@@ -335,7 +321,8 @@ private fun NameSection(
                         errorIndicatorColor = Color.Transparent,
                         focusedIndicatorColor = Color.Transparent,
                         disabledIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent
+                        unfocusedIndicatorColor = Color.Transparent,
+                        focusedPlaceholderColor = Color.White
                     ),
                     textStyle = TextStyle(fontSize = 20.sp)
                 )
@@ -406,6 +393,7 @@ private fun CategorySection(
                 )
 
                 ScrollableTabRow(
+                    divider = {},
                     containerColor = Color.Transparent,
                     selectedTabIndex = categories.size-1,
                     edgePadding = 0.dp,
@@ -417,8 +405,12 @@ private fun CategorySection(
                     categories.forEach {category ->
                         Card(
                             colors = CardDefaults.cardColors(
-                                containerColor = if(state.category == category.name) Color.Black.copy(0.3f) else Color.Transparent,
+                                containerColor = if(state.category == category.name) Color.White.copy(0.3f) else Color.Transparent,
                                 disabledContainerColor = Color.Transparent
+                            ),
+                            border = BorderStroke(
+                                width = 1.dp,
+                                color = if(state.category == category.name) Color.White else Color.Transparent,
                             ),
                             modifier = Modifier
                                 .width(100.dp)
@@ -426,6 +418,7 @@ private fun CategorySection(
                                     onAction(AddTransactionAction.OnCategorySelection(category = category.name))
                                 }
                         ) {
+
                             Image(
                                 painter = painterResource(category.icon),
                                 contentDescription = null,
@@ -440,6 +433,7 @@ private fun CategorySection(
                                 modifier = Modifier
                                     .align(Alignment.CenterHorizontally)
                             )
+
                         }
                     }
 
