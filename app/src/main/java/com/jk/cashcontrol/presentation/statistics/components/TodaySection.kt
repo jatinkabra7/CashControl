@@ -115,8 +115,16 @@ fun TodaySection(
             )
         ).value
 
+        val summaryButtonText =
+            if(state.isTodaySummaryLoading) "Generating..."
+            else "Generate Summary"
+
         OutlinedButton(
-            onClick = {onAction(StatisticsAction.OnTodayGenerateSummaryClick(state))},
+            onClick = {
+                if(!state.isTodaySummaryLoading) {
+                    onAction(StatisticsAction.OnTodayGenerateSummaryClick(state))
+                }
+            },
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color.Transparent
             ),
@@ -135,7 +143,7 @@ fun TodaySection(
             Spacer(Modifier.width(10.dp))
 
             Text(
-                text = "Generate Summary",
+                text = summaryButtonText,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold,
                 style = TextStyle(

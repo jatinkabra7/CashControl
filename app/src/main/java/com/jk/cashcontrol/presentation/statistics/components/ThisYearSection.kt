@@ -110,8 +110,16 @@ fun ThisYearSection(
             )
         ).value
 
+        val summaryButtonText =
+            if(state.isThisYearSummaryLoading) "Generating..."
+            else "Generate Summary"
+
         OutlinedButton(
-            onClick = {onAction(StatisticsAction.OnThisYearGenerateSummaryClick(state))},
+            onClick = {
+                if(!state.isThisYearSummaryLoading) {
+                    onAction(StatisticsAction.OnThisYearGenerateSummaryClick(state))
+                }
+            },
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color.Transparent
             ),
@@ -130,7 +138,7 @@ fun ThisYearSection(
             Spacer(Modifier.width(10.dp))
 
             Text(
-                text = "Generate Summary",
+                text = summaryButtonText,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold,
                 style = TextStyle(

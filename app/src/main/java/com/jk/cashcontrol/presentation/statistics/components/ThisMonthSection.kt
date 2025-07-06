@@ -111,8 +111,16 @@ fun ThisMonthSection(
             )
         ).value
 
+        val summaryButtonText =
+            if(state.isThisMonthSummaryLoading) "Generating..."
+            else "Generate Summary"
+
         OutlinedButton(
-            onClick = {onAction(StatisticsAction.OnThisMonthGenerateSummaryClick(state))},
+            onClick = {
+                if(!state.isThisMonthSummaryLoading) {
+                    onAction(StatisticsAction.OnThisMonthGenerateSummaryClick(state))
+                }
+            },
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color.Transparent
             ),
@@ -131,7 +139,7 @@ fun ThisMonthSection(
             Spacer(Modifier.width(10.dp))
 
             Text(
-                text = "Generate Summary",
+                text = summaryButtonText,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold,
                 style = TextStyle(
