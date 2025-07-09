@@ -115,6 +115,7 @@ fun ThisYearSection(
             else "Generate Summary"
 
         OutlinedButton(
+            modifier = Modifier.fillMaxWidth(),
             onClick = {
                 if(!state.isThisYearSummaryLoading) {
                     onAction(StatisticsAction.OnThisYearGenerateSummaryClick(state))

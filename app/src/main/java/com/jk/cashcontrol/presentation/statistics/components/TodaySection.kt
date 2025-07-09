@@ -120,6 +120,7 @@ fun TodaySection(
             else "Generate Summary"
 
         OutlinedButton(
+            modifier = Modifier.fillMaxWidth(),
             onClick = {
                 if(!state.isTodaySummaryLoading) {
                     onAction(StatisticsAction.OnTodayGenerateSummaryClick(state))

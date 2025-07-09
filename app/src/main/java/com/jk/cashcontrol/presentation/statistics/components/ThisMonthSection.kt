@@ -116,6 +116,7 @@ fun ThisMonthSection(
             else "Generate Summary"
 
         OutlinedButton(
+            modifier = Modifier.fillMaxWidth(),
             onClick = {
                 if(!state.isThisMonthSummaryLoading) {
                     onAction(StatisticsAction.OnThisMonthGenerateSummaryClick(state))
