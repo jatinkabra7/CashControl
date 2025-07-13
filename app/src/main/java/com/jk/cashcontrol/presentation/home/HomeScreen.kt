@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.firebase.auth.FirebaseUser
 import com.jk.cashcontrol.R
+import com.jk.cashcontrol.domain.model.Transaction
 import com.jk.cashcontrol.presentation.home.components.BudgetCard
 import com.jk.cashcontrol.presentation.home.components.TransactionCard
 import com.jk.cashcontrol.presentation.theme.CustomLightRed
@@ -43,7 +44,8 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     state: HomeState,
     user : FirebaseUser?,
-    onAction: (HomeAction) -> Unit
+    onAction: (HomeAction) -> Unit,
+    navigateToTransactionInfo: (Transaction) -> Unit
 ) {
 
     LaunchedEffect(user?.uid.toString()) {
@@ -169,7 +171,10 @@ fun HomeScreen(
 
         Spacer(Modifier.height(10.dp))
 
-        RecentTransactions(state = state)
+        RecentTransactions(
+            state = state,
+            navigateToTransactionInfo = navigateToTransactionInfo
+        )
 
 
     }
@@ -218,13 +223,14 @@ fun HeaderSection(
 @Composable
 fun RecentTransactions(
     modifier: Modifier = Modifier,
-    state: HomeState
+    state: HomeState,
+    navigateToTransactionInfo: (Transaction) -> Unit
 ) {
 
     if(state.recentTransactions.isEmpty()) {
         Box(
             contentAlignment = Alignment.Center,
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxWidth()
         ) {
 
@@ -253,7 +259,8 @@ fun RecentTransactions(
 
             items(state.recentTransactions) {
                 TransactionCard(
-                    transaction = it
+                    transaction = it,
+                    onClick = navigateToTransactionInfo
                 )
 
                 Spacer(Modifier.height(10.dp))

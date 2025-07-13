@@ -1,6 +1,5 @@
 package com.jk.cashcontrol.presentation.history
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Column
@@ -10,11 +9,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListPrefetchStrategy
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -29,7 +26,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
@@ -37,23 +33,18 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.auth
 import com.jk.cashcontrol.R
 import com.jk.cashcontrol.domain.model.Transaction
-import com.jk.cashcontrol.presentation.home.HomeViewModel
 import com.jk.cashcontrol.presentation.home.components.TransactionCard
-import kotlinx.coroutines.delay
-import org.koin.androidx.compose.koinViewModel
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HistoryScreen(
     modifier: Modifier = Modifier,
     state: HistoryState,
     user : FirebaseUser?,
-    onAction: (HistoryAction) -> Unit
+    onAction: (HistoryAction) -> Unit,
+    navigateToTransactionInfo: (Transaction) -> Unit
 ) {
 
     LaunchedEffect(user?.uid.toString()) {
@@ -150,7 +141,8 @@ fun HistoryScreen(
                     ) {
 
                         TransactionCard(
-                            transaction = it
+                            transaction = it,
+                            onClick = navigateToTransactionInfo
                         )
 
                         Spacer(Modifier.height(10.dp))

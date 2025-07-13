@@ -118,7 +118,8 @@ class HomeViewModel(
             repository.getExpense()
                 .collect { expense ->
                     _state.update {
-                        it.copy(expense = expense, remaining = state.value.budget - expense)
+                        val remaining = if(state.value.budget - expense >= 0) state.value.budget - expense else 0f
+                        it.copy(expense = expense, remaining = remaining)
                     }
                 }
         }
@@ -163,8 +164,7 @@ class HomeViewModel(
             val totalExpense = if(type == TransactionType.EXPENSE) {
                 oldExpense + newExpense
             } else {
-                if(newExpense > oldExpense) 0f
-                else oldExpense - newExpense
+                oldExpense
             }
 
             repository.updateExpense(totalExpense)

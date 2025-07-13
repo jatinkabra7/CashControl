@@ -34,13 +34,15 @@ fun BottomSheetContent(
 ) {
 
     Box(
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
+        modifier = modifier
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceEvenly,
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(10.dp)
         ) {
             Row(
                 horizontalArrangement = Arrangement.Center,
@@ -70,7 +72,7 @@ fun BottomSheetContent(
                 )
             }
 
-            Spacer(Modifier.width(20.dp))
+            Spacer(Modifier.width(10.dp))
 
             Row(
                 horizontalArrangement = Arrangement.Center,

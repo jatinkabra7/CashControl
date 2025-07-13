@@ -26,4 +26,14 @@ sealed interface Route {
 
     @Serializable
     data object Login : Route
+
+    @Serializable
+    data class TransactionInfo(
+        val name : String,
+        val type : TransactionType,
+        val amount : Float,
+        val category: String,
+        val timestamp : String,
+        val timestampMillis: Long
+    ): Route
 }

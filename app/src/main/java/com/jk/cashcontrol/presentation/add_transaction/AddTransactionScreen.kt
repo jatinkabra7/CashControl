@@ -8,7 +8,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -44,11 +43,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -73,8 +70,6 @@ import kotlinx.coroutines.flow.Flow
 import java.time.LocalDateTime
 import java.time.ZoneId
 
-
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun AddTransactionScreen(
     modifier: Modifier = Modifier,
@@ -87,11 +82,13 @@ fun AddTransactionScreen(
 
     val context = LocalContext.current
 
-    val focusManager = LocalFocusManager.current
-
     LaunchedEffect(event) {
         event.collect {
-            Toast.makeText(context,"Amount cannot be 0", Toast.LENGTH_SHORT).show()
+            when(it) {
+                is AddTransactionEvent.ShowToast -> {
+                    Toast.makeText(context,it.message, Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 
@@ -105,7 +102,7 @@ fun AddTransactionScreen(
 
         AddTransactionTopBar(
             state = state,
-            navigateToHome = { navigateToHome() }
+            navigateToHome = navigateToHome
         )
 
         AmountSection(
@@ -140,7 +137,10 @@ fun AddTransactionScreen(
             ),
             onClick = {
                 if(state.amountTextFieldValue.isBlank() || state.amountTextFieldValue.toFloatOrNull() == 0f) {
-                    onEvent(AddTransactionEvent.ShowToast)
+                    onEvent(AddTransactionEvent.ShowToast("Amount cannot be 0."))
+                }
+                else if(state.nameTextFieldValue.length < 3) {
+                    onEvent(AddTransactionEvent.ShowToast("Name cannot have less than 3 characters."))
                 }
                 else {
 

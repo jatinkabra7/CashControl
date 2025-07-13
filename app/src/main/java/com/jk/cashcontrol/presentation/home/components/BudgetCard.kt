@@ -1,8 +1,13 @@
 package com.jk.cashcontrol.presentation.home.components
 
+import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.EaseInOut
 import androidx.compose.animation.core.EaseInOut
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Indication
 import androidx.compose.foundation.background
@@ -73,13 +78,33 @@ fun BudgetCard(
         animationSpec = tween(durationMillis = 1000,easing = EaseInOut)
     )
 
+    val transition = rememberInfiniteTransition()
+
+    val color1 by transition.animateColor(
+        initialValue = CustomLightRed,
+        targetValue = CustomPink,
+        animationSpec = infiniteRepeatable(
+            animation = tween(10_000, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse
+        )
+    )
+
+    val color2 by transition.animateColor(
+        initialValue = CustomPink,
+        targetValue = CustomPurple,
+        animationSpec = infiniteRepeatable(
+            animation = tween(10_000, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse
+        )
+    )
+
     Card(
         colors = CardDefaults.cardColors(
             containerColor = Color.Transparent
         ),
         modifier = modifier
             .clip(RoundedCornerShape(20.dp))
-            .background(Brush.linearGradient(colors = listOf(CustomLightRed, CustomPink, CustomPurple)))
+            .background(Brush.linearGradient(colors = listOf(color1,color2)))
 
     ) {
         Spacer(Modifier.height(10.dp))
@@ -206,9 +231,9 @@ fun BudgetCard(
                     Spacer(Modifier.width(10.dp))
 
                     Text(
-                        text = "New",
+                        text = "New Budget",
                         color = Color.White,
-                        fontSize = 16.sp
+                        fontSize = 12.sp
                     )
                 }
             }
@@ -246,9 +271,9 @@ fun BudgetCard(
                     Spacer(Modifier.width(10.dp))
 
                     Text(
-                        text = "Edit",
+                        text = "Edit Budget",
                         color = Color.White,
-                        fontSize = 16.sp
+                        fontSize = 12.sp
                     )
                 }
             }

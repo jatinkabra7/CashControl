@@ -1,11 +1,15 @@
 package com.jk.cashcontrol.domain.model
 
-data class Transaction(
-    val timestamp : String,
-    val timestampMillis : Long,
-    val category: String,
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class Transaction (
     val name : String,
     val type : TransactionType,
-    val amount : Float
+    val amount : Float,
+    val category: String,
+    val timestamp : String,
+    val timestampMillis : Long
 )
+
 enum class TransactionType {INCOME, EXPENSE}

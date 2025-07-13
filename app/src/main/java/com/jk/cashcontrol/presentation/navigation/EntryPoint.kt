@@ -55,7 +55,9 @@ fun EntryPoint() {
                     onClick = {
                         when (it) {
                             is Route.AddTransactionEntry -> showSheet = true
-                            else -> navController.navigate(it)
+                            else -> navController.navigate(it) {
+                                popUpTo(0)
+                            }
                         }
                     }
                 )

@@ -7,12 +7,15 @@ import com.jk.cashcontrol.data.dto.TransactionDto
 import com.jk.cashcontrol.data.mapper.toTransaction
 import com.jk.cashcontrol.data.mapper.toTransactionDto
 import com.jk.cashcontrol.domain.model.Transaction
+import com.jk.cashcontrol.domain.model.TransactionType
 import com.jk.cashcontrol.domain.repository.TransactionRepository
 import com.jk.cashcontrol.presentation.add_transaction.formatMillisToDate
 import com.jk.cashcontrol.presentation.statistics.StatisticsState
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
+import kotlin.math.exp
 
 class TransactionRepositoryImpl(
     private val auth : FirebaseAuth,
@@ -36,6 +39,18 @@ class TransactionRepositoryImpl(
                 uidDocument.set(userMap).await()
             }
             Result.success(true)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun deleteUserData(): Result<Boolean> {
+        return try {
+
+            usersCollection.document(uid).delete().await()
+
+            Result.success(true)
+
         } catch (e: Exception) {
             Result.failure(e)
         }
@@ -72,6 +87,44 @@ class TransactionRepositoryImpl(
             Result.success(true)
 
         } catch (e : Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun deleteTransaction(transaction: Transaction): Result<Boolean> {
+        return try {
+
+            val snapshot = transactionsCollection
+                .whereEqualTo("timestampMillis", transaction.timestampMillis)
+                .get()
+                .await()
+
+            if(snapshot.isEmpty) {
+                return Result.failure(Exception("Transaction Not Found"))
+            }
+
+            for(document in snapshot) {
+                document.reference.delete().await()
+            }
+
+            // updating expense after deleting transaction
+
+            val type = transaction.type
+            val amount = transaction.amount
+
+            val expense = uidDocument.snapshots().first().getString("expense")?.toFloat() ?: 0f
+
+            val newExpense =
+                if(type == TransactionType.EXPENSE) {
+                    if (expense - amount >= 0) expense - amount
+                    else 0f
+                }
+                else expense
+
+            uidDocument.update("expense",newExpense.toString()).await()
+
+            Result.success(true)
+        } catch (e: Exception) {
             Result.failure(e)
         }
     }

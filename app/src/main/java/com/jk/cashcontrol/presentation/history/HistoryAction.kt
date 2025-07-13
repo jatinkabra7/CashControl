@@ -1,5 +1,5 @@
 package com.jk.cashcontrol.presentation.history
 
-interface HistoryAction {
+sealed interface HistoryAction {
     data object ReloadData : HistoryAction
 }

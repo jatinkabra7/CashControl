@@ -46,8 +46,6 @@ fun StatsCard(
             .fillMaxWidth()
             .height(150.dp)
             .background(Color.DarkGray.copy(0.5f), shape = RoundedCornerShape(20))
-        ,
-
     ) {
 
         FlowRow(

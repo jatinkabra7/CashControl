@@ -1,15 +1,12 @@
 package com.jk.cashcontrol.presentation.home.components
 
-import androidx.compose.foundation.MarqueeAnimationMode
-import androidx.compose.foundation.MarqueeSpacing
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -19,38 +16,34 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jk.cashcontrol.R
 import com.jk.cashcontrol.domain.model.Transaction
 import com.jk.cashcontrol.domain.model.TransactionType
 import com.jk.cashcontrol.presentation.theme.CustomDarkOrange
-import com.jk.cashcontrol.presentation.theme.CustomLightOrange
-import java.nio.file.WatchEvent
 
 @Composable
 fun TransactionCard(
     modifier: Modifier = Modifier,
-    transaction : Transaction
+    transaction: Transaction,
+    onClick: (Transaction) -> Unit
 ) {
 
     val transactionIcon =
-        if(transaction.type == TransactionType.INCOME) R.drawable.baseline_arrow_downward_24
+        if (transaction.type == TransactionType.INCOME) R.drawable.baseline_arrow_downward_24
         else R.drawable.baseline_arrow_upward_24
 
     val transactionColor =
-        if(transaction.type == TransactionType.INCOME) Color.Green
+        if (transaction.type == TransactionType.INCOME) Color.Green
         else CustomDarkOrange
 
 
@@ -59,7 +52,7 @@ fun TransactionCard(
             .clip(RoundedCornerShape(100))
             .fillMaxWidth()
             .background(Color.DarkGray.copy(0.3f))
-
+            .clickable { onClick(transaction) }
 
     ) {
 
@@ -69,7 +62,7 @@ fun TransactionCard(
             modifier = Modifier
                 .align(Alignment.CenterVertically)
                 .size(40.dp),
-            onClick = {},
+            onClick = {onClick(transaction)},
             colors = IconButtonDefaults.iconButtonColors(
                 containerColor = Color.DarkGray.copy(0.5f)
             )
@@ -79,7 +72,8 @@ fun TransactionCard(
                 painter = painterResource(transactionIcon),
                 contentDescription = null,
                 tint = transactionColor,
-                modifier = Modifier.size(30.dp)
+                modifier = Modifier
+                    .size(30.dp)
             )
         }
 
@@ -95,8 +89,9 @@ fun TransactionCard(
             Text(
                 text = transaction.name,
                 style = MaterialTheme.typography.titleMedium,
-                color = transactionColor.copy(0.8f),
+                color = transactionColor,
                 fontSize = 20.sp,
+                maxLines = 1,
                 modifier = Modifier
                     .basicMarquee()
 

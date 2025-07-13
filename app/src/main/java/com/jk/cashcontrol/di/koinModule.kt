@@ -9,6 +9,7 @@ import com.jk.cashcontrol.presentation.history.HistoryViewModel
 import com.jk.cashcontrol.presentation.home.HomeViewModel
 import com.jk.cashcontrol.presentation.login.LoginViewModel
 import com.jk.cashcontrol.presentation.statistics.StatisticsViewModel
+import com.jk.cashcontrol.presentation.transaction.TransactionInfoViewModel
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.bind
@@ -26,4 +27,5 @@ val koinModule = module {
     viewModelOf(::LoginViewModel)
     viewModelOf(::HistoryViewModel)
     viewModelOf(::StatisticsViewModel)
+    viewModelOf(::TransactionInfoViewModel)
 }
