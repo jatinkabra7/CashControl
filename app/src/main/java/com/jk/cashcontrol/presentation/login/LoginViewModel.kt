@@ -49,7 +49,7 @@ class LoginViewModel(
         viewModelScope.launch {
             googleSignIn(context).collect { result ->
                 result.fold(
-                    onSuccess = {authResult ->
+                    onSuccess = { authResult ->
                         val currentUser = authResult.user
 
                         if(currentUser != null) {

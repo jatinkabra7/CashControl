@@ -4,10 +4,6 @@ import android.annotation.SuppressLint
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.ExperimentalSharedTransitionApi
-import androidx.compose.animation.SharedTransitionScope
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -63,6 +59,22 @@ fun NavGraph(
         exitTransition = { ExitTransition.None },
         popExitTransition = { ExitTransition.None }
     ) {
+        composable<Route.Login> {
+
+            LoginScreen(
+                modifier = Modifier.padding(paddingValues),
+                onClick = {
+                    loginViewModel.handleGoogleSignIn(
+                        context,
+                        navigateToHome = {
+                            navController.navigate(Route.Home) {
+                                popUpTo(Route.Login) { inclusive = true }
+                            }
+                        }
+                    )
+                }
+            )
+        }
 
         composable<Route.Home> {
 
@@ -74,14 +86,16 @@ fun NavGraph(
                 modifier = Modifier.padding(paddingValues),
                 onAction = { homeViewModel.onAction(it) },
                 navigateToTransactionInfo = {
-                    navController.navigate(Route.TransactionInfo(
-                        name = it.name,
-                        type = it.type,
-                        amount = it.amount,
-                        category = it.category,
-                        timestamp = it.timestamp,
-                        timestampMillis = it.timestampMillis
-                    ))
+                    navController.navigate(
+                        Route.TransactionInfo(
+                            name = it.name,
+                            type = it.type,
+                            amount = it.amount,
+                            category = it.category,
+                            timestamp = it.timestamp,
+                            timestampMillis = it.timestampMillis
+                        )
+                    )
                 }
             )
         }
@@ -117,7 +131,7 @@ fun NavGraph(
                 modifier = Modifier.padding(paddingValues),
                 state = state,
                 user = user,
-                onAction = {statisticsViewModel.onAction(it)}
+                onAction = { statisticsViewModel.onAction(it) }
             )
         }
 
@@ -131,14 +145,16 @@ fun NavGraph(
                 user = user,
                 onAction = { historyViewModel.onAction(it) },
                 navigateToTransactionInfo = {
-                    navController.navigate(Route.TransactionInfo(
-                        name = it.name,
-                        type = it.type,
-                        amount = it.amount,
-                        category = it.category,
-                        timestamp = it.timestamp,
-                        timestampMillis = it.timestampMillis
-                    ))
+                    navController.navigate(
+                        Route.TransactionInfo(
+                            name = it.name,
+                            type = it.type,
+                            amount = it.amount,
+                            category = it.category,
+                            timestamp = it.timestamp,
+                            timestampMillis = it.timestampMillis
+                        )
+                    )
                 }
             )
         }
@@ -206,31 +222,13 @@ fun NavGraph(
                     transactionInfoViewModel.deleteTransaction(
                         context = context,
                         transaction = transaction,
-                        navigateUp = {navController.navigateUp()}
+                        navigateUp = { navController.navigateUp() }
                     )
                 },
-                navigateUp = {navController.navigateUp()}
+                navigateUp = { navController.navigateUp() }
             )
         }
 
-        composable<Route.Login> {
-
-
-            LoginScreen(
-                modifier = Modifier.padding(paddingValues),
-                onClick = {
-
-                    loginViewModel.handleGoogleSignIn(
-                        context,
-                        navigateToHome = {
-                            navController.navigate(Route.Home) {
-                                popUpTo(Route.Login) { inclusive = true }
-                            }
-                        }
-                    )
-                }
-            )
-        }
     }
 
 }
