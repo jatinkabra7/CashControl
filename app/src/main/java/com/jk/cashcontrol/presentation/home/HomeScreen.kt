@@ -187,7 +187,7 @@ fun HeaderSection(
     username : String = "Username",
     onAction: (HomeAction) -> Unit
 ) {
-    Column {
+    Column(modifier = modifier) {
         Spacer(Modifier.height(10.dp))
 
         Text(

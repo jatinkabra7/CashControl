@@ -78,33 +78,13 @@ fun BudgetCard(
         animationSpec = tween(durationMillis = 1000,easing = EaseInOut)
     )
 
-    val transition = rememberInfiniteTransition()
-
-    val color1 by transition.animateColor(
-        initialValue = CustomLightRed,
-        targetValue = CustomPink,
-        animationSpec = infiniteRepeatable(
-            animation = tween(10_000, easing = FastOutSlowInEasing),
-            repeatMode = RepeatMode.Reverse
-        )
-    )
-
-    val color2 by transition.animateColor(
-        initialValue = CustomPink,
-        targetValue = CustomPurple,
-        animationSpec = infiniteRepeatable(
-            animation = tween(10_000, easing = FastOutSlowInEasing),
-            repeatMode = RepeatMode.Reverse
-        )
-    )
-
     Card(
         colors = CardDefaults.cardColors(
             containerColor = Color.Transparent
         ),
         modifier = modifier
             .clip(RoundedCornerShape(20.dp))
-            .background(Brush.linearGradient(colors = listOf(color1,color2)))
+            .background(Brush.linearGradient(colors = listOf(CustomLightRed, CustomPink, CustomPurple)))
 
     ) {
         Spacer(Modifier.height(10.dp))

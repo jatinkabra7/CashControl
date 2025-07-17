@@ -36,6 +36,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -56,6 +57,9 @@ import com.jk.cashcontrol.R
 import com.jk.cashcontrol.domain.model.User
 import com.jk.cashcontrol.presentation.home.HomeAction
 import com.jk.cashcontrol.presentation.theme.CustomDarkOrange
+import com.jk.cashcontrol.presentation.theme.CustomLightRed
+import com.jk.cashcontrol.presentation.theme.CustomPink
+import com.jk.cashcontrol.presentation.theme.CustomPurple
 import kotlinx.coroutines.launch
 
 @Composable
@@ -276,7 +280,7 @@ private fun ActionButton(
     onClick: () -> Unit
 ) {
 
-    val brush = Brush.verticalGradient(listOf(Color.Red.copy(0.7f), CustomDarkOrange))
+    val brush = Brush.linearGradient(colors = listOf(CustomLightRed, CustomPink, CustomPurple))
 
     Box(
         modifier = modifier
@@ -294,18 +298,20 @@ private fun ActionButton(
             Icon(
                 imageVector = ImageVector.vectorResource(buttonIcon),
                 contentDescription = null,
-                tint = Color.Black,
+                tint = Color.White,
                 modifier = Modifier
                     .size(24.dp)
+                    .shadow(50.dp)
             )
 
             Spacer(Modifier.width(10.dp))
 
             Text(
                 text = buttonText,
-                color = Color.Black,
+                color = Color.White,
                 fontSize = 16.sp,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.shadow(50.dp)
             )
         }
     }

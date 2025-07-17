@@ -31,7 +31,6 @@ fun EntryPoint() {
         val navBackStackEntry = navController.currentBackStackEntryAsState().value
         val currentRoute = navBackStackEntry?.destination?.route
 
-
         var showSheet by remember { mutableStateOf(false) }
 
         var showBottomBar = when {

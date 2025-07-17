@@ -1,5 +1,6 @@
 package com.jk.cashcontrol.presentation.transaction
 
+import androidx.annotation.Keep
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -51,9 +52,11 @@ import com.jk.cashcontrol.presentation.theme.CustomDarkGreen
 import com.jk.cashcontrol.presentation.theme.CustomDarkOrange
 import com.jk.cashcontrol.presentation.theme.CustomLightGreen
 import com.jk.cashcontrol.presentation.theme.CustomLightOrange
+import com.jk.cashcontrol.presentation.theme.CustomLightRed
 import com.jk.cashcontrol.presentation.transaction.components.TransactionInfoTopBar
 
 @Composable
+@Keep
 fun TransactionInfoScreen(
     modifier: Modifier = Modifier,
     isLoading: Boolean,
@@ -238,9 +241,9 @@ private fun DeleteTransactionButton(
     onClick: () -> Unit
 ) {
 
-    val brush = Brush.verticalGradient(
-        if(type == TransactionType.EXPENSE) listOf(Color.Red.copy(0.7f), CustomDarkOrange)
-        else listOf(CustomLightGreen, CustomDarkGreen)
+    val brush = Brush.linearGradient(
+        if(type == TransactionType.EXPENSE) listOf(Color.Red, CustomDarkOrange, Color.Red)
+        else listOf(CustomDarkGreen, CustomLightGreen, CustomDarkGreen)
     )
 
     Box(

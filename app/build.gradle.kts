@@ -17,7 +17,7 @@ android {
         applicationId = "com.jk.cashcontrol"
         minSdk = 26
         targetSdk = 35
-        versionCode = 2
+        versionCode = 9
         versionName = "2.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -25,7 +25,7 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -33,10 +33,15 @@ android {
             val geminiApiKey = gradleLocalProperties(rootDir,providers).getProperty("GEMINI_API_KEY"," ")
             buildConfigField(type = "String", name = "GEMINI_API_KEY", value = """$geminiApiKey""")
             signingConfig = signingConfigs.getByName("debug")
-
+            ndk.debugSymbolLevel = "FULL"
         }
 
         debug {
+            isMinifyEnabled = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
             val geminiApiKey = gradleLocalProperties(rootDir,providers).getProperty("GEMINI_API_KEY"," ")
             buildConfigField(type = "String", name = "GEMINI_API_KEY", value = """$geminiApiKey""")
         }
@@ -52,6 +57,7 @@ android {
         compose = true
         buildConfig = true
     }
+    ndkVersion = "29.0.13599879 rc2"
 }
 
 dependencies {
