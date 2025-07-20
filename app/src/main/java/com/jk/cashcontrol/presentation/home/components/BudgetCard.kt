@@ -1,18 +1,11 @@
 package com.jk.cashcontrol.presentation.home.components
 
-import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.EaseInOut
-import androidx.compose.animation.core.EaseInOut
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Indication
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.indication
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -34,12 +27,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
@@ -48,23 +39,22 @@ import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jk.cashcontrol.presentation.home.HomeAction
-import com.jk.cashcontrol.presentation.theme.CustomLightRed
-import com.jk.cashcontrol.presentation.theme.CustomPink
-import com.jk.cashcontrol.presentation.theme.CustomPurple
+import com.jk.cashcontrol.presentation.theme.CustomLightBlue
 
 @Composable
 fun BudgetCard(
     modifier: Modifier = Modifier,
-    expense : Float,
-    budget : Float,
-    remaining : Float,
-    onAction : (HomeAction) -> Unit
+    gradient: Brush,
+    expense: Float,
+    budget: Float,
+    remaining: Float,
+    onAction: (HomeAction) -> Unit
 ) {
 
     val progress = if (budget == 0f) 0f else expense / budget
 
     val animatedProgress by animateFloatAsState(
-        targetValue = progress.coerceIn(0f,1f),
+        targetValue = progress.coerceIn(0f, 1f),
         animationSpec = tween(durationMillis = 500, easing = EaseInOut)
     )
 
@@ -75,7 +65,7 @@ fun BudgetCard(
 
     val animatedBudget by animateFloatAsState(
         targetValue = budget,
-        animationSpec = tween(durationMillis = 1000,easing = EaseInOut)
+        animationSpec = tween(durationMillis = 1000, easing = EaseInOut)
     )
 
     Card(
@@ -84,7 +74,7 @@ fun BudgetCard(
         ),
         modifier = modifier
             .clip(RoundedCornerShape(20.dp))
-            .background(Brush.linearGradient(colors = listOf(CustomLightRed, CustomPink, CustomPurple)))
+            .background(gradient)
 
     ) {
         Spacer(Modifier.height(10.dp))
@@ -157,7 +147,7 @@ fun BudgetCard(
         ) {
 
             Text(
-                text = (progress*100).toInt().toString() + "%",
+                text = (progress * 100).toInt().toString() + "%",
                 style = MaterialTheme.typography.bodySmall,
                 fontSize = 16.sp,
                 color = Color.White.copy(0.8f),
@@ -199,7 +189,7 @@ fun BudgetCard(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween,
 
-                ) {
+                    ) {
                     Icon(
                         imageVector = Icons.Default.Add,
                         contentDescription = null,

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
@@ -27,6 +28,8 @@ import com.jk.cashcontrol.presentation.login.LoginViewModel
 import com.jk.cashcontrol.presentation.profile.ProfileScreen
 import com.jk.cashcontrol.presentation.statistics.StatisticsScreen
 import com.jk.cashcontrol.presentation.statistics.StatisticsViewModel
+import com.jk.cashcontrol.presentation.theme.CustomBlue
+import com.jk.cashcontrol.presentation.theme.CustomDarkBlue
 import com.jk.cashcontrol.presentation.transaction.TransactionInfoScreen
 import com.jk.cashcontrol.presentation.transaction.TransactionInfoViewModel
 import org.koin.androidx.compose.koinViewModel
@@ -50,6 +53,10 @@ fun NavGraph(
         if (user != null) {
             Route.Home
         } else Route.Login
+
+    val gradient = Brush.linearGradient(
+        colors = listOf(CustomBlue, CustomDarkBlue)
+    )
 
     NavHost(
         navController = navController,
@@ -83,6 +90,7 @@ fun NavGraph(
             HomeScreen(
                 state = state,
                 user = user,
+                gradient = gradient,
                 modifier = Modifier.padding(paddingValues),
                 onAction = { homeViewModel.onAction(it) },
                 navigateToTransactionInfo = {
@@ -174,6 +182,7 @@ fun NavGraph(
 
             ProfileScreen(
                 modifier = Modifier.padding(paddingValues),
+                gradient = gradient,
                 user = appUser,
                 onLogout = {
                     FirebaseAuth.getInstance().signOut()

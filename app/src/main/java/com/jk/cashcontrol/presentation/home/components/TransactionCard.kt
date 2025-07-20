@@ -48,10 +48,10 @@ fun TransactionCard(
 
 
     Row(
-        modifier = Modifier
+        modifier = modifier
             .clip(RoundedCornerShape(100))
             .fillMaxWidth()
-            .background(Color.DarkGray.copy(0.3f))
+            .background(Color.DarkGray.copy(0.4f))
             .clickable { onClick(transaction) }
 
     ) {

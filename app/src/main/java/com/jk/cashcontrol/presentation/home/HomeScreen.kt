@@ -11,13 +11,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -26,7 +22,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -35,111 +30,21 @@ import com.jk.cashcontrol.R
 import com.jk.cashcontrol.domain.model.Transaction
 import com.jk.cashcontrol.presentation.home.components.BudgetCard
 import com.jk.cashcontrol.presentation.home.components.TransactionCard
-import com.jk.cashcontrol.presentation.theme.CustomLightRed
-import com.jk.cashcontrol.presentation.theme.CustomPink
-import com.jk.cashcontrol.presentation.theme.CustomPurple
+import com.jk.cashcontrol.presentation.theme.CustomBlue
+import com.jk.cashcontrol.presentation.theme.CustomDarkBlue
 
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
     state: HomeState,
-    user : FirebaseUser?,
+    gradient: Brush,
+    user: FirebaseUser?,
     onAction: (HomeAction) -> Unit,
     navigateToTransactionInfo: (Transaction) -> Unit
 ) {
 
     LaunchedEffect(user?.uid.toString()) {
         onAction(HomeAction.ReloadData)
-    }
-
-    if(state.isEditBudgetDialogOpen) {
-
-        AlertDialog(
-            onDismissRequest = {onAction(HomeAction.OnEditBudgetDismiss)},
-            title = {
-                Text(
-                    text = "Edit Budget",
-                    style = MaterialTheme.typography.titleLarge
-                )
-            },
-            text = {
-                OutlinedTextField(
-                    value = state.editBudgetTextFieldValue,
-                    onValueChange = {onAction(HomeAction.OnEditBudgetTextFieldValueChange(it))},
-                    supportingText = {
-                        Text(
-                            text = "Budget will be updated to the new value"
-                        )
-                    },
-                    singleLine = true,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
-                )
-            },
-            confirmButton = {
-                TextButton(
-                    onClick = {onAction(HomeAction.OnEditBudgetConfirm(state.editBudgetTextFieldValue.toFloat()))}
-                ) {
-                    Text(
-                        text = "Done"
-                    )
-                }
-            },
-            dismissButton = {
-
-                TextButton(
-                    onClick = {onAction(HomeAction.OnEditBudgetDismiss)}
-                ) {
-                    Text(
-                        text = "Cancel"
-                    )
-                }
-
-            }
-        )
-    }
-    else if(state.isNewBudgetDialogOpen) {
-        AlertDialog(
-            onDismissRequest = {onAction(HomeAction.OnNewBudgetDismiss)},
-            title = {
-                Text(
-                    text = "New Budget",
-                    style = MaterialTheme.typography.titleLarge
-                )
-            },
-            text = {
-                OutlinedTextField(
-                    value = state.newBudgetTextFieldValue,
-                    onValueChange = {onAction(HomeAction.OnNewBudgetTextFieldValueChange(it))},
-                    supportingText = {
-                        Text(
-                            text = "Expense will be reset"
-                        )
-                    },
-                    singleLine = true,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
-                )
-            },
-            confirmButton = {
-                TextButton(
-                    onClick = {onAction(HomeAction.OnNewBudgetConfirm(state.newBudgetTextFieldValue.toFloat()))}
-                ) {
-                    Text(
-                        text = "Done"
-                    )
-                }
-            },
-            dismissButton = {
-
-                TextButton(
-                    onClick = {onAction(HomeAction.OnNewBudgetDismiss)}
-                ) {
-                    Text(
-                        text = "Cancel"
-                    )
-                }
-
-            }
-        )
     }
 
     Column(
@@ -149,22 +54,19 @@ fun HomeScreen(
             .background(Color.Black)
             .padding(10.dp)
     ) {
-        
+
         HeaderSection(
             state = state,
+            gradient = gradient,
             username = user?.displayName.toString(),
-            onAction = {onAction(it)}
+            onAction = { onAction(it) }
         )
 
         Spacer(Modifier.height(20.dp))
 
         Text(
             text = "Recent Transactions",
-            style = TextStyle(
-                brush = Brush.linearGradient(colors = listOf(CustomLightRed, CustomPink,
-                    CustomPurple
-                ))
-            ),
+            style = TextStyle(gradient),
             fontSize = 24.sp,
             color = Color.White
         )
@@ -183,8 +85,9 @@ fun HomeScreen(
 @Composable
 fun HeaderSection(
     modifier: Modifier = Modifier,
+    gradient: Brush,
     state: HomeState,
-    username : String = "Username",
+    username: String = "Username",
     onAction: (HomeAction) -> Unit
 ) {
     Column(modifier = modifier) {
@@ -202,7 +105,7 @@ fun HeaderSection(
         ) {
 
             Text(
-                text = if(username.length <= 16)username.take(16) else username.take(16)+"...",
+                text = if (username.length <= 16) username.take(16) else username.take(16) + "...",
                 color = Color.White,
                 style = MaterialTheme.typography.headlineLarge
             )
@@ -212,10 +115,11 @@ fun HeaderSection(
         Spacer(Modifier.height(10.dp))
 
         BudgetCard(
+            gradient = gradient,
             expense = state.expense,
             budget = state.budget,
             remaining = state.remaining,
-            onAction = {onAction(it)}
+            onAction = { onAction(it) }
         )
     }
 }
@@ -227,7 +131,7 @@ fun RecentTransactions(
     navigateToTransactionInfo: (Transaction) -> Unit
 ) {
 
-    if(state.recentTransactions.isEmpty()) {
+    if (state.recentTransactions.isEmpty()) {
         Box(
             contentAlignment = Alignment.Center,
             modifier = modifier
@@ -252,8 +156,7 @@ fun RecentTransactions(
                 )
             }
         }
-    }
-    else {
+    } else {
 
         LazyColumn {
 

@@ -65,6 +65,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun ProfileScreen(
     modifier: Modifier = Modifier,
+    gradient: Brush,
     user : User,
     onLogout : () -> Unit,
     onDeleteAccount: () -> Unit,
@@ -156,8 +157,8 @@ fun ProfileScreen(
         AsyncImage(
             model = imageRequest,
             contentDescription = null,
-            placeholder = painterResource(R.drawable.cashcontrollogopng),
-            error = painterResource(R.drawable.cashcontrollogopng),
+            placeholder = painterResource(R.drawable.cash_control_logo_circle_02),
+            error = painterResource(R.drawable.cash_control_logo_circle_02),
             modifier = Modifier
                 .clip(CircleShape)
                 .size(100.dp)
@@ -177,6 +178,7 @@ fun ProfileScreen(
 
         ActionButton(
             modifier = Modifier.align(Alignment.CenterHorizontally),
+            gradient = gradient,
             buttonText = "Logout",
             buttonIcon = R.drawable.icons8_google_logo,
             onClick = onLogout
@@ -186,6 +188,7 @@ fun ProfileScreen(
 
         ActionButton(
             modifier = Modifier.align(Alignment.CenterHorizontally),
+            gradient = gradient,
             buttonText = "Delete Account",
             buttonIcon = R.drawable.baseline_dangerous_24,
             onClick = { isDeleteAccountDialogVisible = true }
@@ -275,16 +278,15 @@ private fun ProfileItem(s : String, t : String, onCopy: (String) -> Unit) {
 @Composable
 private fun ActionButton(
     modifier: Modifier = Modifier,
+    gradient: Brush,
     buttonText: String,
     buttonIcon: Int,
     onClick: () -> Unit
 ) {
 
-    val brush = Brush.linearGradient(colors = listOf(CustomLightRed, CustomPink, CustomPurple))
-
     Box(
         modifier = modifier
-            .background(brush = brush, shape = RoundedCornerShape(100))
+            .background(brush = gradient, shape = RoundedCornerShape(100))
             .clickable {
                 onClick()
             }

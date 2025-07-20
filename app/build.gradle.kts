@@ -37,11 +37,6 @@ android {
         }
 
         debug {
-            isMinifyEnabled = true
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
             val geminiApiKey = gradleLocalProperties(rootDir,providers).getProperty("GEMINI_API_KEY"," ")
             buildConfigField(type = "String", name = "GEMINI_API_KEY", value = """$geminiApiKey""")
         }

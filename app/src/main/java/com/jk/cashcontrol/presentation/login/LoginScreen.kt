@@ -61,7 +61,7 @@ fun LoginScreen(
     ) {
 
         Image(
-            painter = painterResource(R.drawable.cashcontrollogopng),
+            painter = painterResource(R.drawable.cash_control_logo_circle_02),
             contentDescription = null,
             modifier = Modifier
                 .clip(RoundedCornerShape(100))

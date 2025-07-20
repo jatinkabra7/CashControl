@@ -2,7 +2,7 @@
 <resources>
     <style name="Theme.CashControl.MySplash" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/black</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/cashcontrollogopng</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/cash_control_logo_circle_02</item>
         <item name="postSplashScreenTheme">@style/Theme.CashControl</item>
     </style>
 </resources>

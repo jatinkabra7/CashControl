@@ -21,4 +21,6 @@ val CustomDarkOrange = Color(0xFFF54C17)
 val CustomLightOrange = Color(0xFFFFA200)
 
 val CustomLightBlue = Color(0xFF13ABE7)
-val CustomDarkBlue = Color(0xFF1664D9)
+val CustomLightBlue2 = Color(0xFF66C0E5)
+val CustomDarkBlue = Color(0xFF1254B7)
+val CustomBlue = Color(0xFF00A4FF)
