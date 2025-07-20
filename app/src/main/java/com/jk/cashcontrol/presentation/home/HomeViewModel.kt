@@ -35,7 +35,8 @@ class HomeViewModel(
             }
 
             is HomeAction.OnEditBudgetClick -> {
-                _state.update { it.copy(editBudgetTextFieldValue = state.value.budget.toString(),isEditBudgetDialogOpen = true) }
+                _state.update { it.copy(editBudgetTextFieldValue = state.value.budget.toString(),
+                    isEditBudgetDialogOpen = true) }
             }
             is HomeAction.OnEditBudgetConfirm -> {
                 viewModelScope.launch {
