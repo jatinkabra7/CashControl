@@ -1,6 +1,11 @@
 package com.jk.cashcontrol.presentation.profile
 
 import android.content.ClipData
+import android.widget.Toast
+import androidx.activity.compose.BackHandler
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -12,32 +17,25 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.ClipEntry
@@ -45,8 +43,6 @@ import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow.Companion.Ellipsis
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -55,21 +51,21 @@ import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.jk.cashcontrol.R
 import com.jk.cashcontrol.domain.model.User
-import com.jk.cashcontrol.presentation.home.HomeAction
-import com.jk.cashcontrol.presentation.theme.CustomDarkOrange
-import com.jk.cashcontrol.presentation.theme.CustomLightRed
-import com.jk.cashcontrol.presentation.theme.CustomPink
-import com.jk.cashcontrol.presentation.theme.CustomPurple
+import com.jk.cashcontrol.presentation.settings.SettingsActions
+import com.jk.cashcontrol.presentation.settings.SettingsScreen
 import kotlinx.coroutines.launch
 
 @Composable
 fun ProfileScreen(
-    modifier: Modifier = Modifier,
-    gradient: Brush,
     user : User,
-    onLogout : () -> Unit,
+    appLockStatus: Boolean,
+    onAction: (SettingsActions) -> Unit,
+    navigateToAppInfoScreen: () -> Unit,
+    navigateToAppLockScreen: () -> Unit,
+    onLogout: () -> Unit,
     onDeleteAccount: () -> Unit,
-    isDeleting: Boolean
+    isAccountDeleting: Boolean,
+    modifier: Modifier = Modifier
 ) {
 
     val context = LocalContext.current
@@ -78,132 +74,111 @@ fun ProfileScreen(
 
     val scope = rememberCoroutineScope()
 
-    var deleteAccountDialogTextFieldValue by rememberSaveable { mutableStateOf("") }
+    var isSettingsVisible by rememberSaveable { mutableStateOf(false) }
 
-    var isDeleteAccountDialogVisible by rememberSaveable { mutableStateOf(false) }
+    val xOffset by animateDpAsState(
+        targetValue = if(isSettingsVisible) (0).dp else 250.dp,
+        animationSpec = tween(500, easing = FastOutSlowInEasing)
+    )
 
-    if(isDeleteAccountDialogVisible) {
-        AlertDialog(
-            onDismissRequest = {isDeleteAccountDialogVisible = false},
-            title = {
-                Text(
-                    text = "DELETE ACCOUNT",
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold
-                )
-            },
-            text = {
-                OutlinedTextField(
-                    enabled = !isDeleting,
-                    value = deleteAccountDialogTextFieldValue,
-                    onValueChange = { deleteAccountDialogTextFieldValue = it },
-                    supportingText = {
-                        Text(
-                            text = "Type \"DELETE\" and press Delete. Please select the current account when prompted.",
-                            fontWeight = FontWeight.Bold,
-                            style = MaterialTheme.typography.bodyLarge
-                        )
-                    },
-                    singleLine = true
-                )
-            },
-            confirmButton = {
-                TextButton(
-                    enabled = deleteAccountDialogTextFieldValue == "DELETE" && !isDeleting,
-                    onClick = onDeleteAccount
-                ) {
-                    Text(
-                        text = if(!isDeleting) "Delete" else "Deleting"
-                    )
-                }
-            },
-            dismissButton = {
-                if(!isDeleting) {
-                    TextButton(
-                        onClick = { isDeleteAccountDialogVisible = false }
-                    ) {
-                        Text(
-                            text = "Cancel"
-                        )
-                    }
-                }
-            }
-        )
-    }
-
-    Column(
-        modifier = modifier
+    Box(
+        modifier = Modifier
             .fillMaxSize()
-            .background(Color.Black)
-            .padding(10.dp)
+            .padding(bottom = 10.dp)
     ) {
 
-        Spacer(Modifier.height(10.dp))
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .background(Color.Black)
+                .padding(10.dp)
+        ) {
 
-        Text(
-            text = "Profile",
-            style = MaterialTheme.typography.titleLarge,
-            color = Color.White,
-            modifier = Modifier
-                .align(Alignment.Start)
-        )
+            Spacer(Modifier.height(10.dp))
 
-        val imageRequest = ImageRequest
-            .Builder(context)
-            .data(user.imageUrl)
-            .crossfade(true)
-            .build()
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = "Profile",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = Color.White
+                )
 
-        AsyncImage(
-            model = imageRequest,
-            contentDescription = null,
-            placeholder = painterResource(R.drawable.cash_control_logo_circle_02),
-            error = painterResource(R.drawable.cash_control_logo_circle_02),
-            modifier = Modifier
-                .clip(CircleShape)
-                .size(100.dp)
-                .border(width = 3.dp, color = Color.DarkGray, shape = CircleShape)
-                .align(Alignment.CenterHorizontally)
-        )
-
-        UserDetails(
-            user = user,
-            onCopy = {
-                val clipData = ClipData.newPlainText("Copied",it)
-                scope.launch {
-                    clipboard.setClipEntry(ClipEntry(clipData))
+                IconButton(onClick = {
+                    isSettingsVisible = !isSettingsVisible
+                }) {
+                    Icon(
+                        imageVector = ImageVector.vectorResource(R.drawable.outline_settings_24),
+                        contentDescription = "Settings",
+                        modifier = Modifier.size(30.dp),
+                        tint = Color.White
+                    )
                 }
             }
+
+
+            val imageRequest = ImageRequest
+                .Builder(context)
+                .data(user.imageUrl)
+                .crossfade(true)
+                .build()
+
+            AsyncImage(
+                model = imageRequest,
+                contentDescription = null,
+                placeholder = painterResource(R.drawable.cash_control_logo_circle_02),
+                error = painterResource(R.drawable.cash_control_logo_circle_02),
+                modifier = Modifier
+                    .clip(CircleShape)
+                    .size(100.dp)
+                    .border(width = 3.dp, color = Color.DarkGray, shape = CircleShape)
+                    .align(Alignment.CenterHorizontally)
+            )
+
+            UserDetails(
+                user = user,
+                onCopy = {
+                    val clipData = ClipData.newPlainText("Copied",it)
+                    scope.launch {
+                        clipboard.setClipEntry(ClipEntry(clipData))
+                        Toast.makeText(context,"Copied", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            )
+
+        }
+
+        if(isSettingsVisible) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.DarkGray.copy(0.3f))
+                    .clickable(
+                        indication = null,
+                        interactionSource = null
+                    ) {isSettingsVisible = false}
+            )
+        }
+
+
+        SettingsScreen(
+            appLockStatus = appLockStatus,
+            onAction = onAction,
+            navigateToAppInfoScreen = navigateToAppInfoScreen,
+            navigateToAppLockScreen = navigateToAppLockScreen,
+            onLogout = onLogout,
+            onDeleteAccount = onDeleteAccount,
+            isAccountDeleting = isAccountDeleting,
+            modifier = modifier
+                .width(250.dp)
+                .align(Alignment.CenterEnd)
+                .offset(x = xOffset)
         )
-
-        ActionButton(
-            modifier = Modifier.align(Alignment.CenterHorizontally),
-            gradient = gradient,
-            buttonText = "Logout",
-            buttonIcon = R.drawable.icons8_google_logo,
-            onClick = onLogout
-        )
-
-        Spacer(Modifier.height(10.dp))
-
-        ActionButton(
-            modifier = Modifier.align(Alignment.CenterHorizontally),
-            gradient = gradient,
-            buttonText = "Delete Account",
-            buttonIcon = R.drawable.baseline_dangerous_24,
-            onClick = { isDeleteAccountDialogVisible = true }
-        )
-
-        Spacer(Modifier.weight(1f))
-
-        Text(
-            text = "App Version: 2.0",
-            style = MaterialTheme.typography.labelLarge,
-            color = Color.Gray,
-            modifier = Modifier.align(Alignment.CenterHorizontally),
-        )
-
     }
+
 }
 
 @Composable
@@ -273,49 +248,4 @@ private fun ProfileItem(s : String, t : String, onCopy: (String) -> Unit) {
         }
 
     }
-}
-
-@Composable
-private fun ActionButton(
-    modifier: Modifier = Modifier,
-    gradient: Brush,
-    buttonText: String,
-    buttonIcon: Int,
-    onClick: () -> Unit
-) {
-
-    Box(
-        modifier = modifier
-            .background(brush = gradient, shape = RoundedCornerShape(100))
-            .clickable {
-                onClick()
-            }
-            .padding(10.dp)
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Icon(
-                imageVector = ImageVector.vectorResource(buttonIcon),
-                contentDescription = null,
-                tint = Color.White,
-                modifier = Modifier
-                    .size(24.dp)
-                    .shadow(50.dp)
-            )
-
-            Spacer(Modifier.width(10.dp))
-
-            Text(
-                text = buttonText,
-                color = Color.White,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.shadow(50.dp)
-            )
-        }
-    }
-
 }

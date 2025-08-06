@@ -46,4 +46,16 @@ sealed interface Route {
         val timestamp : String,
         val timestampMillis: Long
     ): Route
+
+    @Keep
+    @Serializable
+    data object AppInfo: Route
+
+    @Keep
+    @Serializable
+    data object AppLock: Route
+
+    @Keep
+    @Serializable
+    data object StartResolver: Route
 }

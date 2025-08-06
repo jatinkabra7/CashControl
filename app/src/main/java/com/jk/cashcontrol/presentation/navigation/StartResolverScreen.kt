@@ -1,0 +1,34 @@
+package com.jk.cashcontrol.presentation.navigation
+
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import kotlinx.coroutines.delay
+
+@Composable
+fun StartResolverScreen(
+    navigateToHome: () -> Unit,
+    navigateToAppLock: () -> Unit,
+    appLockStatus: Boolean?,
+    modifier: Modifier = Modifier
+) {
+
+    LaunchedEffect(appLockStatus) {
+        if (appLockStatus == null) return@LaunchedEffect
+        if (appLockStatus == true) navigateToAppLock()
+        else navigateToHome()
+    }
+
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = modifier
+            .fillMaxSize()
+    ) {
+        CircularProgressIndicator()
+    }
+
+}

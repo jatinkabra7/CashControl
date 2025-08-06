@@ -17,7 +17,7 @@ android {
         applicationId = "com.jk.cashcontrol"
         minSdk = 26
         targetSdk = 35
-        versionCode = 10
+        versionCode = 11
         versionName = "2.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -102,8 +102,7 @@ dependencies {
     implementation("com.meticha:permissions_compose:0.0.1+4")
     implementation("androidx.compose.material3:material3-adaptive-navigation-suite")
     implementation(libs.accompanist.permissions)
-
-
-
+    implementation(libs.androidx.datastore.preferences)
+    implementation("androidx.biometric:biometric:1.4.0-alpha02")
 
 }

@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class HomeViewModel(
+open class HomeViewModel(
     private val repository: TransactionRepository
 ) : ViewModel() {
 

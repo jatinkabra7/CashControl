@@ -34,8 +34,11 @@ fun EntryPoint() {
         var showSheet by remember { mutableStateOf(false) }
 
         var showBottomBar = when {
-            currentRoute == null -> true
+            currentRoute == null -> false
             currentRoute.contains("AddTransaction") -> false
+            currentRoute.contains("AppLock") -> false
+            currentRoute.contains("AppInfo") -> false
+            currentRoute.contains("StartResolver") -> false
             currentRoute.contains("Login", ignoreCase = true) -> false
             else -> true
         }

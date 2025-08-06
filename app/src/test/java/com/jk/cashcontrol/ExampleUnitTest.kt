@@ -1,7 +1,6 @@
 package com.jk.cashcontrol
 
 import org.junit.Test
-
 import org.junit.Assert.*
 
 /**
