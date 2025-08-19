@@ -11,19 +11,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.text.font.FontWeight
 import com.jk.cashcontrol.R
 import com.jk.cashcontrol.domain.model.TransactionType
 import com.jk.cashcontrol.presentation.add_transaction.AddTransactionState
 
 @Composable
 fun AddTransactionTopBar(
-    modifier: Modifier = Modifier,
     state: AddTransactionState,
-    navigateToHome : () -> Unit
+    navigateToHome : () -> Unit,
+    modifier: Modifier = Modifier
 ) {
 
     val topBarText =
@@ -31,6 +30,7 @@ fun AddTransactionTopBar(
         else "Add Expense"
 
     Row(
+        modifier = modifier,
         verticalAlignment = Alignment.CenterVertically
     ) {
         IconButton(
@@ -43,13 +43,13 @@ fun AddTransactionTopBar(
             )
         }
 
-        Spacer(Modifier.width(20.dp))
+        Spacer(Modifier.width(dimensionResource(id = R.dimen.add_transaction_padding_medium)))
 
         Text(
             text = topBarText,
-            style = MaterialTheme.typography.titleMedium,
-            color = Color.White,
-            fontSize = 20.sp
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Light,
+            color = Color.White
         )
     }
 }

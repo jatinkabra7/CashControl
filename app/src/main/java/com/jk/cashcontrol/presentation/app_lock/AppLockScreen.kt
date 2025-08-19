@@ -1,17 +1,19 @@
 package com.jk.cashcontrol.presentation.app_lock
 
 import android.widget.Toast
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -26,10 +28,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import com.jk.cashcontrol.R
 import com.jk.cashcontrol.presentation.app_lock.components.AppLockStage
 import com.jk.cashcontrol.presentation.app_lock.components.InputIndicatorItem
@@ -46,22 +48,16 @@ fun AppLockScreen(
     onFingerprintClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-
     val context = LocalContext.current
-
     var pin by rememberSaveable { mutableStateOf("") }
-
     var setupPin by rememberSaveable { mutableStateOf("") }
-
     var stage by rememberSaveable { mutableStateOf(AppLockStage.SETUP) }
-
-    if(appLockStatus == true) stage = AppLockStage.LOGIN
-
+    if (appLockStatus) stage = AppLockStage.LOGIN
     var message by rememberSaveable { mutableStateOf(getStageMessage(stage)) }
 
     LaunchedEffect(pin.length) {
-        if(pin.length == 4) {
-            when(stage) {
+        if (pin.length == 4) {
+            when (stage) {
                 AppLockStage.SETUP -> {
                     setupPin = pin
                     pin = ""
@@ -69,25 +65,23 @@ fun AppLockScreen(
                     message = getStageMessage(stage)
                 }
                 AppLockStage.CONFIRM -> {
-                    if(pin == setupPin) {
+                    if (pin == setupPin) {
                         delay(1500)
                         onAction(AppLockActions.SavePin(pin))
                         onAction(AppLockActions.EnableAppLock)
                         navigateUp()
-                    }
-                    else {
+                    } else {
                         pin = ""
-                        Toast.makeText(context,"Incorrect pin, try again", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Incorrect pin, try again", Toast.LENGTH_SHORT).show()
                     }
                 }
                 AppLockStage.LOGIN -> {
-                    if(pin == correctPin) {
+                    if (pin == correctPin) {
                         delay(1500)
                         navigateToHome()
-                    }
-                    else {
+                    } else {
                         pin = ""
-                        Toast.makeText(context,"Incorrect pin, try again", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Incorrect pin, try again", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -99,10 +93,9 @@ fun AppLockScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
             .fillMaxSize()
-            .background(Color.Black)
-            .padding(10.dp)
+            .windowInsetsPadding(WindowInsets.systemBars)
+            .padding(horizontal = dimensionResource(id = R.dimen.app_lock_horizontal_padding))
     ) {
-
         Spacer(Modifier.weight(1f))
 
         Text(
@@ -113,7 +106,7 @@ fun AppLockScreen(
             color = Color.White
         )
 
-        Spacer(Modifier.height(60.dp))
+        Spacer(Modifier.height(dimensionResource(id = R.dimen.app_lock_message_spacer)))
 
         InputIndicator(
             pin = pin,
@@ -124,21 +117,14 @@ fun AppLockScreen(
         Spacer(Modifier.weight(1f))
 
         NumericButtonSection(
-            onButtonClick = { digit ->
-                if(pin.length < 4) {
-                    pin += "$digit"
-                }
-            },
-            onBackspaceClick = {
-                if(pin.length < 4) pin = pin.dropLast(1)
-            },
+            onButtonClick = { digit -> if (pin.length < 4) pin += "$digit" },
+            onBackspaceClick = { if (pin.length < 4) pin = pin.dropLast(1) },
             onFingerprintClick = onFingerprintClick,
-            fingerPrintButtonColor = if(stage == AppLockStage.LOGIN) Color.White else Color.Black
+            fingerPrintButtonColor = if (stage == AppLockStage.LOGIN) Color.White else Color.Black
         )
 
-        Spacer(Modifier.height(50.dp))
+        Spacer(Modifier.height(dimensionResource(id = R.dimen.app_lock_bottom_spacer)))
     }
-
 }
 
 @Composable
@@ -149,21 +135,14 @@ private fun NumericButtonSection(
     fingerPrintButtonColor: Color,
     modifier: Modifier = Modifier
 ) {
-
-    val buttonList = listOf(
-        listOf(1,2,3),
-        listOf(4,5,6),
-        listOf(7,8,9)
-    )
+    val buttonList = listOf(listOf(1, 2, 3), listOf(4, 5, 6), listOf(7, 8, 9))
 
     Column(
-        verticalArrangement = Arrangement.spacedBy(20.dp),
+        verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.app_lock_numeric_row_spacing)),
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
     ) {
-
         buttonList.forEach { row ->
-
             Row(
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically,
@@ -172,7 +151,7 @@ private fun NumericButtonSection(
                 row.forEach { digit ->
                     NumericButton(
                         digit = digit,
-                        buttonSize = 80.dp,
+                        buttonSize = dimensionResource(id = R.dimen.app_lock_numeric_button_size),
                         onClick = { onButtonClick(digit) }
                     )
                 }
@@ -190,13 +169,13 @@ private fun NumericButtonSection(
                     painter = painterResource(R.drawable.outline_fingerprint_24),
                     contentDescription = "Use Biometric",
                     tint = fingerPrintButtonColor,
-                    modifier = Modifier.size(30.dp)
+                    modifier = Modifier.size(dimensionResource(id = R.dimen.app_lock_icon_size))
                 )
             }
 
             NumericButton(
                 digit = 0,
-                buttonSize = 80.dp,
+                buttonSize = dimensionResource(id = R.dimen.app_lock_numeric_button_size),
                 onClick = { onButtonClick(0) }
             )
 
@@ -205,13 +184,11 @@ private fun NumericButtonSection(
                     painter = painterResource(R.drawable.outline_backspace_24),
                     contentDescription = "Backspace",
                     tint = Color.White,
-                    modifier = Modifier.size(30.dp)
+                    modifier = Modifier.size(dimensionResource(id = R.dimen.app_lock_icon_size))
                 )
             }
         }
-
     }
-
 }
 
 @Composable
@@ -220,15 +197,14 @@ private fun InputIndicator(
     correctPin: String,
     setupPin: String
 ) {
-
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center,
         modifier = Modifier
-            .height(20.dp)
+            .height(dimensionResource(id = R.dimen.app_lock_input_height))
             .fillMaxWidth()
     ) {
-        for(i in 1..4) {
+        for (i in 1..4) {
             InputIndicatorItem(
                 pin = pin,
                 correctPin = correctPin,
@@ -236,12 +212,11 @@ private fun InputIndicator(
                 position = i,
                 isActive = pin.length >= i
             )
-
-            if(i < 4) Spacer(Modifier.width(20.dp))
+            if (i < 4) Spacer(Modifier.width(dimensionResource(id = R.dimen.app_lock_input_spacing)))
         }
     }
-
 }
+
 
 private fun getStageMessage(stage: AppLockStage): String {
     return when (stage) {

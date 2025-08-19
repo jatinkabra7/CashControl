@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Bottom Bar -->
+    <dimen name="bottom_bar_corner_radius">100dp</dimen>
+    <dimen name="bottom_bar_height">50dp</dimen>
+    <dimen name="bottom_bar_horizontal_padding">10dp</dimen>
+    <dimen name="bottom_bar_vertical_padding">10dp</dimen>
+
+    <!-- Bottom Bar Icons -->
+    <dimen name="bottom_bar_icon_size">28dp</dimen>
+    <dimen name="bottom_bar_plus_icon_size">40dp</dimen>
+
+    <!-- ___________________________________________________________________________________________ -->
+
+    <!--  Budget Card -->
+    <dimen name="budget_card_corner_radius">20dp</dimen>
+    <dimen name="budget_card_vertical_padding">10dp</dimen>
+    <dimen name="budget_card_horizontal_padding">10dp</dimen>
+
+    <!-- Progress Bar -->
+    <dimen name="budget_card_progress_height">3dp</dimen>
+
+    <!-- Buttons inside budget card -->
+    <dimen name="budget_card_button_corner_radius">20dp</dimen>
+    <dimen name="budget_card_button_horizontal_padding">10dp</dimen>
+    <dimen name="budget_card_button_vertical_padding">10dp</dimen>
+    <dimen name="budget_card_button_icon_size">20dp</dimen>
+    <dimen name="budget_card_button_icon_text_spacing">10dp</dimen>
+
+    <!-- Buttons inside income expense card -->
+    <dimen name="income_expense_card_button_radius_small">5dp</dimen>
+    <dimen name="income_expense_card_button_radius">15dp</dimen>
+
+    <dimen name="income_expense_card_horizontal_padding">10dp</dimen>
+    <dimen name="income_expense_card_vertical_padding">10dp</dimen>
+
+    <!-- Spacers -->
+    <dimen name="income_expense_card_spacer">10dp</dimen>
+    <dimen name="budget_card_spacer_small">10dp</dimen>
+    <dimen name="budget_card_spacer_medium">16dp</dimen>
+    <dimen name="budget_card_spacer_large">20dp</dimen>
+
+    <!-- ___________________________________________________________________________________________ -->
+
+    <!-- Transaction Card -->
+
+    <dimen name="transaction_card_corner_radius">100dp</dimen>
+    <dimen name="transaction_card_horizontal_padding">8dp</dimen>
+    <dimen name="transaction_card_icon_button_size">40dp</dimen>
+    <dimen name="transaction_card_icon_size">24dp</dimen>
+    <dimen name="transaction_card_icon_text_spacing">20dp</dimen>
+    <dimen name="transaction_card_text_max_width">180dp</dimen>
+    <dimen name="transaction_card_text_vertical_padding">5dp</dimen>
+    <dimen name="transaction_card_amount_end_padding">10dp</dimen>
+
+    <!-- ___________________________________________________________________________________________ -->
+
+    <!-- Home Screen -->
+    <dimen name="home_screen_horizontal_padding">10dp</dimen>
+    <dimen name="home_screen_vertical_padding">10dp</dimen>
+
+    <dimen name="home_spacer_small">5dp</dimen>
+    <dimen name="home_spacer_medium">10dp</dimen>
+    <dimen name="home_spacer_large">15dp</dimen>
+
+    <!-- ___________________________________________________________________________________________ -->
+
+    <!-- Statistics Screen -->
+
+    <!-- Padding -->
+    <dimen name="statistics_screen_horizontal_padding">10dp</dimen>
+    <dimen name="statistics_screen_vertical_padding">10dp</dimen>
+
+    <!-- Spacing -->
+    <dimen name="statistics_spacer_small">5dp</dimen>
+    <dimen name="statistics_spacer_medium">10dp</dimen>
+    <dimen name="statistics_spacer_large">20dp</dimen>
+
+    <dimen name="statistics_screen_outlined_button_height">40dp</dimen>
+
+    <dimen name="statistics_screen_page_spacing">20dp</dimen>
+
+    <!-- ___________________________________________________________________________________________ -->
+
+    <!-- History Screen -->
+
+    <!-- Padding -->
+    <dimen name="history_screen_padding_medium">10dp</dimen>
+
+    <!-- Spacing -->
+    <dimen name="history_screen_spacer_medium">10dp</dimen>
+
+    <!-- ___________________________________________________________________________________________ -->
+
+    <!-- App Info Screen -->
+
+    <!-- Padding -->
+    <dimen name="app_info_horizontal_padding">10dp</dimen>
+    <dimen name="app_info_vertical_padding">10dp</dimen>
+
+    <!-- Spacing -->
+    <dimen name="app_info_spacer_small">10dp</dimen>
+    <dimen name="app_info_spacer_medium">30dp</dimen>
+
+    <!-- Logo -->
+    <dimen name="app_info_logo_size">100dp</dimen>
+
+    <!-- Card -->
+    <dimen name="app_info_card_corner_radius">10dp</dimen>
+    <dimen name="app_info_card_horizontal_padding">10dp</dimen>
+    <dimen name="app_info_card_vertical_padding">10dp</dimen>
+
+    <!-- ___________________________________________________________________________________________ -->
+
+    <!-- App Lock Screen -->
+    <dimen name="app_lock_horizontal_padding">10dp</dimen>
+    <dimen name="app_lock_message_spacer">60dp</dimen>
+    <dimen name="app_lock_bottom_spacer">50dp</dimen>
+
+    <!-- Numeric Buttons -->
+    <dimen name="app_lock_numeric_button_size">80dp</dimen>
+    <dimen name="app_lock_numeric_row_spacing">20dp</dimen>
+
+    <!-- Fingerprint & Backspace Icons -->
+    <dimen name="app_lock_icon_size">30dp</dimen>
+
+    <!-- Input Indicator -->
+    <dimen name="app_lock_input_height">20dp</dimen>
+    <dimen name="app_lock_input_spacing">20dp</dimen>
+
+    <!-- ___________________________________________________________________________________________ -->
+
+    <!-- Add Transaction Screen -->
+    <dimen name="add_transaction_padding_small">5dp</dimen>
+    <dimen name="add_transaction_padding_medium">10dp</dimen>
+    <dimen name="add_transaction_padding_large">15dp</dimen>
+    <dimen name="add_transaction_padding_xlarge">20dp</dimen>
+
+    <!-- Add Transaction Screen Sizes -->
+    <dimen name="add_transaction_icon_size">30dp</dimen>
+    <dimen name="add_transaction_category_card_width">100dp</dimen>
+
+    <!-- Add Transaction Screen Corner Radius -->
+    <dimen name="add_transaction_corner_radius">20dp</dimen>
+
+    <!-- Add Transaction Screen Spacing -->
+    <dimen name="add_transaction_spacing_small">5dp</dimen>
+    <dimen name="add_transaction_spacing_medium">10dp</dimen>
+    <dimen name="add_transaction_spacing_large">15dp</dimen>
+
+    <!-- ___________________________________________________________________________________________ -->
+
+    <!-- Profile Screen -->
+    <dimen name="profile_padding_small">5dp</dimen>
+    <dimen name="profile_padding_medium">10dp</dimen>
+    <dimen name="profile_padding_large">30dp</dimen>
+
+    <!-- Profile Screen Sizes -->
+    <dimen name="profile_image_size">100dp</dimen>
+    <dimen name="profile_settings_panel_width">250dp</dimen>
+    <dimen name="profile_border_width">3dp</dimen>
+    <dimen name="profile_icon_size">20dp</dimen>
+
+
+</resources>

@@ -24,3 +24,13 @@ val CustomLightBlue = Color(0xFF13ABE7)
 val CustomLightBlue2 = Color(0xFF66C0E5)
 val CustomDarkBlue = Color(0xFF1254B7)
 val CustomBlue = Color(0xFF00A4FF)
+
+val BackgroundColor = Color(0xFF0F0F10)
+val ForegroundColor = Color(0xFF252528)
+val PrimaryBlue = Color(0xFF1366CB)
+
+val ProgressBarColor = Color.White.copy(0.9f)
+val ProgressBarTrackColor = Color.White.copy(0.5f)
+
+val ButtonColor = Color.Gray.copy(0.2f)
+val CustomGreen = Color(0xFF27BE28)

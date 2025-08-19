@@ -7,29 +7,37 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.BottomAppBar
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
 import com.jk.cashcontrol.R
+import com.jk.cashcontrol.presentation.theme.ForegroundColor
+import com.jk.cashcontrol.presentation.theme.PrimaryBlue
 
 @Composable
 fun BottomBar(
-    show : Boolean,
-    onClick : (Route) -> Unit,
-    currentRoute : String?
+    show: Boolean,
+    onClick: (Route) -> Unit,
+    currentRoute: String?
 ) {
 
     val list = listOf<Route>(
-        Route.Home, Route.Statistics, Route.AddTransactionEntry, Route.History, Route.Profile
+        Route.Home, Route.Statistics, Route.History, Route.Profile
     )
 
     AnimatedVisibility(
@@ -43,76 +51,65 @@ fun BottomBar(
             animationSpec = tween(durationMillis = 500, easing = LinearEasing)
         )
     ) {
-
-        BottomAppBar(
-            containerColor = Color.Black
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier
+                .navigationBarsPadding()
+                .padding(
+                    horizontal = dimensionResource(id = R.dimen.bottom_bar_horizontal_padding),
+                    vertical = dimensionResource(id = R.dimen.bottom_bar_vertical_padding)
+                )
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(dimensionResource(id = R.dimen.bottom_bar_corner_radius)))
+                .background(ForegroundColor)
+                .height(dimensionResource(id = R.dimen.bottom_bar_height))
         ) {
-
             list.forEach {
-
                 NavigationBarItem(
                     colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = Color.Transparent,
-                        indicatorColor = Color.DarkGray.copy(0.7f),
-                        selectedTextColor = Color.White,
-                        unselectedTextColor = Color.Transparent
+                        indicatorColor = PrimaryBlue
                     ),
-                    label = {
-                        if(it != Route.AddTransactionEntry) {
-                            Text(
-                                it.toString(),
-                                color = Color.White
-                            )
-                        }
-                        else {
-                            Text(text = "")
-                        }
-                    },
                     selected = currentRoute?.contains(it::class.simpleName.toString()) == true,
                     onClick = {
-                        if(currentRoute?.contains(it::class.simpleName.toString()) == false) {
+                        if (currentRoute?.contains(it::class.simpleName.toString()) == false) {
                             onClick(it)
                         }
                     },
                     icon = {
-                        when(it) {
-                            Route.AddTransactionEntry -> {
-                                Image(
-                                    painter = painterResource(R.drawable.plus),
-                                    contentDescription = null,
-                                    modifier = Modifier.size(40.dp)
-                                )
-                            }
+                        when (it) {
                             Route.History -> {
                                 Icon(
                                     painter = painterResource(R.drawable.history_outlined),
                                     contentDescription = null,
                                     tint = Color.White.copy(),
-                                    modifier = Modifier.size(30.dp)
+                                    modifier = Modifier.size(dimensionResource(id = R.dimen.bottom_bar_icon_size))
                                 )
                             }
+
                             Route.Home -> {
                                 Icon(
                                     painter = painterResource(R.drawable.home_outlined),
                                     contentDescription = null,
                                     tint = Color.White.copy(),
-                                    modifier = Modifier.size(30.dp)
+                                    modifier = Modifier.size(dimensionResource(id = R.dimen.bottom_bar_icon_size))
                                 )
                             }
+
                             Route.Profile -> {
                                 Icon(
                                     painter = painterResource(R.drawable.user),
                                     contentDescription = null,
                                     tint = Color.White.copy(),
-                                    modifier = Modifier.size(30.dp)
+                                    modifier = Modifier.size(dimensionResource(id = R.dimen.bottom_bar_icon_size))
                                 )
                             }
+
                             Route.Statistics -> {
                                 Icon(
                                     painter = painterResource(R.drawable.statistics_outlined),
                                     contentDescription = null,
                                     tint = Color.White.copy(),
-                                    modifier = Modifier.size(30.dp)
+                                    modifier = Modifier.size(dimensionResource(id = R.dimen.bottom_bar_icon_size))
                                 )
                             }
 

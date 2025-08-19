@@ -28,27 +28,27 @@ open class HomeViewModel(
         getRecentTransactions()
     }
 
-    fun onAction(action : HomeAction) {
+    fun onAction(action : HomeActions) {
         when(action) {
-            HomeAction.ReloadData -> {
+            HomeActions.ReloadData -> {
                 initialiseData()
             }
 
-            is HomeAction.OnEditBudgetClick -> {
+            is HomeActions.OnEditBudgetClick -> {
                 _state.update { it.copy(editBudgetTextFieldValue = state.value.budget.toString(),
                     isEditBudgetDialogOpen = true) }
             }
-            is HomeAction.OnEditBudgetConfirm -> {
+            is HomeActions.OnEditBudgetConfirm -> {
                 viewModelScope.launch {
 
                     _state.update { it.copy(isEditBudgetDialogOpen = false) }
                     repository.updateBudget(action.newBudget)
                 }
             }
-            HomeAction.OnEditBudgetDismiss -> {
+            HomeActions.OnEditBudgetDismiss -> {
                 _state.update { it.copy(isEditBudgetDialogOpen = false) }
             }
-            is HomeAction.OnEditBudgetTextFieldValueChange -> {
+            is HomeActions.OnEditBudgetTextFieldValueChange -> {
                 val value = action.value
 
                 if(isValidAmount(value)) {
@@ -56,7 +56,7 @@ open class HomeViewModel(
                 }
             }
 
-            HomeAction.OnNewBudgetClick -> {
+            HomeActions.OnNewBudgetClick -> {
                 _state.update {
                     it.copy(
                         newBudgetTextFieldValue = state.value.budget.toString(),
@@ -64,7 +64,7 @@ open class HomeViewModel(
                     )
                 }
             }
-            is HomeAction.OnNewBudgetConfirm -> {
+            is HomeActions.OnNewBudgetConfirm -> {
 
                 _state.update { it.copy(isNewBudgetDialogOpen = false) }
 
@@ -73,10 +73,10 @@ open class HomeViewModel(
                     repository.updateBudget(action.newBudget)
                 }
             }
-            HomeAction.OnNewBudgetDismiss -> {
+            HomeActions.OnNewBudgetDismiss -> {
                 _state.update { it.copy(isNewBudgetDialogOpen = false) }
             }
-            is HomeAction.OnNewBudgetTextFieldValueChange -> {
+            is HomeActions.OnNewBudgetTextFieldValueChange -> {
                 val value = action.value
 
                 if(isValidAmount(value)) {

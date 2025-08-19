@@ -1,104 +1,177 @@
-package com.jk.cashcontrol.presentation.navigation
+package com.jk.cashcontrol.presentation.home.components
 
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.jk.cashcontrol.R
+import com.jk.cashcontrol.presentation.theme.ButtonColor
 import com.jk.cashcontrol.presentation.theme.CustomDarkOrange
+import com.jk.cashcontrol.presentation.theme.CustomGreen
+import com.jk.cashcontrol.presentation.theme.ForegroundColor
 
 @Composable
-fun BottomSheetContent(
-    modifier: Modifier = Modifier,
-    onIncomeButtonClick : () -> Unit,
-    onExpenseButtonClick : () -> Unit
+fun AddIncomeExpenseCard(
+    onIncomeButtonClick: () -> Unit,
+    onExpenseButtonClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
 
-    Box(
-        contentAlignment = Alignment.Center,
+    val expenseColor = CustomDarkOrange
+
+    val incomeColor = CustomGreen
+
+    Card(
+        colors = CardDefaults.cardColors(
+            containerColor = Color.Transparent
+        ),
         modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(dimensionResource(id = R.dimen.budget_card_corner_radius)))
+            .background(ForegroundColor)
+            .padding(
+                horizontal = dimensionResource(R.dimen.income_expense_card_horizontal_padding),
+                vertical = dimensionResource(R.dimen.income_expense_card_vertical_padding)
+            )
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(10.dp)
-        ) {
-            Row(
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically,
+
+        Row {
+
+            // Add Income Button
+            ActionButton(
+                title = "Income",
+                textStyle = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Normal,
+                icon = ImageVector.vectorResource(R.drawable.down_left_arrow),
+                iconColor = incomeColor,
+                onClick = { onIncomeButtonClick() },
+                topStartCornerRadius = dimensionResource(id = R.dimen.income_expense_card_button_radius),
+                bottomStartCornerRadius = dimensionResource(id = R.dimen.income_expense_card_button_radius),
+                topEndCornerRadius = dimensionResource(id = R.dimen.income_expense_card_button_radius_small),
+                bottomEndCornerRadius = dimensionResource(id = R.dimen.income_expense_card_button_radius_small),
                 modifier = Modifier
-                    .weight(0.5f)
-                    .background(shape = RoundedCornerShape(20), color = Color.DarkGray.copy(0.5f))
-                    .clickable {
-                        onIncomeButtonClick()
-                    }
-                    .padding(10.dp)
+                    .height(50.dp)
+                    .weight(1f)
+            )
 
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.down_left_arrow),
-                    contentDescription = null,
-                    tint = Color.Green,
-                    modifier = Modifier.size(30.dp)
-                )
+            Spacer(Modifier.width(dimensionResource(id = R.dimen.income_expense_card_spacer)))
 
-                Spacer(Modifier.width(10.dp))
-
-                Text(
-                    text = "Add Income",
-                    fontSize = 16.sp,
-                    color = Color.White
-                )
-            }
-
-            Spacer(Modifier.width(10.dp))
-
-            Row(
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically,
+            // Add Expense Button
+            ActionButton(
+                title = "Expense",
+                textStyle = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Normal,
+                icon = ImageVector.vectorResource(R.drawable.top_right_arrow),
+                iconColor = expenseColor,
+                onClick = { onExpenseButtonClick() },
+                topStartCornerRadius = dimensionResource(id = R.dimen.income_expense_card_button_radius_small),
+                bottomStartCornerRadius = dimensionResource(id = R.dimen.income_expense_card_button_radius_small),
+                topEndCornerRadius = dimensionResource(id = R.dimen.income_expense_card_button_radius),
+                bottomEndCornerRadius = dimensionResource(id = R.dimen.income_expense_card_button_radius),
                 modifier = Modifier
-                    .weight(0.5f)
-                    .background(shape = RoundedCornerShape(20), color = Color.DarkGray.copy(0.5f))
-                    .clickable {
-                        onExpenseButtonClick()
-                    }
-                    .padding(10.dp)
-
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.top_right_arrow),
-                    contentDescription = null,
-                    tint = CustomDarkOrange,
-                    modifier = Modifier.size(30.dp)
-                )
-
-                Spacer(Modifier.width(10.dp))
-
-                Text(
-                    text = "Add Expense",
-                    fontSize = 16.sp,
-                    color = Color.White
-                )
-            }
+                    .height(50.dp)
+                    .weight(1f)
+            )
         }
-    }
 
+    }
+}
+
+@Composable
+private fun ActionButton(
+    title: String,
+    textStyle: TextStyle,
+    fontWeight: FontWeight,
+    icon: ImageVector,
+    topStartCornerRadius: Dp,
+    topEndCornerRadius: Dp,
+    bottomStartCornerRadius: Dp,
+    bottomEndCornerRadius: Dp,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    iconColor: Color = Color.White
+) {
+
+    val interactionSource = remember { MutableInteractionSource() }
+    val isButtonPressed by interactionSource.collectIsPressedAsState()
+
+    var buttonScale = animateFloatAsState(
+        targetValue = if(isButtonPressed) 0.9f else 1f,
+        animationSpec = tween(durationMillis = 100, easing = LinearEasing)
+    ).value
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center,
+        modifier = modifier
+            .scale(buttonScale)
+            .combinedClickable(
+                interactionSource = interactionSource,
+                indication = null,
+                onClick = onClick
+            )
+            .background(
+                shape = RoundedCornerShape(
+                    topStart = topStartCornerRadius,
+                    topEnd = topEndCornerRadius,
+                    bottomStart = bottomStartCornerRadius,
+                    bottomEnd = bottomEndCornerRadius
+                ),
+                color = ButtonColor
+            )
+            .padding(
+                horizontal = dimensionResource(id = R.dimen.income_expense_card_horizontal_padding),
+                vertical = dimensionResource(id = R.dimen.income_expense_card_vertical_padding)
+            )
+    ) {
+
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            tint = iconColor,
+            modifier = Modifier.size(dimensionResource(id = R.dimen.budget_card_button_icon_size))
+        )
+
+        Spacer(Modifier.width(dimensionResource(id = R.dimen.budget_card_button_icon_text_spacing)))
+
+        Text(
+            text = title,
+            color = Color.White,
+            style = textStyle,
+            fontWeight = fontWeight,
+            maxLines = 1
+        )
+    }
 }

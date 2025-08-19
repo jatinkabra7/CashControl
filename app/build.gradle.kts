@@ -17,7 +17,7 @@ android {
         applicationId = "com.jk.cashcontrol"
         minSdk = 26
         targetSdk = 35
-        versionCode = 11
+        versionCode = 12
         versionName = "2.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -81,7 +81,6 @@ dependencies {
 
     implementation(libs.androidx.navigation.compose)
 
-
     implementation(libs.kotlinx.serialization.json)
 
     implementation(libs.bundles.koin)
@@ -97,12 +96,10 @@ dependencies {
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
-    implementation("com.google.ai.client.generativeai:generativeai:0.9.0")
-    implementation("com.google.firebase:firebase-analytics")
-    implementation("com.meticha:permissions_compose:0.0.1+4")
-    implementation("androidx.compose.material3:material3-adaptive-navigation-suite")
+    implementation(libs.generativeai)
+    implementation(libs.firebase.analytics)
+    implementation(libs.androidx.material3.adaptive.navigation.suite)
     implementation(libs.accompanist.permissions)
     implementation(libs.androidx.datastore.preferences)
-    implementation("androidx.biometric:biometric:1.4.0-alpha02")
-
+    implementation(libs.androidx.biometric)
 }

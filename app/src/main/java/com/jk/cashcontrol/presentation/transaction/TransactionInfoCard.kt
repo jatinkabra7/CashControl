@@ -1,6 +1,5 @@
 package com.jk.cashcontrol.presentation.transaction
 
-import androidx.annotation.Keep
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -8,16 +7,13 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
-import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
@@ -49,13 +45,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow.Companion.Ellipsis
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jk.cashcontrol.R
@@ -65,30 +62,14 @@ import com.jk.cashcontrol.presentation.theme.BackgroundColor
 import com.jk.cashcontrol.presentation.theme.CustomDarkOrange
 import com.jk.cashcontrol.presentation.theme.CustomGreen
 import com.jk.cashcontrol.presentation.theme.ForegroundColor
-import kotlin.math.absoluteValue
 
 @Composable
-@Keep
-fun TransactionInfoScreen(
-    name : String,
-    type : TransactionType,
-    amount : Float,
-    category: String,
-    timestamp : String,
-    timestampMillis: Long,
+fun TransactionInfoCard(
+    transaction: Transaction,
     onDeleteTransaction: (Transaction) -> Unit,
     isLoading: Boolean,
     modifier: Modifier = Modifier
 ) {
-
-    val transaction = Transaction(
-        name = name,
-        type = type,
-        amount = amount,
-        category = category,
-        timestamp = timestamp,
-        timestampMillis = timestampMillis
-    )
 
     val transactionColor =
         if (transaction.type == TransactionType.INCOME) CustomGreen
@@ -118,7 +99,8 @@ fun TransactionInfoScreen(
                     }
                 ) {
                     Text(
-                        text = if(!isLoading) "Delete" else "Deleting"
+                        text = if(!isLoading) "Delete" else "Deleting",
+                        color = Color.White
                     )
                 }
             },
@@ -128,20 +110,19 @@ fun TransactionInfoScreen(
                         onClick = { isDeleteTransactionDialogVisible = false }
                     ) {
                         Text(
-                            text = "Cancel"
+                            text = "Cancel",
+                            color = Color.White
                         )
                     }
                 }
 
-            }
+            },
+            containerColor = ForegroundColor
         )
     }
 
     Column(
-        modifier = modifier
-            .fillMaxSize()
-            .background(BackgroundColor)
-            .padding(20.dp)
+        modifier = modifier.padding(20.dp)
     ) {
 
         Row(
@@ -210,6 +191,10 @@ fun TransactionInfoScreen(
                 isDeleteTransactionDialogVisible = true
             }
         )
+
+        Spacer(Modifier.height(10.dp))
+
+
     }
 }
 
@@ -238,7 +223,8 @@ private fun CardItem(
            text = content,
            style = MaterialTheme.typography.bodyLarge,
            fontWeight = FontWeight.Normal,
-           color = Color.White
+           color = Color.White,
+           overflow = Ellipsis
        )
    }
 }
@@ -262,9 +248,9 @@ private fun DeleteTransactionSection(
     )
 
     val gradient = Brush.linearGradient(
-        colors = listOf(ForegroundColor,Color.White,ForegroundColor),
-        start = Offset(animatedOffset - 200f,0f),
-        end = Offset(animatedOffset + 200f,0f)
+        colors = listOf(Color.Black,Color.White,Color.Black),
+        start = Offset(animatedOffset - 400f,0f),
+        end = Offset(animatedOffset + 400f,0f)
     )
 
     var swipingOffsetX by remember { mutableFloatStateOf(0f) }
@@ -280,11 +266,11 @@ private fun DeleteTransactionSection(
         val width = LocalWindowInfo.current.containerSize.width.toFloat()
 
         Text(
-            text = "Swipe to Delete",
+            text = "Slide to Delete",
             style = TextStyle(
                 brush = gradient
             ),
-            fontSize = 18.sp,
+            fontSize = 20.sp,
             fontWeight = FontWeight.Thin,
             modifier = Modifier.align(Alignment.Center)
         )
@@ -304,7 +290,7 @@ private fun DeleteTransactionSection(
                     .offset(x = swipingOffsetX.dp, y = 0.dp)
                     .pointerInput(Unit) {
                         detectDragGestures(
-                            onDrag = { change, dragAmount  ->
+                            onDrag = { change, dragAmount ->
                                 val newOffset = (swipingOffsetX + dragAmount.x / 3)
                                     .coerceIn(0f, width - 500f)
 
@@ -312,7 +298,7 @@ private fun DeleteTransactionSection(
                             },
 
                             onDragEnd = {
-                                if(swipingOffsetX >= 0.2 * width) {
+                                if (swipingOffsetX >= 0.2 * width) {
                                     onSwipe()
                                 }
                                 swipingOffsetX = 0f

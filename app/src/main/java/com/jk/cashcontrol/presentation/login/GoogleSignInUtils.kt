@@ -2,16 +2,13 @@ package com.jk.cashcontrol.presentation.login
 
 import android.content.Context
 import android.content.Intent
-import android.hardware.camera2.CaptureFailure
 import android.provider.Settings
-import android.util.Log
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.result.ActivityResult
 import androidx.credentials.CredentialManager
 import androidx.credentials.CredentialOption
 import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
-import androidx.credentials.exceptions.GetCredentialCancellationException
 import androidx.credentials.exceptions.GetCredentialException
 import androidx.credentials.exceptions.NoCredentialException
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
@@ -24,7 +21,6 @@ import com.jk.cashcontrol.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
-import kotlin.math.log
 
 class GoogleSignInUtils {
 

@@ -1,14 +1,5 @@
 package com.jk.cashcontrol.presentation.login
 
-import android.app.Activity
-import android.content.Intent
-import android.util.Log
-import android.widget.Toast
-import androidx.activity.compose.ManagedActivityResultLauncher
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.ActivityResult
-import androidx.activity.result.contract.ActivityResultContract
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -22,27 +13,23 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jk.cashcontrol.R
-import org.koin.androidx.compose.koinViewModel
-import kotlin.math.log
 
 @Composable
 fun LoginScreen(
@@ -71,9 +58,11 @@ fun LoginScreen(
         Spacer(Modifier.height(20.dp))
 
         Text(
-            text = "Welcome to Cash Control",
+            text = "Welcome to\nCash Control",
             color = Color.White,
-            style = MaterialTheme.typography.titleLarge
+            style = MaterialTheme.typography.headlineLarge,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center
         )
 
         Spacer(Modifier.height(50.dp))
@@ -88,8 +77,8 @@ fun LoginScreen(
                 .padding(10.dp)
         ) {
             Row(
+                horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceEvenly,
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
@@ -100,6 +89,8 @@ fun LoginScreen(
                     modifier = Modifier
                         .size(30.dp)
                 )
+
+                Spacer(Modifier.width(20.dp))
 
                 Text(
                     text = "Login With Google",

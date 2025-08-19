@@ -22,10 +22,6 @@ sealed interface Route {
 
     @Keep
     @Serializable
-    data object AddTransactionEntry : Route
-
-    @Keep
-    @Serializable
     data object History : Route
 
     @Keep
@@ -35,17 +31,6 @@ sealed interface Route {
     @Keep
     @Serializable
     data object Login : Route
-
-    @Keep
-    @Serializable
-    data class TransactionInfo(
-        val name : String,
-        val type : TransactionType,
-        val amount : Float,
-        val category: String,
-        val timestamp : String,
-        val timestampMillis: Long
-    ): Route
 
     @Keep
     @Serializable

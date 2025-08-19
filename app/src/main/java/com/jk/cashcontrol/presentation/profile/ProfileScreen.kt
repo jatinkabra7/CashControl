@@ -2,7 +2,6 @@ package com.jk.cashcontrol.presentation.profile
 
 import android.content.ClipData
 import android.widget.Toast
-import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
@@ -41,11 +40,12 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.ClipEntry
 import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow.Companion.Ellipsis
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
@@ -57,7 +57,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun ProfileScreen(
-    user : User,
+    user: User,
     appLockStatus: Boolean,
     onAction: (SettingsActions) -> Unit,
     navigateToAppInfoScreen: () -> Unit,
@@ -67,35 +67,26 @@ fun ProfileScreen(
     isAccountDeleting: Boolean,
     modifier: Modifier = Modifier
 ) {
-
     val context = LocalContext.current
-
     val clipboard = LocalClipboard.current
-
     val scope = rememberCoroutineScope()
-
     var isSettingsVisible by rememberSaveable { mutableStateOf(false) }
 
     val xOffset by animateDpAsState(
-        targetValue = if(isSettingsVisible) (0).dp else 250.dp,
+        targetValue = if (isSettingsVisible) 0.dp else dimensionResource(R.dimen.profile_settings_panel_width),
         animationSpec = tween(500, easing = FastOutSlowInEasing)
     )
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(bottom = 10.dp)
+            .padding(bottom = dimensionResource(R.dimen.profile_padding_medium))
     ) {
-
         Column(
             modifier = modifier
                 .fillMaxSize()
-                .background(Color.Black)
-                .padding(10.dp)
+                .padding(horizontal = dimensionResource(R.dimen.profile_padding_medium))
         ) {
-
-            Spacer(Modifier.height(10.dp))
-
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
@@ -104,24 +95,20 @@ fun ProfileScreen(
                 Text(
                     text = "Profile",
                     style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Light,
                     color = Color.White
                 )
 
-                IconButton(onClick = {
-                    isSettingsVisible = !isSettingsVisible
-                }) {
+                IconButton(onClick = { isSettingsVisible = !isSettingsVisible }) {
                     Icon(
                         imageVector = ImageVector.vectorResource(R.drawable.outline_settings_24),
                         contentDescription = "Settings",
-                        modifier = Modifier.size(30.dp),
                         tint = Color.White
                     )
                 }
             }
 
-
-            val imageRequest = ImageRequest
-                .Builder(context)
+            val imageRequest = ImageRequest.Builder(context)
                 .data(user.imageUrl)
                 .crossfade(true)
                 .build()
@@ -133,25 +120,28 @@ fun ProfileScreen(
                 error = painterResource(R.drawable.cash_control_logo_circle_02),
                 modifier = Modifier
                     .clip(CircleShape)
-                    .size(100.dp)
-                    .border(width = 3.dp, color = Color.DarkGray, shape = CircleShape)
+                    .size(dimensionResource(R.dimen.profile_image_size))
+                    .border(
+                        width = dimensionResource(R.dimen.profile_border_width),
+                        color = Color.DarkGray,
+                        shape = CircleShape
+                    )
                     .align(Alignment.CenterHorizontally)
             )
 
             UserDetails(
                 user = user,
                 onCopy = {
-                    val clipData = ClipData.newPlainText("Copied",it)
+                    val clipData = ClipData.newPlainText("Copied", it)
                     scope.launch {
                         clipboard.setClipEntry(ClipEntry(clipData))
-                        Toast.makeText(context,"Copied", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Copied", Toast.LENGTH_SHORT).show()
                     }
                 }
             )
-
         }
 
-        if(isSettingsVisible) {
+        if (isSettingsVisible) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -159,10 +149,9 @@ fun ProfileScreen(
                     .clickable(
                         indication = null,
                         interactionSource = null
-                    ) {isSettingsVisible = false}
+                    ) { isSettingsVisible = false }
             )
         }
-
 
         SettingsScreen(
             appLockStatus = appLockStatus,
@@ -173,79 +162,70 @@ fun ProfileScreen(
             onDeleteAccount = onDeleteAccount,
             isAccountDeleting = isAccountDeleting,
             modifier = modifier
-                .width(250.dp)
+                .width(dimensionResource(R.dimen.profile_settings_panel_width))
                 .align(Alignment.CenterEnd)
                 .offset(x = xOffset)
         )
     }
-
 }
 
 @Composable
 private fun UserDetails(modifier: Modifier = Modifier, user: User, onCopy: (String) -> Unit) {
     Column(modifier = modifier) {
-        Spacer(Modifier.height(5.dp))
+        Spacer(Modifier.height(dimensionResource(R.dimen.profile_padding_small)))
 
         ProfileItem(s = "Name:", t = user.name, onCopy = onCopy)
 
-        Spacer(Modifier.height(5.dp))
-
+        Spacer(Modifier.height(dimensionResource(R.dimen.profile_padding_small)))
         HorizontalDivider()
+        Spacer(Modifier.height(dimensionResource(R.dimen.profile_padding_small)))
 
-        Spacer(Modifier.height(5.dp))
+        ProfileItem(s = "Email:", t = user.email, onCopy = onCopy)
 
-        ProfileItem(s = "Email: ", t = user.email, onCopy = onCopy)
-
-        Spacer(Modifier.height(5.dp))
-
+        Spacer(Modifier.height(dimensionResource(R.dimen.profile_padding_small)))
         HorizontalDivider()
+        Spacer(Modifier.height(dimensionResource(R.dimen.profile_padding_small)))
 
-        Spacer(Modifier.height(5.dp))
+        ProfileItem(s = "User Id:", t = user.id, onCopy = onCopy)
 
-        ProfileItem(s = "User Id: ", t = user.id, onCopy = onCopy)
-
-        Spacer(Modifier.height(5.dp))
-
+        Spacer(Modifier.height(dimensionResource(R.dimen.profile_padding_small)))
         HorizontalDivider()
-
-        Spacer(Modifier.height(30.dp))
+        Spacer(Modifier.height(dimensionResource(R.dimen.profile_padding_large)))
     }
 }
 
 @Composable
-private fun ProfileItem(s : String, t : String, onCopy: (String) -> Unit) {
+private fun ProfileItem(s: String, t: String, onCopy: (String) -> Unit) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
-
         Text(
             text = s,
-            color = Color.White,
-            fontSize = 18.sp
+            style = MaterialTheme.typography.titleLarge,
+            color = Color.White
         )
 
-        Spacer(Modifier.width(5.dp))
+        Spacer(Modifier.width(dimensionResource(R.dimen.profile_padding_small)))
 
         Text(
             text = t,
+            style = MaterialTheme.typography.titleMedium,
             color = Color.Gray,
-            fontSize = 16.sp,
             overflow = Ellipsis,
             maxLines = 1,
             modifier = Modifier.weight(1f)
         )
 
-        Spacer(Modifier.width(5.dp))
+        Spacer(Modifier.width(dimensionResource(R.dimen.profile_padding_small)))
 
-        IconButton(onClick = {onCopy(t)}) {
+        IconButton(onClick = { onCopy(t) }) {
             Icon(
                 imageVector = ImageVector.vectorResource(R.drawable.baseline_content_copy_24),
                 contentDescription = "Copy Content",
                 tint = Color.White,
-                modifier = Modifier.size(20.dp)
+                modifier = Modifier.size(dimensionResource(R.dimen.profile_icon_size))
             )
         }
-
     }
 }

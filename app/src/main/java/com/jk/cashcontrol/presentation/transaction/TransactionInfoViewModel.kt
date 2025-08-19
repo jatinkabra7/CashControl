@@ -8,7 +8,6 @@ import com.jk.cashcontrol.domain.model.Transaction
 import com.jk.cashcontrol.domain.repository.TransactionRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class TransactionInfoViewModel(
@@ -18,7 +17,7 @@ class TransactionInfoViewModel(
     private val _isLoading = MutableStateFlow(false)
     val isLoading = _isLoading.asStateFlow()
 
-    fun deleteTransaction(transaction: Transaction, context: Context, navigateUp: () -> Unit) {
+    fun deleteTransaction(transaction: Transaction, context: Context, onSuccess: () -> Unit) {
 
         viewModelScope.launch {
 
@@ -26,7 +25,7 @@ class TransactionInfoViewModel(
 
             transactionRepository.deleteTransaction(transaction)
                 .onSuccess {
-                    navigateUp()
+                    onSuccess()
                 }
                 .onFailure {
                     Toast.makeText(context,it.message, Toast.LENGTH_LONG).show()

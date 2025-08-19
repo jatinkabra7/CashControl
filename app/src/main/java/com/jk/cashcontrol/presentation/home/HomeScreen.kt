@@ -1,9 +1,7 @@
 package com.jk.cashcontrol.presentation.home
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,49 +11,63 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.firebase.auth.FirebaseUser
 import com.jk.cashcontrol.R
 import com.jk.cashcontrol.domain.model.Transaction
+import com.jk.cashcontrol.presentation.home.components.AddIncomeExpenseCard
 import com.jk.cashcontrol.presentation.home.components.BudgetCard
 import com.jk.cashcontrol.presentation.home.components.TransactionCard
-import com.jk.cashcontrol.presentation.theme.CustomBlue
-import com.jk.cashcontrol.presentation.theme.CustomDarkBlue
+import com.jk.cashcontrol.presentation.theme.BackgroundColor
+import com.jk.cashcontrol.presentation.theme.ForegroundColor
+import com.jk.cashcontrol.presentation.transaction.TransactionInfoCard
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    modifier: Modifier = Modifier,
     state: HomeState,
-    gradient: Brush,
     user: FirebaseUser?,
-    onAction: (HomeAction) -> Unit,
-    navigateToTransactionInfo: (Transaction) -> Unit
+    onAction: (HomeActions) -> Unit,
+    onIncomeButtonClick: () -> Unit,
+    onExpenseButtonClick: () -> Unit,
+    isTransactionInfoSheetOpen: Boolean,
+    toggleSheet: () -> Unit,
+    isDeletionInProgress: Boolean,
+    onDeleteTransaction: (Transaction) -> Unit,
+    modifier: Modifier = Modifier
 ) {
 
     LaunchedEffect(user?.uid.toString()) {
-        onAction(HomeAction.ReloadData)
+        onAction(HomeActions.ReloadData)
     }
 
     if(state.isEditBudgetDialogOpen) {
 
         AlertDialog(
-            onDismissRequest = {onAction(HomeAction.OnEditBudgetDismiss)},
+            onDismissRequest = {onAction(HomeActions.OnEditBudgetDismiss)},
             title = {
                 Text(
                     text = "Edit Budget",
@@ -65,7 +77,7 @@ fun HomeScreen(
             text = {
                 OutlinedTextField(
                     value = state.editBudgetTextFieldValue,
-                    onValueChange = {onAction(HomeAction.OnEditBudgetTextFieldValueChange(it))},
+                    onValueChange = {onAction(HomeActions.OnEditBudgetTextFieldValueChange(it))},
                     supportingText = {
                         Text(
                             text = "Budget will be updated to the new value"
@@ -77,29 +89,32 @@ fun HomeScreen(
             },
             confirmButton = {
                 TextButton(
-                    onClick = {onAction(HomeAction.OnEditBudgetConfirm(state.editBudgetTextFieldValue.toFloat()))}
+                    onClick = {onAction(HomeActions.OnEditBudgetConfirm(state.editBudgetTextFieldValue.toFloat()))}
                 ) {
                     Text(
-                        text = "Done"
+                        text = "Done",
+                        color = Color.White
                     )
                 }
             },
             dismissButton = {
 
                 TextButton(
-                    onClick = {onAction(HomeAction.OnEditBudgetDismiss)}
+                    onClick = {onAction(HomeActions.OnEditBudgetDismiss)}
                 ) {
                     Text(
-                        text = "Cancel"
+                        text = "Cancel",
+                        color = Color.White
                     )
                 }
 
-            }
+            },
+            containerColor = ForegroundColor
         )
     }
     else if(state.isNewBudgetDialogOpen) {
         AlertDialog(
-            onDismissRequest = {onAction(HomeAction.OnNewBudgetDismiss)},
+            onDismissRequest = {onAction(HomeActions.OnNewBudgetDismiss)},
             title = {
                 Text(
                     text = "New Budget",
@@ -109,7 +124,7 @@ fun HomeScreen(
             text = {
                 OutlinedTextField(
                     value = state.newBudgetTextFieldValue,
-                    onValueChange = {onAction(HomeAction.OnNewBudgetTextFieldValueChange(it))},
+                    onValueChange = {onAction(HomeActions.OnNewBudgetTextFieldValueChange(it))},
                     supportingText = {
                         Text(
                             text = "Expense will be reset"
@@ -121,56 +136,96 @@ fun HomeScreen(
             },
             confirmButton = {
                 TextButton(
-                    onClick = {onAction(HomeAction.OnNewBudgetConfirm(state.newBudgetTextFieldValue.toFloat()))}
+                    onClick = {onAction(HomeActions.OnNewBudgetConfirm(state.newBudgetTextFieldValue.toFloat()))}
                 ) {
                     Text(
-                        text = "Done"
+                        text = "Done",
+                        color = Color.White
                     )
                 }
             },
             dismissButton = {
 
                 TextButton(
-                    onClick = {onAction(HomeAction.OnNewBudgetDismiss)}
+                    onClick = {onAction(HomeActions.OnNewBudgetDismiss)}
                 ) {
                     Text(
-                        text = "Cancel"
+                        text = "Cancel",
+                        color = Color.White
                     )
                 }
 
-            }
+            },
+            containerColor = ForegroundColor
         )
     }
+
+    var selectedTransaction by remember { mutableStateOf<Transaction?>(null) }
+
+    val bottomSheetState = rememberModalBottomSheetState()
+
+    if(isTransactionInfoSheetOpen && selectedTransaction != null) {
+        ModalBottomSheet(
+            sheetState = bottomSheetState,
+            onDismissRequest = toggleSheet,
+            scrimColor = ForegroundColor.copy(0.5f),
+            containerColor = BackgroundColor,
+            dragHandle = {}
+        ) {
+            TransactionInfoCard(
+                transaction = selectedTransaction!!,
+                onDeleteTransaction = {
+                    onDeleteTransaction(it)
+                },
+                isLoading = isDeletionInProgress
+            )
+        }
+    }
+
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
             .fillMaxSize()
-            .background(Color.Black)
-            .padding(10.dp)
+            .padding(horizontal = dimensionResource(id = R.dimen.home_screen_horizontal_padding))
     ) {
 
         HeaderSection(
             state = state,
-            gradient = gradient,
-            username = user?.displayName.toString(),
-            onAction = { onAction(it) }
+            onAction = { onAction(it) },
+            onIncomeButtonClick = onIncomeButtonClick,
+            onExpenseButtonClick = onExpenseButtonClick
         )
 
-        Spacer(Modifier.height(20.dp))
+        Spacer(Modifier.height(dimensionResource(id = R.dimen.home_spacer_large)))
 
         Text(
             text = "Recent Transactions",
-            style = TextStyle(gradient),
-            fontSize = 24.sp,
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Light,
             color = Color.White
         )
 
-        Spacer(Modifier.height(10.dp))
+        Spacer(Modifier.height(dimensionResource(id = R.dimen.home_spacer_small)))
+
+        HorizontalDivider(Modifier.fillMaxWidth(0.7f))
+
+        Spacer(Modifier.height(dimensionResource(id = R.dimen.home_spacer_medium)))
 
         RecentTransactions(
             state = state,
-            navigateToTransactionInfo = navigateToTransactionInfo
+            onTransactionClick = {
+                selectedTransaction = Transaction(
+                    name = it.name,
+                    type = it.type,
+                    amount = it.amount,
+                    category = it.category,
+                    timestamp = it.timestamp,
+                    timestampMillis = it.timestampMillis
+                ).also {
+                    toggleSheet()
+                }
+            }
         )
 
 
@@ -179,51 +234,46 @@ fun HomeScreen(
 
 @Composable
 fun HeaderSection(
-    modifier: Modifier = Modifier,
-    gradient: Brush,
     state: HomeState,
-    username: String = "Username",
-    onAction: (HomeAction) -> Unit
+    onAction: (HomeActions) -> Unit,
+    onIncomeButtonClick: () -> Unit,
+    onExpenseButtonClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
-        Spacer(Modifier.height(10.dp))
 
         Text(
-            text = "Hello",
-            color = Color.White.copy(0.8f),
-            style = MaterialTheme.typography.titleLarge
+            text = "Home",
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Light,
+            color = Color.White,
+            modifier = Modifier
+                .align(Alignment.Start)
         )
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-        ) {
-
-            Text(
-                text = if (username.length <= 16) username.take(16) else username.take(16) + "...",
-                color = Color.White,
-                style = MaterialTheme.typography.headlineLarge
-            )
-        }
-
-
-        Spacer(Modifier.height(10.dp))
+        Spacer(Modifier.height(dimensionResource(id = R.dimen.home_spacer_medium)))
 
         BudgetCard(
-            gradient = gradient,
             expense = state.expense,
             budget = state.budget,
             remaining = state.remaining,
             onAction = { onAction(it) }
+        )
+
+        Spacer(Modifier.height(dimensionResource(id = R.dimen.home_spacer_large)))
+
+        AddIncomeExpenseCard(
+            onIncomeButtonClick = onIncomeButtonClick,
+            onExpenseButtonClick = onExpenseButtonClick
         )
     }
 }
 
 @Composable
 fun RecentTransactions(
-    modifier: Modifier = Modifier,
     state: HomeState,
-    navigateToTransactionInfo: (Transaction) -> Unit
+    onTransactionClick: (Transaction) -> Unit,
+    modifier: Modifier = Modifier
 ) {
 
     if (state.recentTransactions.isEmpty()) {
@@ -256,12 +306,16 @@ fun RecentTransactions(
         LazyColumn {
 
             items(state.recentTransactions) {
-                TransactionCard(
-                    transaction = it,
-                    onClick = navigateToTransactionInfo
-                )
+                Column(
+                    modifier = Modifier.animateItem()
+                ) {
+                    TransactionCard(
+                        transaction = it,
+                        onClick = onTransactionClick
+                    )
 
-                Spacer(Modifier.height(10.dp))
+                    Spacer(Modifier.height(dimensionResource(id = R.dimen.home_spacer_medium)))
+                }
             }
         }
     }

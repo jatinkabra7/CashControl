@@ -20,7 +20,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.jk.cashcontrol.presentation.theme.ButtonColor
 
 @Composable
 fun SettingItem(
@@ -41,7 +43,7 @@ fun SettingItem(
             .height(50.dp)
             .clickable { onClick() }
             .clip(RoundedCornerShape(100))
-            .background(Color.DarkGray.copy(0.7f))
+            .background(ButtonColor)
             .padding(horizontal = 10.dp)
     ) {
 
@@ -58,6 +60,7 @@ fun SettingItem(
         Text(
             text = label,
             style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Normal,
             color = contentColor
         )
 

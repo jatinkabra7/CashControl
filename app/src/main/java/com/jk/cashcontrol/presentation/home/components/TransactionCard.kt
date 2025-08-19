@@ -1,4 +1,4 @@
-package com.jk.cashcontrol.presentation.common
+package com.jk.cashcontrol.presentation.home.components
 
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable

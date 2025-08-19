@@ -11,10 +11,8 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -25,6 +23,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,17 +32,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jk.cashcontrol.R
-import com.jk.cashcontrol.domain.model.Category
 import com.jk.cashcontrol.presentation.statistics.StatisticsAction
 import com.jk.cashcontrol.presentation.statistics.StatisticsState
 import com.jk.cashcontrol.presentation.theme.CustomLightBlue
 import com.jk.cashcontrol.presentation.theme.CustomPink
+import com.jk.cashcontrol.presentation.utils.parseMarkdown
 
 @Composable
 fun ThisYearSection(
@@ -55,49 +55,22 @@ fun ThisYearSection(
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
-            .background(Color.Black)
             .verticalScroll(scrollState)
+            .padding(horizontal = dimensionResource(id = R.dimen.statistics_screen_horizontal_padding))
     ) {
         StatsCard(
             totalIncome = state.thisYearIncome,
             totalExpense = state.thisYearExpense
         )
 
-        Spacer(Modifier.height(20.dp))
+        Spacer(Modifier.height(dimensionResource(id = R.dimen.statistics_spacer_large)))
 
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Start,
-            modifier = Modifier
-                .fillMaxWidth()
-        ) {
+        TopIncomeExpense(
+            topIncomeCategory = state.thisYearTopIncomeCategory,
+            topExpenseCategory = state.thisYearTopExpenseCategory
+        )
 
-            Text(
-                text = "Top Income - ${state.thisYearTopIncomeCategory}",
-                fontSize = 20.sp,
-                color = Color.White,
-                fontWeight = FontWeight.Bold
-            )
-        }
-
-        Spacer(Modifier.height(10.dp))
-
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Start,
-            modifier = Modifier
-                .fillMaxWidth()
-        ) {
-
-            Text(
-                text = "Top Expense - ${state.thisYearTopExpenseCategory}",
-                fontSize = 20.sp,
-                color = Color.White,
-                fontWeight = FontWeight.Bold
-            )
-        }
-
-        Spacer(Modifier.height(10.dp))
+        Spacer(Modifier.height(dimensionResource(id = R.dimen.statistics_spacer_medium)))
 
         val isLoading = state.isThisYearSummaryLoading
         val transition = rememberInfiniteTransition()
@@ -136,7 +109,7 @@ fun ThisYearSection(
 
                 )
 
-            Spacer(Modifier.width(10.dp))
+            Spacer(Modifier.width(dimensionResource(id = R.dimen.statistics_spacer_medium)))
 
             Text(
                 text = summaryButtonText,
@@ -153,27 +126,14 @@ fun ThisYearSection(
             )
         }
 
-        Spacer(Modifier.height(10.dp))
+        Spacer(Modifier.height(dimensionResource(id = R.dimen.statistics_spacer_medium)))
 
         AnimatedVisibility(
             state.isThisYearSummaryGenerated,
             enter = fadeIn(animationSpec = tween(1000)),
             exit = fadeOut(animationSpec = tween(1000))
         ) {
-
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(shape = RoundedCornerShape(10), color = Color.DarkGray.copy(0.5f))
-                    .padding(10.dp)
-            ) {
-                Text(
-                    text = state.thisYearGeneratedSummary,
-                    fontSize = 14.sp,
-                    color = Color.White.copy(0.8f)
-                )
-            }
+            Summary(state.thisYearGeneratedSummary)
         }
 
         Spacer(Modifier.weight(1f))

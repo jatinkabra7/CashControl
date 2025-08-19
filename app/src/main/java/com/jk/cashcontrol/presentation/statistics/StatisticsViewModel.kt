@@ -29,7 +29,6 @@ class StatisticsViewModel(
 
     val initialisingMessage = Constants.INITIALISING_MESSAGE
 
-
     suspend fun getTodayReport(state : StatisticsState) {
 
         val todayReport =

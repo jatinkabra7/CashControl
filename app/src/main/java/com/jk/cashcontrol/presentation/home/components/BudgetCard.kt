@@ -1,11 +1,13 @@
 package com.jk.cashcontrol.presentation.home.components
 
 import androidx.compose.animation.core.EaseInOut
+import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -27,28 +29,33 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.font.FontWeight.Companion.Bold
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.sp
-import com.jk.cashcontrol.presentation.home.HomeAction
-import com.jk.cashcontrol.presentation.theme.CustomLightBlue
+import com.jk.cashcontrol.R
+import com.jk.cashcontrol.presentation.home.HomeActions
+import com.jk.cashcontrol.presentation.theme.ButtonColor
+import com.jk.cashcontrol.presentation.theme.ForegroundColor
+import com.jk.cashcontrol.presentation.theme.ProgressBarColor
+import com.jk.cashcontrol.presentation.theme.ProgressBarTrackColor
 
 @Composable
 fun BudgetCard(
     modifier: Modifier = Modifier,
-    gradient: Brush,
     expense: Float,
     budget: Float,
     remaining: Float,
-    onAction: (HomeAction) -> Unit
+    onAction: (HomeActions) -> Unit
 ) {
 
     val progress = if (budget == 0f) 0f else expense / budget
@@ -73,23 +80,21 @@ fun BudgetCard(
             containerColor = Color.Transparent
         ),
         modifier = modifier
-            .clip(RoundedCornerShape(20.dp))
-            .background(gradient)
-
+            .clip(RoundedCornerShape(dimensionResource(id = R.dimen.budget_card_corner_radius)))
+            .background(ForegroundColor)
     ) {
-        Spacer(Modifier.height(10.dp))
+        Spacer(Modifier.height(dimensionResource(id = R.dimen.budget_card_spacer_small)))
 
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 10.dp)
+                .padding(horizontal = dimensionResource(id = R.dimen.budget_card_horizontal_padding))
         ) {
-
             Text(
-                modifier = Modifier,
                 text = "Expense",
                 style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Light,
                 color = Color.White,
                 fontFamily = FontFamily.SansSerif
             )
@@ -97,9 +102,9 @@ fun BudgetCard(
             Text(
                 text = "Budget",
                 style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Light,
                 color = Color.White,
                 fontFamily = FontFamily.SansSerif
-
             )
         }
 
@@ -107,35 +112,35 @@ fun BudgetCard(
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 10.dp)
+                .padding(horizontal = dimensionResource(id = R.dimen.budget_card_horizontal_padding))
         ) {
-
             Text(
                 text = "%.2f".format(animatedExpense),
-                style = MaterialTheme.typography.titleLarge,
+                style = MaterialTheme.typography.titleMedium,
                 color = Color.White,
-                fontWeight = Bold
+                fontWeight = FontWeight.Normal
             )
 
             Text(
                 text = "%.2f".format(animatedBudget),
-                style = MaterialTheme.typography.titleLarge,
+                style = MaterialTheme.typography.titleMedium,
                 color = Color.White,
-                fontWeight = Bold
+                fontWeight = FontWeight.Normal
             )
-
         }
 
-        Spacer(Modifier.height(10.dp))
+        Spacer(Modifier.height(dimensionResource(id = R.dimen.budget_card_spacer_small)))
 
         LinearProgressIndicator(
             modifier = Modifier
-                .padding(start = 10.dp, end = 10.dp)
+                .padding(
+                    horizontal = dimensionResource(id = R.dimen.budget_card_horizontal_padding)
+                )
                 .fillMaxWidth()
-                .height(6.dp),
+                .height(dimensionResource(id = R.dimen.budget_card_progress_height)),
             progress = { animatedProgress },
-            color = Color.White.copy(0.9f),
-            trackColor = Color.White.copy(0.5f)
+            color = ProgressBarColor,
+            trackColor = ProgressBarTrackColor
         )
 
         Row(
@@ -143,114 +148,120 @@ fun BudgetCard(
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 10.dp, horizontal = 5.dp)
+                .padding(
+                    vertical = dimensionResource(id = R.dimen.budget_card_vertical_padding),
+                    horizontal = dimensionResource(id = R.dimen.budget_card_horizontal_padding)
+                )
         ) {
-
             Text(
                 text = (progress * 100).toInt().toString() + "%",
-                style = MaterialTheme.typography.bodySmall,
+                style = MaterialTheme.typography.labelLarge,
                 fontSize = 16.sp,
                 color = Color.White.copy(0.8f),
-                fontWeight = FontWeight.Normal
+                fontWeight = FontWeight.Thin
             )
 
             Text(
                 text = "Remaining: $remaining",
-                style = MaterialTheme.typography.bodySmall,
+                style = MaterialTheme.typography.labelLarge,
                 fontSize = 16.sp,
                 color = Color.White.copy(0.8f),
-                fontWeight = FontWeight.Normal
+                fontWeight = FontWeight.Thin
             )
         }
-
 
         Row(
             modifier = Modifier
                 .align(Alignment.End)
-                .padding(end = 10.dp)
+                .padding(end = dimensionResource(id = R.dimen.budget_card_horizontal_padding))
         ) {
 
             // New Button
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .clickable(
-                        indication = null,
-                        interactionSource = null
-                    ) {
-                        onAction(HomeAction.OnNewBudgetClick)
-                    }
-                    .background(shape = RoundedCornerShape(20.dp), color = Color.White.copy(0.4f))
-                    .padding(10.dp)
+            ActionButton(
+                title = "New Budget",
+                textStyle = MaterialTheme.typography.labelLarge,
+                fontWeight = FontWeight.Light,
+                icon = Icons.Default.Add,
+                onClick = { onAction(HomeActions.OnNewBudgetClick) },
+                cornerRadius = dimensionResource(id = R.dimen.budget_card_button_corner_radius)
+            )
 
+            Spacer(Modifier.width(dimensionResource(id = R.dimen.budget_card_spacer_small)))
 
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween,
-
-                    ) {
-                    Icon(
-                        imageVector = Icons.Default.Add,
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier
-                            .size(20.dp)
-                    )
-
-                    Spacer(Modifier.width(10.dp))
-
-                    Text(
-                        text = "New Budget",
-                        color = Color.White,
-                        fontSize = 12.sp
-                    )
-                }
-            }
-
-            Spacer(Modifier.width(10.dp))
-
-            // edit button
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .clickable(
-                        indication = null,
-                        interactionSource = null
-                    ) {
-                        onAction(HomeAction.OnEditBudgetClick)
-                    }
-                    .background(shape = RoundedCornerShape(20.dp), color = Color.White.copy(0.4f))
-                    .padding(10.dp)
-
-
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween,
-
-                    ) {
-                    Icon(
-                        imageVector = Icons.Default.Edit,
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier
-                            .size(20.dp)
-                    )
-
-                    Spacer(Modifier.width(10.dp))
-
-                    Text(
-                        text = "Edit Budget",
-                        color = Color.White,
-                        fontSize = 12.sp
-                    )
-                }
-            }
-
+            // Edit Button
+            ActionButton(
+                title = "Edit Budget",
+                textStyle = MaterialTheme.typography.labelLarge,
+                fontWeight = FontWeight.Light,
+                icon = Icons.Default.Edit,
+                onClick = { onAction(HomeActions.OnEditBudgetClick) },
+                cornerRadius = dimensionResource(id = R.dimen.budget_card_button_corner_radius)
+            )
         }
 
-        Spacer(Modifier.height(10.dp))
+        Spacer(Modifier.height(dimensionResource(id = R.dimen.budget_card_spacer_small)))
+    }
+}
 
+@Composable
+private fun ActionButton(
+    title: String,
+    textStyle: TextStyle,
+    fontWeight: FontWeight,
+    icon: ImageVector,
+    cornerRadius: Dp,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    iconColor: Color = Color.White
+) {
+
+    val interactionSource = remember { MutableInteractionSource() }
+    val isButtonPressed by interactionSource.collectIsPressedAsState()
+
+    var buttonScale = animateFloatAsState(
+        targetValue = if(isButtonPressed) 0.9f else 1f,
+        animationSpec = tween(durationMillis = 100, easing = LinearEasing)
+    ).value
+
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = modifier
+            .scale(buttonScale)
+            .clickable(
+                indication = null,
+                interactionSource = interactionSource
+            ) {
+                onClick()
+            }
+            .background(
+                shape = RoundedCornerShape(cornerRadius),
+                color = ButtonColor
+            )
+            .padding(
+                horizontal = dimensionResource(id = R.dimen.budget_card_button_horizontal_padding),
+                vertical = dimensionResource(id = R.dimen.budget_card_button_vertical_padding)
+            )
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = iconColor,
+                modifier = Modifier.size(dimensionResource(id = R.dimen.budget_card_button_icon_size))
+            )
+
+            Spacer(Modifier.width(dimensionResource(id = R.dimen.budget_card_button_icon_text_spacing)))
+
+            Text(
+                text = title,
+                color = Color.White,
+                style = textStyle,
+                fontWeight = fontWeight,
+                maxLines = 1
+            )
+        }
     }
 }

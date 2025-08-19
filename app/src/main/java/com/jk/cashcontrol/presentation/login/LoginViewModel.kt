@@ -12,7 +12,6 @@ import androidx.credentials.exceptions.GetCredentialCancellationException
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.android.gms.tasks.Tasks
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.firebase.auth.AuthResult
@@ -21,17 +20,13 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.jk.cashcontrol.R
 import com.jk.cashcontrol.domain.model.User
 import com.jk.cashcontrol.domain.repository.TransactionRepository
-import kotlinx.coroutines.NonCancellable
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.withContext
 
 class LoginViewModel(
     private val repository: TransactionRepository

@@ -25,6 +25,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.jk.cashcontrol.R
 import com.jk.cashcontrol.presentation.settings.components.SettingItem
+import com.jk.cashcontrol.presentation.theme.BackgroundColor
+import com.jk.cashcontrol.presentation.theme.CustomDarkOrange
 
 @Composable
 fun SettingsScreen(
@@ -95,15 +97,17 @@ fun SettingsScreen(
         modifier = modifier
             .fillMaxHeight()
             .clip(RoundedCornerShape(topStart = 20.dp, bottomStart = 20.dp))
-            .background(Color.Black)
+            .background(BackgroundColor)
             .padding(10.dp)
     ) {
 
         Text(
             text = "Settings",
             style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Light,
             color = Color.White,
-            modifier = Modifier.align(Alignment.Start)
+            modifier = Modifier
+                .align(Alignment.Start)
         )
 
         Spacer(Modifier.height(20.dp))
@@ -138,7 +142,7 @@ fun SettingsScreen(
         SettingItem(
             label = "Logout",
             contentDescription = "Logout",
-            contentColor = Color.Red,
+            contentColor = CustomDarkOrange,
             icon = R.drawable.icons8_google_logo,
             onClick = onLogout
         )
@@ -148,7 +152,7 @@ fun SettingsScreen(
         SettingItem(
             label = "Delete Account",
             contentDescription = "Delete Account",
-            contentColor = Color.Red,
+            contentColor = CustomDarkOrange,
             icon = R.drawable.baseline_dangerous_24,
             onClick = { isDeleteAccountDialogVisible = true }
         )

@@ -8,6 +8,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -19,8 +20,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -32,7 +35,7 @@ import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.ScrollableTabRow
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
@@ -43,11 +46,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -57,46 +59,43 @@ import com.jk.cashcontrol.domain.model.Category
 import com.jk.cashcontrol.domain.model.Transaction
 import com.jk.cashcontrol.domain.model.TransactionType
 import com.jk.cashcontrol.presentation.add_transaction.components.AddTransactionTopBar
-import com.jk.cashcontrol.presentation.theme.CustomDarkBlue
-import com.jk.cashcontrol.presentation.theme.CustomDarkGreen
 import com.jk.cashcontrol.presentation.theme.CustomDarkOrange
-import com.jk.cashcontrol.presentation.theme.CustomLightBlue
-import com.jk.cashcontrol.presentation.theme.CustomLightGreen
-import com.jk.cashcontrol.presentation.theme.CustomLightOrange
-import com.jk.cashcontrol.presentation.theme.CustomLightRed
-import com.jk.cashcontrol.presentation.theme.CustomPink
-import com.jk.cashcontrol.presentation.theme.CustomPurple
+import com.jk.cashcontrol.presentation.theme.CustomGreen
+import com.jk.cashcontrol.presentation.theme.ForegroundColor
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDateTime
 import java.time.ZoneId
 
 @Composable
 fun AddTransactionScreen(
-    modifier: Modifier = Modifier,
     state: AddTransactionState,
     onAction: (AddTransactionAction) -> Unit,
-    navigateToHome : () -> Unit,
-    onEvent : (AddTransactionEvent) -> Unit,
-    event : Flow<AddTransactionEvent>
+    navigateToHome: () -> Unit,
+    onEvent: (AddTransactionEvent) -> Unit,
+    event: Flow<AddTransactionEvent>,
+    modifier: Modifier = Modifier
 ) {
 
     val context = LocalContext.current
 
     LaunchedEffect(event) {
         event.collect {
-            when(it) {
+            when (it) {
                 is AddTransactionEvent.ShowToast -> {
-                    Toast.makeText(context,it.message, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
                 }
             }
         }
     }
 
+    val transactionColor =
+        if (state.transactionType == TransactionType.INCOME) CustomGreen else CustomDarkOrange
+
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(Color.Black)
             .windowInsetsPadding(WindowInsets.systemBars)
+            .verticalScroll(rememberScrollState())
     )
     {
 
@@ -107,42 +106,37 @@ fun AddTransactionScreen(
 
         AmountSection(
             state = state,
-            onAction = {onAction(it)},
-            modifier = Modifier.padding(10.dp)
+            onAction = { onAction(it) }
         )
 
         NameSection(
             state = state,
-            onAction = {onAction(it)},
-            modifier = Modifier.padding(10.dp)
+            onAction = { onAction(it) }
         )
 
         CategorySection(
             state = state,
-            onAction = {onAction(it)},
-            modifier = Modifier.padding(10.dp)
+            onAction = { onAction(it) }
         )
 
         DatePickerSection(
             state = state,
-            onAction = {onAction(it)},
-            modifier = Modifier.padding(10.dp)
+            onAction = { onAction(it) }
         )
 
         Spacer(Modifier.weight(1f))
 
         Button(
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color.Transparent
+                containerColor = transactionColor.copy(0.2f),
+                contentColor = transactionColor
             ),
             onClick = {
-                if(state.amountTextFieldValue.isBlank() || state.amountTextFieldValue.toFloatOrNull() == 0f) {
+                if (state.amountTextFieldValue.isBlank() || state.amountTextFieldValue.toFloatOrNull() == 0f) {
                     onEvent(AddTransactionEvent.ShowToast("Amount cannot be 0."))
-                }
-                else if(state.nameTextFieldValue.length < 3) {
+                } else if (state.nameTextFieldValue.length < 3) {
                     onEvent(AddTransactionEvent.ShowToast("Name cannot have less than 3 characters."))
-                }
-                else {
+                } else {
 
                     onAction(
                         AddTransactionAction.OnSubmit(
@@ -161,172 +155,122 @@ fun AddTransactionScreen(
             },
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
-                .width(200.dp)
-                .background(
-                    shape = RoundedCornerShape(20.dp),
-                    brush = Brush.linearGradient(listOf(CustomLightBlue, CustomDarkBlue))
-                )
+                .clip(shape = RoundedCornerShape(dimensionResource(R.dimen.add_transaction_corner_radius)))
 
         ) {
             Text(
-                text = "Submit",
-                fontSize = 20.sp,
-                color = Color.White,
-                fontWeight = FontWeight.Bold
+                text = "SUBMIT",
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Normal
             )
         }
 
-        Spacer(Modifier.height(10.dp))
+        Spacer(Modifier.height(dimensionResource(R.dimen.add_transaction_spacing_medium)))
 
     }
 }
 
 @Composable
 private fun AmountSection(
-    modifier: Modifier = Modifier,
     state: AddTransactionState,
-    onAction : (AddTransactionAction) -> Unit
+    onAction: (AddTransactionAction) -> Unit,
+    modifier: Modifier = Modifier
 ) {
 
-    val brush =
-        if(state.transactionType == TransactionType.INCOME) {
-            Brush.verticalGradient(listOf(CustomLightGreen, CustomDarkGreen))
-        }
-        else {
-            Brush.verticalGradient(listOf(CustomLightOrange, CustomDarkOrange))
-        }
-
-    Column(modifier) {
+    Column(modifier.padding(dimensionResource(id = R.dimen.add_transaction_padding_medium))) {
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
-                .clip(RoundedCornerShape(20.dp))
-                .align(Alignment.CenterHorizontally)
                 .fillMaxWidth()
-                .background(brush)
+                .clip(RoundedCornerShape(dimensionResource(id = R.dimen.add_transaction_corner_radius)))
+                .align(Alignment.CenterHorizontally)
+                .background(ForegroundColor)
 
         ) {
-
-            Column(
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(3.dp)
-            ) {
-
-                TextField(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(
-                            shape = RoundedCornerShape(18.dp),
-                            color = Color.Black
-                        ),
-                    value = state.amountTextFieldValue,
-                    placeholder = {
-                        Text(
-                            text = "Enter Amount",
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Normal
-                        )
-                    },
-                    onValueChange = {onAction(AddTransactionAction.OnAmountTextFieldValueChange(it))},
-                    singleLine = true,
-                    colors = TextFieldDefaults.colors(
-                        disabledContainerColor = Color.Transparent,
-                        unfocusedContainerColor = Color.Transparent,
-                        focusedContainerColor = Color.Transparent,
-                        cursorColor = Color.White,
-                        focusedLabelColor = Color.White,
-                        unfocusedLabelColor = Color.White,
-                        unfocusedTextColor = Color.White,
-                        focusedTextColor = Color.White,
-                        errorIndicatorColor = Color.Transparent,
-                        focusedIndicatorColor = Color.Transparent,
-                        disabledIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        focusedPlaceholderColor = Color.White
-                    ),
-                    textStyle = TextStyle(fontSize = 24.sp),
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Decimal
+            TextField(
+                modifier = Modifier.fillMaxWidth(),
+                value = state.amountTextFieldValue,
+                placeholder = {
+                    Text(
+                        text = "Enter Amount",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Normal,
+                        color = Color.White
                     )
+                },
+                onValueChange = { onAction(AddTransactionAction.OnAmountTextFieldValueChange(it)) },
+                singleLine = true,
+                colors = TextFieldDefaults.colors(
+                    disabledContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                    focusedContainerColor = Color.Transparent,
+                    cursorColor = Color.White,
+                    focusedLabelColor = Color.White,
+                    unfocusedLabelColor = Color.White,
+                    unfocusedTextColor = Color.White,
+                    focusedTextColor = Color.White,
+                    errorIndicatorColor = Color.Transparent,
+                    focusedIndicatorColor = Color.Transparent,
+                    disabledIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    focusedPlaceholderColor = Color.White
+                ),
+                textStyle = MaterialTheme.typography.titleMedium,
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Decimal
                 )
-            }
-
+            )
         }
     }
 }
 
 @Composable
 private fun NameSection(
-    modifier: Modifier = Modifier,
     state: AddTransactionState,
-    onAction : (AddTransactionAction) -> Unit
+    onAction: (AddTransactionAction) -> Unit,
+    modifier: Modifier = Modifier
 ) {
 
-    val brush =
-        if(state.transactionType == TransactionType.INCOME) {
-            Brush.verticalGradient(listOf(CustomLightGreen, CustomDarkGreen))
-        }
-        else {
-            Brush.verticalGradient(listOf(CustomLightOrange, CustomDarkOrange))
-        }
-
-    Column(modifier) {
+    Column(modifier.padding(dimensionResource(id = R.dimen.add_transaction_padding_medium))) {
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
-                .clip(RoundedCornerShape(20.dp))
-                .align(Alignment.CenterHorizontally)
                 .fillMaxWidth()
-                .background(brush)
+                .clip(RoundedCornerShape(dimensionResource(id = R.dimen.add_transaction_corner_radius)))
+                .align(Alignment.CenterHorizontally)
+                .background(ForegroundColor)
 
         ) {
-
-            Column(
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(3.dp)
-            ) {
-
-                TextField(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(
-                            shape = RoundedCornerShape(18.dp),
-                            color = Color.Black
-                        ),
-                    value = if(state.nameTextFieldValue == "New Transaction") "" else state.nameTextFieldValue,
-                    placeholder = {
-                        Text(
-                            text = "Transaction Name",
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Normal
-                        )
-                    },
-                    onValueChange = {onAction(AddTransactionAction.OnNameTextFieldValueChange(it))},
-                    singleLine = true,
-                    colors = TextFieldDefaults.colors(
-                        disabledContainerColor = Color.Transparent,
-                        unfocusedContainerColor = Color.Transparent,
-                        focusedContainerColor = Color.Transparent,
-                        cursorColor = Color.White,
-                        focusedLabelColor = Color.White,
-                        unfocusedLabelColor = Color.White,
-                        unfocusedTextColor = Color.White,
-                        focusedTextColor = Color.White,
-                        errorIndicatorColor = Color.Transparent,
-                        focusedIndicatorColor = Color.Transparent,
-                        disabledIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        focusedPlaceholderColor = Color.White
-                    ),
-                    textStyle = TextStyle(fontSize = 20.sp)
-                )
-            }
+            TextField(
+                modifier = Modifier.fillMaxWidth(),
+                value = if (state.nameTextFieldValue == "New Transaction") "" else state.nameTextFieldValue,
+                placeholder = {
+                    Text(
+                        text = "Transaction Name",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Normal,
+                        color = Color.White
+                    )
+                },
+                onValueChange = { onAction(AddTransactionAction.OnNameTextFieldValueChange(it)) },
+                singleLine = true,
+                colors = TextFieldDefaults.colors(
+                    disabledContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                    focusedContainerColor = Color.Transparent,
+                    cursorColor = Color.White,
+                    focusedLabelColor = Color.White,
+                    unfocusedLabelColor = Color.White,
+                    unfocusedTextColor = Color.White,
+                    focusedTextColor = Color.White,
+                    errorIndicatorColor = Color.Transparent,
+                    focusedIndicatorColor = Color.Transparent,
+                    disabledIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    focusedPlaceholderColor = Color.White
+                ),
+                textStyle = MaterialTheme.typography.titleMedium
+            )
 
         }
     }
@@ -335,9 +279,9 @@ private fun NameSection(
 
 @Composable
 private fun CategorySection(
-    modifier: Modifier = Modifier,
-    state : AddTransactionState,
-    onAction: (AddTransactionAction) -> Unit
+    state: AddTransactionState,
+    onAction: (AddTransactionAction) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val incomeCategories = listOf<Category>(
         Category(name = "Salary", icon = R.drawable.salary),
@@ -359,21 +303,17 @@ private fun CategorySection(
     )
 
     val categories =
-        if(state.transactionType == TransactionType.INCOME) incomeCategories
+        if (state.transactionType == TransactionType.INCOME) incomeCategories
         else expenseCategories
 
-    Column(modifier) {
+    Column(modifier.padding(dimensionResource(id = R.dimen.add_transaction_padding_medium))) {
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
-                .clip(RoundedCornerShape(20.dp))
+                .clip(RoundedCornerShape(dimensionResource(id = R.dimen.add_transaction_corner_radius)))
                 .fillMaxWidth()
-                .background(
-                    Brush.linearGradient(
-                        listOf(CustomLightRed, CustomPink, CustomPurple)
-                    )
-                )
-                .padding(vertical = 10.dp)
+                .background(ForegroundColor)
+                .padding(vertical = dimensionResource(id = R.dimen.add_transaction_padding_medium))
 
         ) {
 
@@ -384,37 +324,42 @@ private fun CategorySection(
 
                 Text(
                     text = "Choose Category",
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Normal,
+                    style = MaterialTheme.typography.titleMedium,
                     color = Color.White,
                     modifier = Modifier
-                        .padding(start = 10.dp, bottom = 10.dp)
+                        .padding(
+                            start = dimensionResource(id = R.dimen.add_transaction_padding_medium),
+                            bottom = dimensionResource(id = R.dimen.add_transaction_padding_large)
+                        )
                         .align(Alignment.Start)
                 )
 
-                ScrollableTabRow(
-                    divider = {},
-                    containerColor = Color.Transparent,
-                    selectedTabIndex = categories.size-1,
-                    edgePadding = 0.dp,
-                    indicator = {},
-                    modifier = Modifier
-                        .background(Color.Transparent)
+                FlowRow(
+                    verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.add_transaction_padding_large)),
+                    horizontalArrangement = Arrangement.Center,
+                    maxItemsInEachRow = 3,
+                    modifier = Modifier.fillMaxWidth()
                 ) {
 
-                    categories.forEach {category ->
+                    categories.forEach { category ->
                         Card(
                             colors = CardDefaults.cardColors(
-                                containerColor = if(state.category == category.name) Color.White.copy(0.3f) else Color.Transparent,
+                                containerColor = if (state.category == category.name) Color.White.copy(
+                                    0.1f
+                                ) else Color.Transparent,
                                 disabledContainerColor = Color.Transparent
                             ),
                             border = BorderStroke(
                                 width = 1.dp,
-                                color = if(state.category == category.name) Color.White else Color.Transparent,
+                                color = if (state.category == category.name) Color.White else Color.Transparent,
                             ),
                             modifier = Modifier
                                 .width(100.dp)
-                                .clickable {
+                                .clickable(
+                                    indication = null,
+                                    interactionSource = null
+                                ) {
                                     onAction(AddTransactionAction.OnCategorySelection(category = category.name))
                                 }
                         ) {
@@ -423,7 +368,8 @@ private fun CategorySection(
                                 painter = painterResource(category.icon),
                                 contentDescription = null,
                                 modifier = Modifier
-                                    .size(40.dp)
+                                    .padding(5.dp)
+                                    .size(30.dp)
                                     .align(Alignment.CenterHorizontally)
                             )
 
@@ -431,6 +377,7 @@ private fun CategorySection(
                                 text = category.name,
                                 color = Color.White,
                                 modifier = Modifier
+                                    .padding(5.dp)
                                     .align(Alignment.CenterHorizontally)
                             )
 
@@ -451,9 +398,9 @@ fun LocalDateTime.toMillis() =
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DatePickerSection(
-    modifier: Modifier = Modifier,
     state: AddTransactionState,
-    onAction: (AddTransactionAction) -> Unit
+    onAction: (AddTransactionAction) -> Unit,
+    modifier: Modifier = Modifier
 ) {
 
     val dateTime = LocalDateTime.now()
@@ -465,17 +412,16 @@ private fun DatePickerSection(
         initialDisplayedMonthMillis = null
     )
 
-    if(state.isDatePickerDialogOpen) {
+    if (state.isDatePickerDialogOpen) {
 
         DatePickerDialog(
-            onDismissRequest = {onAction(AddTransactionAction.OnDatePickerDismiss)},
+            onDismissRequest = { onAction(AddTransactionAction.OnDatePickerDismiss) },
             confirmButton = {
                 TextButton(
                     onClick = {
-                        if(datePickerState.selectedDateMillis != null && datePickerState.selectedDateMillis!! <= dateTime.toMillis()) {
+                        if (datePickerState.selectedDateMillis != null && datePickerState.selectedDateMillis!! <= dateTime.toMillis()) {
                             onAction(AddTransactionAction.OnPickDateConfirmButton(datePickerState.selectedDateMillis.toString()))
-                        }
-                        else {
+                        } else {
                             onAction(AddTransactionAction.OnDatePickerDismiss)
                         }
                     }
@@ -485,19 +431,19 @@ private fun DatePickerSection(
             },
             dismissButton = {
                 TextButton(
-                    onClick = {onAction(AddTransactionAction.OnDatePickerDismiss)}
+                    onClick = { onAction(AddTransactionAction.OnDatePickerDismiss) }
                 ) {
                     Text(text = "Cancel", color = Color.White)
                 }
             },
             colors = DatePickerDefaults.colors(
-                containerColor = Color.DarkGray
+                containerColor = ForegroundColor
             )
         ) {
             DatePicker(
                 state = datePickerState,
                 colors = DatePickerDefaults.colors(
-                    containerColor = Color.DarkGray,
+                    containerColor = ForegroundColor,
                     currentYearContentColor = Color.White,
                     todayDateBorderColor = Color.White,
                     dayContentColor = Color.White,
@@ -513,8 +459,8 @@ private fun DatePickerSection(
                     selectedYearContentColor = Color.White,
                     disabledDayContentColor = Color.Transparent,
                     selectedDayContentColor = Color.White,
-                    selectedDayContainerColor = Color.White.copy(0.5f),
-                    selectedYearContainerColor = Color.White.copy(0.5f)
+                    selectedDayContainerColor = Color.White.copy(0.3f),
+                    selectedYearContainerColor = Color.White.copy(0.3f)
                 )
             )
         }
@@ -524,12 +470,11 @@ private fun DatePickerSection(
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier
-            .clip(RoundedCornerShape(20.dp))
+            .padding(dimensionResource(id = R.dimen.add_transaction_padding_medium))
             .fillMaxWidth()
-            .background(
-                Color.DarkGray
-            )
-            .padding(10.dp)
+            .clip(RoundedCornerShape(dimensionResource(id = R.dimen.add_transaction_corner_radius)))
+            .background(ForegroundColor)
+            .padding(dimensionResource(id = R.dimen.add_transaction_padding_medium))
 
     ) {
         Column(
@@ -538,11 +483,11 @@ private fun DatePickerSection(
         ) {
             Text(
                 text = "Pick a date",
-                fontWeight = FontWeight.Bold,
-                fontSize = 22.sp,
+                fontWeight = FontWeight.Normal,
+                style = MaterialTheme.typography.titleMedium,
                 color = Color.White,
                 modifier = Modifier
-                    .padding(bottom = 10.dp)
+                    .padding(bottom = dimensionResource(id = R.dimen.add_transaction_padding_medium))
                     .align(Alignment.Start)
             )
 
@@ -561,7 +506,7 @@ private fun DatePickerSection(
                 )
 
                 IconButton(
-                    onClick = {onAction(AddTransactionAction.OnDateEditButtonClick)},
+                    onClick = { onAction(AddTransactionAction.OnDateEditButtonClick) },
                     modifier = Modifier
                 ) {
                     Icon(

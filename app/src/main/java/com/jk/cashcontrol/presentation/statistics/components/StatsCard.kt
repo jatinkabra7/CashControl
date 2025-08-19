@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -14,8 +13,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -25,13 +22,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jk.cashcontrol.R
+import com.jk.cashcontrol.presentation.theme.ButtonColor
 import com.jk.cashcontrol.presentation.theme.CustomDarkOrange
-import kotlin.math.exp
+import com.jk.cashcontrol.presentation.theme.CustomGreen
+import com.jk.cashcontrol.presentation.theme.ForegroundColor
 
 @Composable
 fun StatsCard(
@@ -45,7 +43,7 @@ fun StatsCard(
         modifier = modifier
             .fillMaxWidth()
             .height(150.dp)
-            .background(Color.DarkGray.copy(0.5f), shape = RoundedCornerShape(20))
+            .background(ForegroundColor, shape = RoundedCornerShape(20))
     ) {
 
         FlowRow(
@@ -85,16 +83,16 @@ private fun IncomeItem(
         IconButton(
             onClick = {},
             colors = IconButtonDefaults.iconButtonColors(
-                containerColor = Color.DarkGray.copy(0.7f)
+                containerColor = ButtonColor
             ),
             modifier = Modifier
                 .size(40.dp)
         ) {
 
             Icon(
-                painter = painterResource(R.drawable.baseline_arrow_downward_24),
+                painter = painterResource(R.drawable.down_left_arrow),
                 contentDescription = null,
-                tint = Color.Green,
+                tint = CustomGreen,
                 modifier = Modifier.size(30.dp)
             )
         }
@@ -103,7 +101,7 @@ private fun IncomeItem(
 
         Text(
             text = "$income",
-            color = Color.Green,
+            color = CustomGreen,
             fontSize = 30.sp
         )
     }
@@ -115,20 +113,21 @@ private fun ExpenseItem(
     expense : Float
 ) {
     Row(
+        modifier = modifier,
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {
         IconButton(
             onClick = {},
             colors = IconButtonDefaults.iconButtonColors(
-                containerColor = Color.DarkGray.copy(0.7f)
+                containerColor = ButtonColor
             ),
             modifier = Modifier
                 .size(40.dp)
         ) {
 
             Icon(
-                painter = painterResource(R.drawable.baseline_arrow_upward_24),
+                painter = painterResource(R.drawable.top_right_arrow),
                 contentDescription = null,
                 tint = CustomDarkOrange,
                 modifier = Modifier.size(30.dp)

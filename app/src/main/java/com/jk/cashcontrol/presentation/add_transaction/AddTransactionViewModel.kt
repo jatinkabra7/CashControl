@@ -1,12 +1,9 @@
 package com.jk.cashcontrol.presentation.add_transaction
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
-import com.jk.cashcontrol.data.mapper.toTransactionDto
 import com.jk.cashcontrol.domain.model.TransactionType
 import com.jk.cashcontrol.domain.repository.TransactionRepository
-import com.jk.cashcontrol.presentation.home.HomeState
 import com.jk.cashcontrol.presentation.home.HomeViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow

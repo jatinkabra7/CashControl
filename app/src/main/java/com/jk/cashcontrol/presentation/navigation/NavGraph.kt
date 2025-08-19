@@ -1,19 +1,17 @@
 package com.jk.cashcontrol.presentation.navigation
 
-import android.annotation.SuppressLint
-import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -22,9 +20,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.google.firebase.auth.FirebaseAuth
+import com.jk.cashcontrol.domain.model.TransactionType
 import com.jk.cashcontrol.domain.model.User
 import com.jk.cashcontrol.presentation.add_transaction.AddTransactionScreen
 import com.jk.cashcontrol.presentation.add_transaction.AddTransactionViewModel
+import com.jk.cashcontrol.presentation.app_info.AppInfoScreen
 import com.jk.cashcontrol.presentation.app_lock.AppLockScreen
 import com.jk.cashcontrol.presentation.app_lock.AppLockViewModel
 import com.jk.cashcontrol.presentation.history.HistoryScreen
@@ -37,15 +37,11 @@ import com.jk.cashcontrol.presentation.profile.ProfileScreen
 import com.jk.cashcontrol.presentation.settings.SettingsViewModel
 import com.jk.cashcontrol.presentation.statistics.StatisticsScreen
 import com.jk.cashcontrol.presentation.statistics.StatisticsViewModel
-import com.jk.cashcontrol.presentation.theme.CustomBlue
-import com.jk.cashcontrol.presentation.theme.CustomDarkBlue
-import com.jk.cashcontrol.presentation.transaction.TransactionInfoScreen
 import com.jk.cashcontrol.presentation.transaction.TransactionInfoViewModel
 import com.jk.cashcontrol.presentation.utils.fingerprint_login.BiometricPromptManager
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalSharedTransitionApi::class)
-@SuppressLint("UnusedSharedTransitionModifierParameter")
 @Composable
 fun NavGraph(
     navController: NavHostController,
@@ -54,6 +50,7 @@ fun NavGraph(
     loginViewModel: LoginViewModel = koinViewModel(),
     historyViewModel: HistoryViewModel = koinViewModel(),
     statisticsViewModel: StatisticsViewModel = koinViewModel(),
+    transactionInfoViewModel: TransactionInfoViewModel = koinViewModel(),
     settingsViewModel: SettingsViewModel = koinViewModel(),
     appLockViewModel: AppLockViewModel = koinViewModel()
 ) {
@@ -63,7 +60,6 @@ fun NavGraph(
 
     val user = FirebaseAuth.getInstance().currentUser
 
-    // fetching it here so it will be collected in the background before the composition of settings screen
     val appLockStatus = settingsViewModel.appLockStatus.collectAsStateWithLifecycle().value
 
     val appLockPin = appLockViewModel.appLockPin.collectAsStateWithLifecycle().value
@@ -75,17 +71,13 @@ fun NavGraph(
             Route.StartResolver
         } else Route.Login
 
-    val gradient = Brush.linearGradient(
-        colors = listOf(CustomBlue, CustomDarkBlue)
-    )
-
     NavHost(
         navController = navController,
         startDestination = start,
-        enterTransition = { EnterTransition.None },
-        popEnterTransition = { EnterTransition.None },
-        exitTransition = { ExitTransition.None },
-        popExitTransition = { ExitTransition.None }
+        enterTransition = { fadeIn() },
+        exitTransition = { fadeOut() },
+        popEnterTransition = { fadeIn() },
+        popExitTransition = { fadeOut() }
     ) {
 
         composable<Route.StartResolver> {
@@ -100,32 +92,30 @@ fun NavGraph(
         composable<Route.AppLock> {
 
             LaunchedEffect(Unit) {
-                if(appLockStatus == true) {
+                if (appLockStatus == true) {
                     biometricPromptManager.showBiometricPromptIfAvailable(
                         title = "Login using fingerprint",
                         description = "",
-                        onSuccess = { navController.navigate(Route.Home) {popUpTo(0)} }
+                        onSuccess = { navController.navigate(Route.Home) { popUpTo(0) } }
                     )
                 }
             }
-
 
             AppLockScreen(
                 correctPin = appLockPin,
                 appLockStatus = appLockStatus!!,
                 navigateUp = { navController.navigateUp() },
-                navigateToHome = { navController.navigate(Route.Home) {popUpTo(0)} },
+                navigateToHome = { navController.navigate(Route.Home) { popUpTo(0) } },
                 onAction = appLockViewModel::onAction,
                 onFingerprintClick = {
-                    if(appLockStatus == true) {
+                    if (appLockStatus == true) {
                         biometricPromptManager.showBiometricPromptIfAvailable(
                             title = "Login using fingerprint",
                             description = "",
-                            onSuccess = { navController.navigate(Route.Home) {popUpTo(0)} }
+                            onSuccess = { navController.navigate(Route.Home) { popUpTo(0) } }
                         )
                     }
-                },
-                modifier = Modifier.padding(paddingValues)
+                }
             )
         }
 
@@ -150,22 +140,25 @@ fun NavGraph(
 
             val state = homeViewModel.state.collectAsStateWithLifecycle().value
 
+            val isDeletionInProgress = transactionInfoViewModel.isLoading.collectAsStateWithLifecycle().value
+
+            var isTransactionInfoSheetOpen by remember { mutableStateOf(false) }
+
             HomeScreen(
                 state = state,
                 user = user,
-                gradient = gradient,
                 modifier = Modifier.padding(paddingValues),
                 onAction = { homeViewModel.onAction(it) },
-                navigateToTransactionInfo = {
-                    navController.navigate(
-                        Route.TransactionInfo(
-                            name = it.name,
-                            type = it.type,
-                            amount = it.amount,
-                            category = it.category,
-                            timestamp = it.timestamp,
-                            timestampMillis = it.timestampMillis
-                        )
+                onIncomeButtonClick = { navController.navigate(Route.AddTransaction(TransactionType.INCOME)) },
+                onExpenseButtonClick = { navController.navigate(Route.AddTransaction(TransactionType.EXPENSE)) },
+                isTransactionInfoSheetOpen = isTransactionInfoSheetOpen,
+                toggleSheet = {isTransactionInfoSheetOpen = !isTransactionInfoSheetOpen},
+                isDeletionInProgress = isDeletionInProgress,
+                onDeleteTransaction = { transaction ->
+                    transactionInfoViewModel.deleteTransaction(
+                        context = context,
+                        transaction = transaction,
+                        onSuccess = { isTransactionInfoSheetOpen = false }
                     )
                 }
             )
@@ -210,21 +203,23 @@ fun NavGraph(
 
             val state = historyViewModel.state.collectAsStateWithLifecycle().value
 
+            val isDeletionInProgress = transactionInfoViewModel.isLoading.collectAsStateWithLifecycle().value
+
+            var isTransactionInfoSheetOpen by remember { mutableStateOf(false) }
+
             HistoryScreen(
                 modifier = Modifier.padding(paddingValues),
                 state = state,
                 user = user,
                 onAction = { historyViewModel.onAction(it) },
-                navigateToTransactionInfo = {
-                    navController.navigate(
-                        Route.TransactionInfo(
-                            name = it.name,
-                            type = it.type,
-                            amount = it.amount,
-                            category = it.category,
-                            timestamp = it.timestamp,
-                            timestampMillis = it.timestampMillis
-                        )
+                isTransactionInfoSheetOpen = isTransactionInfoSheetOpen,
+                toggleSheet = {isTransactionInfoSheetOpen = !isTransactionInfoSheetOpen},
+                isDeletionInProgress = isDeletionInProgress,
+                onDeleteTransaction = { transaction ->
+                    transactionInfoViewModel.deleteTransaction(
+                        context = context,
+                        transaction = transaction,
+                        onSuccess = { isTransactionInfoSheetOpen = false }
                     )
                 }
             )
@@ -273,46 +268,12 @@ fun NavGraph(
             )
         }
 
-        composable<Route.TransactionInfo> {
-
-            val transactionInfoViewModel: TransactionInfoViewModel = koinViewModel()
-
-            val isLoading = transactionInfoViewModel.isLoading.collectAsStateWithLifecycle().value
-
-            val name = it.toRoute<Route.TransactionInfo>().name
-            val type = it.toRoute<Route.TransactionInfo>().type
-            val amount = it.toRoute<Route.TransactionInfo>().amount
-            val category = it.toRoute<Route.TransactionInfo>().category
-            val timestamp = it.toRoute<Route.TransactionInfo>().timestamp
-            val timestampMillis = it.toRoute<Route.TransactionInfo>().timestampMillis
-
-            TransactionInfoScreen(
-                modifier = Modifier,
-                isLoading = isLoading,
-                name = name,
-                type = type,
-                amount = amount,
-                category = category,
-                timestamp = timestamp,
-                timestampMillis = timestampMillis,
-                onDeleteTransaction = { transaction ->
-                    transactionInfoViewModel.deleteTransaction(
-                        context = context,
-                        transaction = transaction,
-                        navigateUp = { navController.navigateUp() }
-                    )
-                },
-                navigateUp = { navController.navigateUp() }
-            )
-        }
-
         composable<Route.AppInfo> {
-//            Text(
-//                text = "App Version: 2.0",
-//                style = MaterialTheme.typography.labelLarge,
-//                color = Color.Gray,
-//                modifier = Modifier.align(Alignment.CenterHorizontally),
-//            )
+
+            AppInfoScreen(
+                navigateUp = { navController.navigateUp() },
+                modifier = Modifier.padding(paddingValues)
+            )
         }
     }
 }

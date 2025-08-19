@@ -1,13 +1,13 @@
 package com.jk.cashcontrol.presentation.home
 
-sealed interface HomeAction {
-    data object ReloadData : HomeAction
-    data object OnEditBudgetClick : HomeAction
-    data class OnEditBudgetConfirm(val newBudget : Float) : HomeAction
-    data object OnEditBudgetDismiss : HomeAction
-    data class OnEditBudgetTextFieldValueChange(val value : String) : HomeAction
-    data object OnNewBudgetClick : HomeAction
-    data class OnNewBudgetConfirm(val newBudget: Float) : HomeAction
-    data object OnNewBudgetDismiss : HomeAction
-    data class OnNewBudgetTextFieldValueChange(val value : String) : HomeAction
+sealed interface HomeActions {
+    data object ReloadData : HomeActions
+    data object OnEditBudgetClick : HomeActions
+    data class OnEditBudgetConfirm(val newBudget : Float) : HomeActions
+    data object OnEditBudgetDismiss : HomeActions
+    data class OnEditBudgetTextFieldValueChange(val value : String) : HomeActions
+    data object OnNewBudgetClick : HomeActions
+    data class OnNewBudgetConfirm(val newBudget: Float) : HomeActions
+    data object OnNewBudgetDismiss : HomeActions
+    data class OnNewBudgetTextFieldValueChange(val value : String) : HomeActions
 }

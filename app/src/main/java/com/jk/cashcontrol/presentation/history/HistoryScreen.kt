@@ -1,6 +1,5 @@
 package com.jk.cashcontrol.presentation.history
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -12,15 +11,19 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -29,26 +32,56 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.google.firebase.auth.FirebaseUser
 import com.jk.cashcontrol.R
 import com.jk.cashcontrol.domain.model.Transaction
 import com.jk.cashcontrol.presentation.home.components.TransactionCard
+import com.jk.cashcontrol.presentation.theme.BackgroundColor
+import com.jk.cashcontrol.presentation.theme.ButtonColor
+import com.jk.cashcontrol.presentation.theme.ForegroundColor
+import com.jk.cashcontrol.presentation.transaction.TransactionInfoCard
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HistoryScreen(
-    modifier: Modifier = Modifier,
     state: HistoryState,
-    user : FirebaseUser?,
+    user: FirebaseUser?,
     onAction: (HistoryAction) -> Unit,
-    navigateToTransactionInfo: (Transaction) -> Unit
+    isTransactionInfoSheetOpen: Boolean,
+    toggleSheet: () -> Unit,
+    isDeletionInProgress: Boolean,
+    onDeleteTransaction: (Transaction) -> Unit,
+    modifier: Modifier = Modifier
 ) {
 
     LaunchedEffect(user?.uid.toString()) {
         onAction(HistoryAction.ReloadData)
+    }
+
+    var selectedTransaction by remember { mutableStateOf<Transaction?>(null) }
+
+    val bottomSheetState = rememberModalBottomSheetState()
+
+    if(isTransactionInfoSheetOpen && selectedTransaction != null) {
+        ModalBottomSheet(
+            sheetState = bottomSheetState,
+            onDismissRequest = toggleSheet,
+            scrimColor = ForegroundColor.copy(0.5f),
+            containerColor = BackgroundColor,
+            dragHandle = {}
+        ) {
+            TransactionInfoCard(
+                transaction = selectedTransaction!!,
+                onDeleteTransaction = {
+                    onDeleteTransaction(it)
+                },
+                isLoading = isDeletionInProgress
+            )
+        }
     }
 
     var searchQuery by rememberSaveable {
@@ -60,10 +93,10 @@ fun HistoryScreen(
     val filteredTransactions = transactions.filter { transaction ->
         val query = searchQuery.lowercase()
         transaction.name.lowercase().contains(query) ||
-        transaction.amount.toString().contains(query) ||
-        transaction.timestamp.lowercase().contains(query) ||
-        transaction.timestamp.lowercase().replace(",","").contains(query) ||
-        transaction.category.lowercase().contains(query)
+                transaction.amount.toString().contains(query) ||
+                transaction.timestamp.lowercase().contains(query) ||
+                transaction.timestamp.lowercase().replace(",", "").contains(query) ||
+                transaction.category.lowercase().contains(query)
     }
 
     val listState = rememberLazyListState()
@@ -73,32 +106,28 @@ fun HistoryScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(Color.Black)
-            .padding(10.dp)
+            .padding(horizontal = dimensionResource(id = R.dimen.history_screen_padding_medium))
     ) {
-        Spacer(Modifier.height(10.dp))
 
         Text(
             text = "History",
             style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Light,
             color = Color.White,
             modifier = Modifier
                 .align(Alignment.Start)
-                .pointerInput(Unit) {
-                    focusManager.clearFocus()
-                }
         )
 
-        Spacer(Modifier.height(10.dp))
+        Spacer(Modifier.height(dimensionResource(id = R.dimen.history_screen_spacer_medium)))
 
         SearchBar(
             query = searchQuery,
-            onValueChange = {searchQuery = it}
+            onValueChange = { searchQuery = it }
         )
 
-        Spacer(Modifier.height(30.dp))
+        Spacer(Modifier.height(dimensionResource(id = R.dimen.history_screen_spacer_medium)))
 
-        if(filteredTransactions.isEmpty()) {
+        if (filteredTransactions.isEmpty()) {
             Column(
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
@@ -117,7 +146,7 @@ fun HistoryScreen(
                 Text(
                     text = "No transactions",
                     color = Color.DarkGray,
-                    fontSize = 12.sp,
+                    style = MaterialTheme.typography.labelSmall,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 )
@@ -133,49 +162,64 @@ fun HistoryScreen(
                     }
             ) {
 
-                items(filteredTransactions, key = {it.timestampMillis}) {
+                items(filteredTransactions, key = { it.timestampMillis }) {
                     Column(
-                        modifier = Modifier.animateItem().pointerInput(Unit) {
-                            focusManager.clearFocus()
-                        }
+                        modifier = Modifier
+                            .animateItem()
+                            .pointerInput(Unit) {
+                                focusManager.clearFocus()
+                            }
                     ) {
 
                         TransactionCard(
                             transaction = it,
-                            onClick = navigateToTransactionInfo
+                            onClick = {
+                                selectedTransaction = Transaction(
+                                    name = it.name,
+                                    type = it.type,
+                                    amount = it.amount,
+                                    category = it.category,
+                                    timestamp = it.timestamp,
+                                    timestampMillis = it.timestampMillis
+                                ).also {
+                                    toggleSheet()
+                                }
+                            }
                         )
 
-                        Spacer(Modifier.height(10.dp))
+                        Spacer(Modifier.height(dimensionResource(id = R.dimen.history_screen_spacer_medium)))
                     }
                 }
             }
         }
     }
-
 }
 
 @Composable
 fun SearchBar(
-    modifier: Modifier = Modifier,
-    query : String,
-    onValueChange : (String) -> Unit
+    query: String,
+    onValueChange: (String) -> Unit,
+    modifier: Modifier = Modifier
 ) {
 
     TextField(
         value = query,
         onValueChange = { onValueChange(it) },
-        placeholder = { Text("Search by name, amount, date or category", modifier = Modifier.basicMarquee()) },
+        placeholder = {
+            Text(
+                text = "Search by name, amount, date or category",
+                modifier = Modifier.basicMarquee()
+            )
+        },
         singleLine = true,
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(100))
-        ,
+            .clip(RoundedCornerShape(100)),
         colors = TextFieldDefaults.colors(
-            focusedContainerColor = Color.DarkGray,
-            unfocusedContainerColor = Color.DarkGray.copy(0.5f),
+            focusedContainerColor = ButtonColor,
+            unfocusedContainerColor = ForegroundColor,
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent
         )
     )
-
 }
