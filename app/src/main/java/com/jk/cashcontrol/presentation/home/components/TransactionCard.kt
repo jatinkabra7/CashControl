@@ -1,6 +1,5 @@
-package com.jk.cashcontrol.presentation.home.components
+package com.jk.cashcontrol.presentation.common
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -22,14 +21,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.jk.cashcontrol.R
 import com.jk.cashcontrol.domain.model.Transaction
 import com.jk.cashcontrol.domain.model.TransactionType
+import com.jk.cashcontrol.presentation.theme.ButtonColor
 import com.jk.cashcontrol.presentation.theme.CustomDarkOrange
+import com.jk.cashcontrol.presentation.theme.CustomGreen
 
 @Composable
 fun TransactionCard(
@@ -39,87 +40,80 @@ fun TransactionCard(
 ) {
 
     val transactionIcon =
-        if (transaction.type == TransactionType.INCOME) R.drawable.baseline_arrow_downward_24
-        else R.drawable.baseline_arrow_upward_24
+        if (transaction.type == TransactionType.INCOME) R.drawable.down_left_arrow
+        else R.drawable.top_right_arrow
 
     val transactionColor =
-        if (transaction.type == TransactionType.INCOME) Color.Green
+        if (transaction.type == TransactionType.INCOME) CustomGreen
         else CustomDarkOrange
+
+    val plusOrMinus =
+        if (transaction.type == TransactionType.INCOME) '+'
+        else '-'
 
 
     Row(
         modifier = modifier
-            .clip(RoundedCornerShape(100))
+            .clip(RoundedCornerShape(dimensionResource(id = R.dimen.transaction_card_corner_radius)))
             .fillMaxWidth()
-            .background(Color.DarkGray.copy(0.4f))
             .clickable { onClick(transaction) }
-
     ) {
 
-        Spacer(Modifier.width(8.dp))
+        Spacer(Modifier.width(dimensionResource(id = R.dimen.transaction_card_horizontal_padding)))
 
         IconButton(
             modifier = Modifier
                 .align(Alignment.CenterVertically)
-                .size(40.dp),
-            onClick = {onClick(transaction)},
+                .size(dimensionResource(id = R.dimen.transaction_card_icon_button_size)),
+            onClick = { onClick(transaction) },
             colors = IconButtonDefaults.iconButtonColors(
-                containerColor = Color.DarkGray.copy(0.5f)
+                containerColor = ButtonColor
             )
         ) {
-
             Icon(
                 painter = painterResource(transactionIcon),
                 contentDescription = null,
                 tint = transactionColor,
-                modifier = Modifier
-                    .size(30.dp)
+                modifier = Modifier.size(dimensionResource(id = R.dimen.transaction_card_icon_size))
             )
         }
 
-        Spacer(Modifier.width(20.dp))
-
+        Spacer(Modifier.width(dimensionResource(id = R.dimen.transaction_card_icon_text_spacing)))
 
         Column(
             modifier = Modifier
-                .widthIn(max = 180.dp)
-                .padding(vertical = 5.dp)
+                .widthIn(max = dimensionResource(id = R.dimen.transaction_card_text_max_width))
+                .padding(vertical = dimensionResource(id = R.dimen.transaction_card_text_vertical_padding))
         ) {
-
             Text(
                 text = transaction.name,
                 style = MaterialTheme.typography.titleMedium,
-                color = transactionColor,
-                fontSize = 20.sp,
+                color = Color.White,
+                fontWeight = FontWeight.Normal,
                 maxLines = 1,
-                modifier = Modifier
-                    .basicMarquee()
-
+                modifier = Modifier.basicMarquee()
             )
 
             Text(
                 text = transaction.timestamp + " - " + transaction.category,
                 style = MaterialTheme.typography.bodyMedium,
                 color = Color.White.copy(0.7f),
-                fontSize = 16.sp,
-                modifier = Modifier
-                    .basicMarquee()
+                modifier = Modifier.basicMarquee()
             )
         }
 
         Spacer(Modifier.weight(1f))
 
         Text(
-            text = transaction.amount.toString(),
-            style = MaterialTheme.typography.bodyMedium,
-            color = transactionColor,
-            fontSize = 20.sp,
+            text = plusOrMinus + transaction.amount.toString(),
+            style = MaterialTheme.typography.bodyLarge,
+            fontWeight = FontWeight.Bold,
+            color = if (transaction.type == TransactionType.INCOME) transactionColor else Color.White,
             textAlign = TextAlign.Center,
             modifier = Modifier
                 .align(Alignment.CenterVertically)
-                .padding(end = 10.dp)
+                .padding(end = dimensionResource(id = R.dimen.transaction_card_amount_end_padding))
         )
-
-
     }
+
 }
