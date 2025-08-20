@@ -74,7 +74,7 @@ fun ProfileScreen(
 
     val xOffset by animateDpAsState(
         targetValue = if (isSettingsVisible) 0.dp else dimensionResource(R.dimen.profile_settings_panel_width),
-        animationSpec = tween(500, easing = FastOutSlowInEasing)
+        animationSpec = tween(250, easing = FastOutSlowInEasing)
     )
 
     Box(

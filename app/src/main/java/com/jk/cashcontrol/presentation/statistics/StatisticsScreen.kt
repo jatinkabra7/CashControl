@@ -36,10 +36,10 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun StatisticsScreen(
-    modifier: Modifier = Modifier,
     state: StatisticsState,
     user: FirebaseUser?,
-    onAction: (StatisticsAction) -> Unit
+    onAction: (StatisticsAction) -> Unit,
+    modifier: Modifier = Modifier
 ) {
 
     LaunchedEffect(user) {
@@ -101,7 +101,7 @@ fun StatisticsScreen(
                                 index,
                                 animationSpec = tween(
                                     easing = LinearOutSlowInEasing,
-                                    durationMillis = 1000
+                                    durationMillis = 500
                                 )
                             )
                         }

@@ -83,7 +83,7 @@ fun AppInfoScreen(
 
         Crossfade(
             targetState = isAnimationFinished,
-            animationSpec = tween(1000, easing = FastOutSlowInEasing)
+            animationSpec = tween(500, easing = FastOutSlowInEasing)
         ) {
             if (it) {
                 DetailsSection(
@@ -117,18 +117,18 @@ private fun AnimatedLogo(
 
         val animatedScale by animateFloatAsState(
             targetValue = if(startAnimation) 1f else 2f,
-            animationSpec = tween(5000, easing = FastOutSlowInEasing)
+            animationSpec = tween(2500, easing = FastOutSlowInEasing)
         )
 
         val animatedYOffset by animateDpAsState(
             targetValue = if(startAnimation) 0.dp else 125.dp,
-            animationSpec = tween(3000, easing = FastOutSlowInEasing)
+            animationSpec = tween(1500, easing = FastOutSlowInEasing)
         )
 
         LaunchedEffect(Unit) {
-            delay(1000)
+            delay(500)
             startAnimation = true
-            delay(2000)
+            delay(1000)
             onAnimationFinish()
         }
 

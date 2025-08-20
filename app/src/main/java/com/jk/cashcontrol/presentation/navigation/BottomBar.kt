@@ -44,11 +44,11 @@ fun BottomBar(
         show,
         exit = fadeOut() + slideOutVertically(
             targetOffsetY = { it },
-            animationSpec = tween(durationMillis = 500, easing = LinearEasing)
+            animationSpec = tween(durationMillis = 250, easing = LinearEasing)
         ),
         enter = fadeIn() + slideInVertically(
             initialOffsetY = { it },
-            animationSpec = tween(durationMillis = 500, easing = LinearEasing)
+            animationSpec = tween(durationMillis = 250, easing = LinearEasing)
         )
     ) {
         Row(
