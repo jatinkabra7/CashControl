@@ -57,7 +57,7 @@ It helps users manage their finances by tracking expenses, income, and budgets�
 
 ## 🏗️ Architecture & Tech Stack
 
-This project follows **Clean Architecture (MVVM)**, ensuring scalability, maintainability, and testability.  
+This project follows **Clean Architecture (MVI)**, ensuring scalability, maintainability, and testability.  
 
 | **Category** | **Technologies & Libraries** |
 | :--- | :--- |
