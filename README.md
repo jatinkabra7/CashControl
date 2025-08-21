@@ -6,11 +6,13 @@
 
 ### App Screenshots
 
-![Home](previewed/image1.png)
-![Transaction](previewed/image2.png) 
-![Stats](previewed/image3.png)
-![History](previewed/image4.png)
-![AppLock](previewed/image5.png)
+<p align="center">
+  <img src="previewed/image1.png" width="220"/>
+  <img src="previewed/image2.png" width="220"/>
+  <img src="previewed/image3.png" width="220"/>
+  <img src="previewed/image4.png" width="220"/>
+  <img src="previewed/image5.png" width="220"/>
+</p>
 
 ## ✨ Features
 
