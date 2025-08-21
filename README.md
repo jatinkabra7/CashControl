@@ -6,11 +6,11 @@
 
 ### App Screenshots
 
-![Home](previewes/image1.png)
-![Transaction](previewes/image2.png) 
-![Stats](previewes/image3.png)
-![History](previewes/image4.png)
-![AppLock](previewes/image5.png)
+![Home](previewed/image1.png)
+![Transaction](previewed/image2.png) 
+![Stats](previewed/image3.png)
+![History](previewed/image4.png)
+![AppLock](previewed/image5.png)
 
 ## ✨ Features
 
