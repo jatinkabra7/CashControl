@@ -6,9 +6,11 @@
 
 ### App Screenshots
 
-![Home](home1.jpg)
-![Stats](stats1.jpg) 
-![Transaction Screen](add_income1.jpg)
+![Home](previewes/image1.png)
+![Transaction](previewes/image2.png) 
+![Stats](previewes/image3.png)
+![History](previewes/image4.png)
+![AppLock](previewes/image5.png)
 
 ## ✨ Features
 
