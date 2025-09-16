@@ -63,7 +63,7 @@ This project follows **Clean Architecture (MVI)**, ensuring scalability, maintai
 | :--- | :--- |
 | **Core** | Kotlin, Coroutines, Flow |
 | **UI** | Jetpack Compose, Material Design 3, Coil |
-| **Architecture** | MVI + Clean Architecture |
+| **Architecture** | MVVM + Clean Architecture |
 | **Dependency Injection** | Koin |
 | **Database** | Firebase Firestore |
 | **Authentication** | Firebase Auth (Google Sign-In via Credential Manager API) |
