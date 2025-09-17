@@ -1,48 +1,93 @@
+<div align="center">
+  
 # 💸 Cash Control
 
-**Cash Control** is a fast, modern, and intuitive expense tracker app built with **Kotlin**, **Jetpack Compose**, and **Firebase**. It helps users manage their finances by tracking expenses, income, and budgets—all in one place. Plus, get smart AI-powered summaries with just a tap!
+</div>
+
+**Cash Control** is a fast, modern, and intuitive expense tracker app built with **Kotlin**, **Jetpack Compose**, and **Firebase**.  
+It helps users manage their finances by tracking expenses, income, and budgets—all in one place. Plus, get smart AI-powered summaries with just a tap!
 
 ---
 
-### App Screenshots
+## 📸 Screenshots
 
-![Home](home1.jpg)
-![Stats](stats1.jpg) 
-![Transaction Screen](add_income1.jpg)
+<div align="center">
+  
+### App Screens
+
+</div>
+
+<p align="center">
+  <img src="previewed/image1.png" width="15%">
+  &nbsp;
+  <img src="previewed/image2.png" width="15%">
+  &nbsp;
+  <img src="previewed/image3.png" width="15%">
+  &nbsp;
+  <img src="previewed/image4.png" width="15%">
+  &nbsp;
+  <img src="previewed/image5.png" width="15%">
+</p>
+
+---
+
+## 📥 Download
+
+<p align="center">
+  <a href="https://play.google.com/store/apps/details?id=com.jk.cashcontrol">
+    <img alt="Get it on Google Play" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSADMTEo4YEurEn-gXFBOfumKYAJMviq-T9ww&s" height="80">
+  </a>
+</p>
+
+---
 
 ## ✨ Features
 
-- 🔐 Google Sign-In with Firebase Authentication
-- 📱 Delightful Animations
-- 📊 Track income, expenses, and budgets
-- 🧾 View all transactions with and search by name, category or date
-- 📆 Horizontal pager for **Today**, **This Month**, and **This Year** statistics
-- 💡 AI-powered insights using **Gemini**
-- ☁️ Realtime sync with **Firebase Firestore**
-- 🎨 Beautiful, smooth UI with Jetpack Compose
-- 🔔 Responsive navigation based on user login state
-- 📱 Designed for performance and offline resilience
+* **🔐 Secure Login:** Google Sign-In with Firebase Authentication  
+* **📊 Finance Tracking:** Track income, expenses, and budgets  
+* **🧾 Transaction Management:** View all transactions, search by name, category, or date  
+* **📆 Smart Statistics:** Horizontal pager for **Today**, **This Month**, and **This Year**  
+* **💡 AI Insights:** AI-powered summaries with **Google Gemini**  
+* **☁️ Cloud Sync:** Realtime sync with **Firebase Firestore**  
+* **📱 Delightful UI:** Smooth animations with Jetpack Compose & Material Design 3  
+* **🔔 Adaptive Navigation:** Auto-redirect based on login state  
+* **📴 Offline Resilience:** Works even without internet  
 
 ---
 
-## 🧱 Tech Stack
+## 🏗️ Architecture & Tech Stack
 
-- **Kotlin**
-- **Jetpack Compose**
-- **MVVM + Clean Architecture**
-- **Koin** for Dependency Injection
-- **Coil** for loading profile photo
-- **Firebase Firestore** (cloud database)
-- **Firebase Authentication** (Google Sign-In via Credential Manager API)
-- **Google Gemini** (AI summary generation)
-- **Material Design 3**
+This project follows **Clean Architecture (MVI)**, ensuring scalability, maintainability, and testability.  
+
+| **Category** | **Technologies & Libraries** |
+| :--- | :--- |
+| **Core** | Kotlin, Coroutines, Flow |
+| **UI** | Jetpack Compose, Material Design 3, Coil |
+| **Architecture** | MVVM + Clean Architecture |
+| **Dependency Injection** | Koin |
+| **Database** | Firebase Firestore |
+| **Authentication** | Firebase Auth (Google Sign-In via Credential Manager API) |
+| **AI** | Google Gemini |
+| **Design** | Animations, delightful UI, responsive navigation |
 
 ---
 
-## Future Updates in mind
+## 🚀 Future Updates
 
-- **Recurring Transactions**
-- **Notifications for budget limits**
-- **Widgets**
-- **Create excel reports**
+- **Recurring Transactions**  
+- **Budget Limit Notifications**  
+- **Widgets**  
+- **Export to Excel Reports**
 
+---
+
+## 👨‍💻 Author
+
+**Jatin Kabra**
+
+- **GitHub:** [@jatinkabra7](https://github.com/jatinkabra7)  
+- **LinkedIn:** [Jatin Kabra](https://www.linkedin.com/in/jatin-kabra-723813334)
+
+<a href="https://buymeacoffee.com/jatinkabra/" target="_blank">
+  <img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px" >
+</a>
