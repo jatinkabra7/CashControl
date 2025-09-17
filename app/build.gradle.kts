@@ -17,7 +17,7 @@ android {
         applicationId = "com.jk.cashcontrol"
         minSdk = 26
         targetSdk = 35
-        versionCode = 12
+        versionCode = 13
         versionName = "2.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -102,4 +102,5 @@ dependencies {
     implementation(libs.accompanist.permissions)
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.biometric)
+    implementation("com.google.android.gms:play-services-ads:24.6.0")
 }

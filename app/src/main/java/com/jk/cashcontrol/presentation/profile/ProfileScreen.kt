@@ -27,6 +27,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
@@ -39,6 +40,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.ClipEntry
 import androidx.compose.ui.platform.LocalClipboard
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -46,11 +48,16 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow.Companion.Ellipsis
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.AdView
 import com.jk.cashcontrol.R
 import com.jk.cashcontrol.domain.model.User
+import com.jk.cashcontrol.presentation.Constants
 import com.jk.cashcontrol.presentation.settings.SettingsActions
 import com.jk.cashcontrol.presentation.settings.SettingsScreen
 import kotlinx.coroutines.launch
@@ -139,6 +146,8 @@ fun ProfileScreen(
                     }
                 }
             )
+
+            BannerAd(Constants.AD_ID)
         }
 
         if (isSettingsVisible) {
@@ -228,4 +237,25 @@ private fun ProfileItem(s: String, t: String, onCopy: (String) -> Unit) {
             )
         }
     }
+}
+
+@Composable
+fun BannerAd(adId: String) {
+
+    val adSize = AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(
+        LocalContext.current,
+        360
+    )
+
+    AndroidView(
+        factory = { context ->
+            AdView(context).apply {
+                setAdSize(adSize)
+                adUnitId = adId
+
+                // Request an Ad
+                loadAd(AdRequest.Builder().build())
+            }
+        }
+    )
 }

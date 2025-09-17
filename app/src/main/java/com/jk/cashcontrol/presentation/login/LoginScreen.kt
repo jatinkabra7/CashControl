@@ -33,10 +33,9 @@ import com.jk.cashcontrol.R
 
 @Composable
 fun LoginScreen(
-    modifier: Modifier = Modifier,
-    onClick : () -> Unit
+    onClick : () -> Unit,
+    modifier: Modifier = Modifier
 ) {
-
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -101,12 +100,4 @@ fun LoginScreen(
             }
         }
     }
-}
-
-@Preview
-@Composable
-private fun p() {
-    LoginScreen(
-        onClick = {}
-    )
 }

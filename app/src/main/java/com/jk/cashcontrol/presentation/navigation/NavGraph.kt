@@ -1,6 +1,5 @@
 package com.jk.cashcontrol.presentation.navigation
 
-import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.PaddingValues
@@ -41,7 +40,6 @@ import com.jk.cashcontrol.presentation.transaction.TransactionInfoViewModel
 import com.jk.cashcontrol.presentation.utils.fingerprint_login.BiometricPromptManager
 import org.koin.androidx.compose.koinViewModel
 
-@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun NavGraph(
     navController: NavHostController,
