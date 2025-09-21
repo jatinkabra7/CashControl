@@ -25,7 +25,6 @@ class MainActivity : FragmentActivity() {
         enableEdgeToEdge()
         setContent {
             EntryPoint()
-
         }
     }
 }

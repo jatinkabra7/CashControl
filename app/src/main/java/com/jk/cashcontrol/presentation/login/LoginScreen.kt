@@ -59,7 +59,7 @@ val pagerItems = listOf(
     PagerItem.Logo("Cash Control", R.drawable.cash_control_logo_circle_02, ForegroundColor),
     PagerItem.Feature("Track Your Expenses", "Easily record and categorize your daily expenses to see where your money goes.", Color(0xFFC5E1A5), Color(0xFF000000)),
     PagerItem.Feature("Set Budgets", "Create custom budgets to control your spending and achieve your financial goals.", Color(0xFF80CBC4), Color(0xFF000000)),
-    PagerItem.Feature("View Reports", "Analyze your spending habits with insightful charts and reports.", Color(0xFFF48FB1), Color(0xFF000000))
+    PagerItem.Feature("View Reports", "Analyze your spending habits with statistics.", Color(0xFFF48FB1), Color(0xFF000000))
 )
 
 @OptIn(ExperimentalFoundationApi::class)

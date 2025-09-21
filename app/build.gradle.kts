@@ -7,17 +7,18 @@ plugins {
     kotlin("plugin.serialization") version "2.1.21"
     alias(libs.plugins.google.gms.google.services)
     id("kotlin-parcelize")
+    id("com.google.firebase.crashlytics")
 }
 
 android {
     namespace = "com.jk.cashcontrol"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.jk.cashcontrol"
         minSdk = 26
         targetSdk = 35
-        versionCode = 13
+        versionCode = 14
         versionName = "2.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -103,4 +104,6 @@ dependencies {
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.biometric)
     implementation("com.google.android.gms:play-services-ads:24.6.0")
+    implementation("com.google.firebase:firebase-crashlytics-ndk")
+    implementation("com.google.firebase:firebase-analytics")
 }

@@ -250,7 +250,7 @@ private fun ActionButton(
     val interactionSource = remember { MutableInteractionSource() }
     val isButtonPressed by interactionSource.collectIsPressedAsState()
 
-    var buttonScale = animateFloatAsState(
+    val buttonScale = animateFloatAsState(
         targetValue = if (isButtonPressed) 0.9f else 1f,
         animationSpec = tween(durationMillis = 100, easing = LinearEasing)
     ).value
