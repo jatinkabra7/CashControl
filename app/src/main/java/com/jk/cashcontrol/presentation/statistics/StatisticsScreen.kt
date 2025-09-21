@@ -46,6 +46,10 @@ fun StatisticsScreen(
         onAction(StatisticsAction.ReloadData)
     }
 
+    val todayState = state.createTodayState()
+    val thisMonthState = state.createThisMonthState()
+    val thisYearState = state.createThisYearState()
+
     Column(
         verticalArrangement = Arrangement.Top,
         modifier = modifier
@@ -131,9 +135,9 @@ fun StatisticsScreen(
             ) {
 
                 when (page) {
-                    0 -> TodaySection(state = state, onAction = { onAction(it) })
-                    1 -> ThisMonthSection(state = state, onAction = { onAction(it) })
-                    2 -> ThisYearSection(state = state, onAction = { onAction(it) })
+                    0 -> TodaySection(state = todayState, onAction = { onAction(it) })
+                    1 -> ThisMonthSection(state = thisMonthState, onAction = { onAction(it) })
+                    2 -> ThisYearSection(state = thisYearState, onAction = { onAction(it) })
                 }
             }
         }

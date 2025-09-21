@@ -23,13 +23,13 @@ class AddTransactionViewModel(
     private val _event = Channel<AddTransactionEvent>()
     val event = _event.receiveAsFlow()
 
-    fun onAction(action : AddTransactionAction) {
-        when(action) {
+    fun onAction(action: AddTransactionAction) {
+        when (action) {
             is AddTransactionAction.OnAmountTextFieldValueChange -> {
 
                 val newValue = action.amountTextFieldValue
 
-                if(isValidAmount(newValue)) {
+                if (isValidAmount(newValue)) {
 
                     _state.update {
                         it.copy(
@@ -44,11 +44,13 @@ class AddTransactionViewModel(
                     it.copy(isDatePickerDialogOpen = true)
                 }
             }
+
             AddTransactionAction.OnDatePickerDismiss -> {
                 _state.update {
                     it.copy(isDatePickerDialogOpen = false)
                 }
             }
+
             is AddTransactionAction.OnPickDateConfirmButton -> {
 
                 val date = action.timestamp.formatMillisToDate()
@@ -72,14 +74,17 @@ class AddTransactionViewModel(
                 viewModelScope.launch {
                     repository.insertTransaction(action.transaction)
 
-                    homeViewModel.updateExpense(expense = action.transaction.amount, type = action.transaction.type)
+                    homeViewModel.updateExpense(
+                        expense = action.transaction.amount,
+                        type = action.transaction.type
+                    )
                 }
             }
         }
     }
 
-    fun onEvent(event : AddTransactionEvent) {
-        when(event) {
+    fun onEvent(event: AddTransactionEvent) {
+        when (event) {
             is AddTransactionEvent.ShowToast -> {
                 _event.trySend(event)
             }
@@ -105,7 +110,7 @@ class AddTransactionViewModel(
         // Try parsing to float and check if it’s within limit
         return try {
             val amount = input.toFloat()
-            amount <= 999_999.99
+            amount <= 999_999_99.99
         } catch (e: NumberFormatException) {
             false
         }

@@ -12,6 +12,7 @@ interface TransactionRepository {
     suspend fun getAllTransactions() : Flow<List<Transaction>>
     suspend fun insertTransaction(transaction : Transaction) : Result<Boolean>
     suspend fun deleteTransaction(transaction : Transaction) : Result<Boolean>
+    suspend fun editTransactionName(transaction : Transaction, newName: String) : Result<Boolean>
     suspend fun getBudget() : Flow<Float>
     suspend fun getExpense() : Flow<Float>
     suspend fun updateBudget(budget : Float) : Result<Boolean>

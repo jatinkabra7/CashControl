@@ -21,7 +21,9 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -70,6 +72,7 @@ fun AppInfoScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
+            .verticalScroll(rememberScrollState())
             .padding(horizontal = dimensionResource(id = R.dimen.app_info_horizontal_padding))
     ) {
 
@@ -116,12 +119,12 @@ private fun AnimatedLogo(
         var startAnimation by rememberSaveable { mutableStateOf(false) }
 
         val animatedScale by animateFloatAsState(
-            targetValue = if(startAnimation) 1f else 2f,
+            targetValue = if (startAnimation) 1f else 2f,
             animationSpec = tween(2500, easing = FastOutSlowInEasing)
         )
 
         val animatedYOffset by animateDpAsState(
-            targetValue = if(startAnimation) 0.dp else 125.dp,
+            targetValue = if (startAnimation) 0.dp else 125.dp,
             animationSpec = tween(1500, easing = FastOutSlowInEasing)
         )
 
@@ -143,7 +146,6 @@ private fun AnimatedLogo(
     }
 
 }
-
 
 
 @Composable
@@ -182,7 +184,7 @@ private fun DetailsSection(
                 .background(gradient)
                 .padding(
                     horizontal = dimensionResource(id = R.dimen.app_info_horizontal_padding),
-                    vertical =dimensionResource(id = R.dimen.app_info_vertical_padding)
+                    vertical = dimensionResource(id = R.dimen.app_info_vertical_padding)
                 )
         ) {
             Column(
@@ -239,7 +241,7 @@ private fun DetailsSection(
                     text = "Link",
                     color = textColor,
                     textDecoration = TextDecoration.Underline,
-                    modifier = Modifier.clickable {onPrivacyPolicyClick()}
+                    modifier = Modifier.clickable { onPrivacyPolicyClick() }
                 )
             }
         }
@@ -251,7 +253,7 @@ private fun DetailsSection(
             color = textColor,
             textAlign = TextAlign.Center,
             textDecoration = TextDecoration.Underline,
-            modifier = Modifier.clickable {onSupportMeClick()}
+            modifier = Modifier.clickable { onSupportMeClick() }
         )
     }
 

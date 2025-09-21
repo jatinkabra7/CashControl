@@ -106,7 +106,7 @@ fun NavGraph(
                 navigateToHome = { navController.navigate(Route.Home) { popUpTo(0) } },
                 onAction = appLockViewModel::onAction,
                 onFingerprintClick = {
-                    if (appLockStatus == true) {
+                    if (appLockStatus) {
                         biometricPromptManager.showBiometricPromptIfAvailable(
                             title = "Login using fingerprint",
                             description = "",
@@ -138,7 +138,8 @@ fun NavGraph(
 
             val state = homeViewModel.state.collectAsStateWithLifecycle().value
 
-            val isDeletionInProgress = transactionInfoViewModel.isLoading.collectAsStateWithLifecycle().value
+            val isDeletionInProgress =
+                transactionInfoViewModel.isLoading.collectAsStateWithLifecycle().value
 
             var isTransactionInfoSheetOpen by remember { mutableStateOf(false) }
 
@@ -147,10 +148,12 @@ fun NavGraph(
                 user = user,
                 modifier = Modifier.padding(paddingValues),
                 onAction = { homeViewModel.onAction(it) },
+                onEvent = { homeViewModel.onEvent(it) },
+                event = homeViewModel.event,
                 onIncomeButtonClick = { navController.navigate(Route.AddTransaction(TransactionType.INCOME)) },
                 onExpenseButtonClick = { navController.navigate(Route.AddTransaction(TransactionType.EXPENSE)) },
                 isTransactionInfoSheetOpen = isTransactionInfoSheetOpen,
-                toggleSheet = {isTransactionInfoSheetOpen = !isTransactionInfoSheetOpen},
+                toggleSheet = { isTransactionInfoSheetOpen = !isTransactionInfoSheetOpen },
                 isDeletionInProgress = isDeletionInProgress,
                 onDeleteTransaction = { transaction ->
                     transactionInfoViewModel.deleteTransaction(
@@ -158,13 +161,21 @@ fun NavGraph(
                         transaction = transaction,
                         onSuccess = { isTransactionInfoSheetOpen = false }
                     )
+                },
+                onEditTransactionName = { transaction, newName ->
+                    transactionInfoViewModel.editTransactionName(
+                        context = context,
+                        transaction = transaction,
+                        newName = newName,
+                        onSuccess = { isTransactionInfoSheetOpen = false }
+                    )
                 }
             )
         }
 
-        composable<Route.AddTransaction> {
+        composable<Route.AddTransaction> { navBackStackEntry ->
 
-            val transactionType = it.toRoute<Route.AddTransaction>().transactionType
+            val transactionType = navBackStackEntry.toRoute<Route.AddTransaction>().transactionType
 
             val addTransactionViewModel = koinViewModel<AddTransactionViewModel>()
 
@@ -201,7 +212,8 @@ fun NavGraph(
 
             val state = historyViewModel.state.collectAsStateWithLifecycle().value
 
-            val isDeletionInProgress = transactionInfoViewModel.isLoading.collectAsStateWithLifecycle().value
+            val isDeletionInProgress =
+                transactionInfoViewModel.isLoading.collectAsStateWithLifecycle().value
 
             var isTransactionInfoSheetOpen by remember { mutableStateOf(false) }
 
@@ -211,12 +223,20 @@ fun NavGraph(
                 user = user,
                 onAction = { historyViewModel.onAction(it) },
                 isTransactionInfoSheetOpen = isTransactionInfoSheetOpen,
-                toggleSheet = {isTransactionInfoSheetOpen = !isTransactionInfoSheetOpen},
+                toggleSheet = { isTransactionInfoSheetOpen = !isTransactionInfoSheetOpen },
                 isDeletionInProgress = isDeletionInProgress,
                 onDeleteTransaction = { transaction ->
                     transactionInfoViewModel.deleteTransaction(
                         context = context,
                         transaction = transaction,
+                        onSuccess = { isTransactionInfoSheetOpen = false }
+                    )
+                },
+                onEditTransactionName = { transaction, newName ->
+                    transactionInfoViewModel.editTransactionName(
+                        context = context,
+                        transaction = transaction,
+                        newName = newName,
                         onSuccess = { isTransactionInfoSheetOpen = false }
                     )
                 }

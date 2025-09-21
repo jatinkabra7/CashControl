@@ -17,7 +17,11 @@ class TransactionInfoViewModel(
     private val _isLoading = MutableStateFlow(false)
     val isLoading = _isLoading.asStateFlow()
 
-    fun deleteTransaction(transaction: Transaction, context: Context, onSuccess: () -> Unit) {
+    fun deleteTransaction(
+        transaction: Transaction,
+        context: Context,
+        onSuccess: () -> Unit
+    ) {
 
         viewModelScope.launch {
 
@@ -28,10 +32,25 @@ class TransactionInfoViewModel(
                     onSuccess()
                 }
                 .onFailure {
-                    Toast.makeText(context,it.message, Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
                 }
 
             _isLoading.value = false
+        }
+    }
+
+    fun editTransactionName(
+        transaction: Transaction,
+        newName: String,
+        context: Context,
+        onSuccess: () -> Unit
+    ) {
+        viewModelScope.launch {
+            transactionRepository.editTransactionName(transaction, newName)
+                .onSuccess { onSuccess() }
+                .onFailure {
+                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+                }
         }
     }
 }

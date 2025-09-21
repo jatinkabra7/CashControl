@@ -19,7 +19,7 @@ class StatisticsViewModel(
     val state = _state.asStateFlow()
 
     init {
-        getTodayIncomeExpense()
+        getIncomeExpense()
     }
 
     val aiModel = GenerativeModel(
@@ -29,7 +29,7 @@ class StatisticsViewModel(
 
     val initialisingMessage = Constants.INITIALISING_MESSAGE
 
-    suspend fun getTodayReport(state : StatisticsState) {
+    suspend fun getTodayReport(state : TodayState) {
 
         val todayReport =
             "today income = ${state.todayIncome} " +
@@ -47,7 +47,7 @@ class StatisticsViewModel(
         }
     }
 
-    suspend fun getThisMonthReport(state : StatisticsState) {
+    suspend fun getThisMonthReport(state : ThisMonthState) {
 
         val thisMonthReport =
             "this month income = ${state.thisMonthIncome} " +
@@ -65,7 +65,7 @@ class StatisticsViewModel(
         }
     }
 
-    suspend fun getThisYearReport(state : StatisticsState) {
+    suspend fun getThisYearReport(state : ThisYearState) {
 
         val thisYearReport =
             "this year income = ${state.thisYearIncome} " +
@@ -83,7 +83,7 @@ class StatisticsViewModel(
         }
     }
 
-    fun getTodayIncomeExpense() {
+    fun getIncomeExpense() {
         viewModelScope.launch {
             repository.getIncomeExpense().collect { newState ->
 
@@ -111,7 +111,7 @@ class StatisticsViewModel(
         viewModelScope.launch {
 
             when (action) {
-                is StatisticsAction.ReloadData -> getTodayIncomeExpense()
+                is StatisticsAction.ReloadData -> getIncomeExpense()
                 is StatisticsAction.OnTodayGenerateSummaryClick -> {
                     _state.update {
                         it.copy(isTodaySummaryLoading = true)

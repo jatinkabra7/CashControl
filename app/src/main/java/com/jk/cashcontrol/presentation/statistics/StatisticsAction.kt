@@ -1,8 +1,8 @@
 package com.jk.cashcontrol.presentation.statistics
 
 interface StatisticsAction {
-    data class OnTodayGenerateSummaryClick(val state : StatisticsState) : StatisticsAction
-    data class OnThisMonthGenerateSummaryClick(val state : StatisticsState) : StatisticsAction
-    data class OnThisYearGenerateSummaryClick(val state : StatisticsState) : StatisticsAction
+    data class OnTodayGenerateSummaryClick(val state : TodayState) : StatisticsAction
+    data class OnThisMonthGenerateSummaryClick(val state : ThisMonthState) : StatisticsAction
+    data class OnThisYearGenerateSummaryClick(val state : ThisYearState) : StatisticsAction
     data object ReloadData : StatisticsAction
 }

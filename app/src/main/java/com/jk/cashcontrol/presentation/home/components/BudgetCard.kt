@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -37,25 +38,31 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jk.cashcontrol.R
 import com.jk.cashcontrol.presentation.home.HomeActions
 import com.jk.cashcontrol.presentation.theme.ButtonColor
+import com.jk.cashcontrol.presentation.theme.CustomDarkOrange
+import com.jk.cashcontrol.presentation.theme.CustomGreen
+import com.jk.cashcontrol.presentation.theme.CustomYellow
 import com.jk.cashcontrol.presentation.theme.ForegroundColor
 import com.jk.cashcontrol.presentation.theme.ProgressBarColor
 import com.jk.cashcontrol.presentation.theme.ProgressBarTrackColor
+import kotlin.math.exp
 
 @Composable
 fun BudgetCard(
-    modifier: Modifier = Modifier,
     expense: Float,
     budget: Float,
     remaining: Float,
-    onAction: (HomeActions) -> Unit
+    onAction: (HomeActions) -> Unit,
+    modifier: Modifier = Modifier
 ) {
 
     val progress = if (budget == 0f) 0f else expense / budget
@@ -74,6 +81,14 @@ fun BudgetCard(
         targetValue = budget,
         animationSpec = tween(durationMillis = 1000, easing = EaseInOut)
     )
+
+    val expensePercent = (progress * 100).toInt()
+
+    val expenseIndicatorColor = when {
+        expensePercent <= 33 -> CustomGreen
+        expensePercent <= 66 -> CustomYellow
+        else -> CustomDarkOrange
+    }
 
     Card(
         colors = CardDefaults.cardColors(
@@ -153,20 +168,35 @@ fun BudgetCard(
                     horizontal = dimensionResource(id = R.dimen.budget_card_horizontal_padding)
                 )
         ) {
-            Text(
-                text = (progress * 100).toInt().toString() + "%",
-                style = MaterialTheme.typography.labelLarge,
-                fontSize = 16.sp,
-                color = Color.White.copy(0.8f),
-                fontWeight = FontWeight.Thin
-            )
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "$expensePercent%",
+                    style = MaterialTheme.typography.labelLarge,
+                    fontSize = 16.sp,
+                    color = Color.White.copy(0.8f),
+                    fontWeight = FontWeight.Light
+                )
+
+                Spacer(Modifier.width(dimensionResource(id = R.dimen.budget_card_spacer_extra_small)))
+
+                // Expense Indicator
+                Box(
+                    modifier = Modifier
+                        .size(10.dp)
+                        .clip(CircleShape)
+                        .background(expenseIndicatorColor)
+                )
+            }
 
             Text(
                 text = "Remaining: $remaining",
                 style = MaterialTheme.typography.labelLarge,
                 fontSize = 16.sp,
                 color = Color.White.copy(0.8f),
-                fontWeight = FontWeight.Thin
+                fontWeight = FontWeight.Light
             )
         }
 
@@ -182,7 +212,9 @@ fun BudgetCard(
                 textStyle = MaterialTheme.typography.labelLarge,
                 fontWeight = FontWeight.Light,
                 icon = Icons.Default.Add,
-                onClick = { onAction(HomeActions.OnNewBudgetClick) },
+                onClick = {
+                    onAction(HomeActions.OnNewBudgetClick)
+                },
                 cornerRadius = dimensionResource(id = R.dimen.budget_card_button_corner_radius)
             )
 
@@ -219,7 +251,7 @@ private fun ActionButton(
     val isButtonPressed by interactionSource.collectIsPressedAsState()
 
     var buttonScale = animateFloatAsState(
-        targetValue = if(isButtonPressed) 0.9f else 1f,
+        targetValue = if (isButtonPressed) 0.9f else 1f,
         animationSpec = tween(durationMillis = 100, easing = LinearEasing)
     ).value
 

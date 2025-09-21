@@ -10,8 +10,6 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,10 +18,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -41,15 +37,15 @@ import androidx.compose.ui.unit.sp
 import com.jk.cashcontrol.R
 import com.jk.cashcontrol.presentation.statistics.StatisticsAction
 import com.jk.cashcontrol.presentation.statistics.StatisticsState
+import com.jk.cashcontrol.presentation.statistics.TodayState
 import com.jk.cashcontrol.presentation.theme.CustomLightBlue
 import com.jk.cashcontrol.presentation.theme.CustomPink
-import com.jk.cashcontrol.presentation.utils.parseMarkdown
 
 @Composable
 fun TodaySection(
-    modifier: Modifier = Modifier,
-    state: StatisticsState,
-    onAction: (StatisticsAction) -> Unit
+    state: TodayState,
+    onAction: (StatisticsAction) -> Unit,
+    modifier: Modifier = Modifier
 ) {
 
     val scrollState = rememberScrollState()

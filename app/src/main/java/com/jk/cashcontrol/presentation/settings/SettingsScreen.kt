@@ -6,7 +6,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -44,9 +46,9 @@ fun SettingsScreen(
 
     var isDeleteAccountDialogVisible by rememberSaveable { mutableStateOf(false) }
 
-    if(isDeleteAccountDialogVisible) {
+    if (isDeleteAccountDialogVisible) {
         AlertDialog(
-            onDismissRequest = {isDeleteAccountDialogVisible = false},
+            onDismissRequest = { isDeleteAccountDialogVisible = false },
             title = {
                 Text(
                     text = "DELETE ACCOUNT",
@@ -75,12 +77,12 @@ fun SettingsScreen(
                     onClick = onDeleteAccount
                 ) {
                     Text(
-                        text = if(!isAccountDeleting) "Delete" else "Deleting"
+                        text = if (!isAccountDeleting) "Delete" else "Deleting"
                     )
                 }
             },
             dismissButton = {
-                if(!isAccountDeleting) {
+                if (!isAccountDeleting) {
                     TextButton(
                         onClick = { isDeleteAccountDialogVisible = false }
                     ) {
@@ -96,6 +98,7 @@ fun SettingsScreen(
     Column(
         modifier = modifier
             .fillMaxHeight()
+            .verticalScroll(rememberScrollState())
             .clip(RoundedCornerShape(topStart = 20.dp, bottomStart = 20.dp))
             .background(BackgroundColor)
             .padding(10.dp)
@@ -130,10 +133,9 @@ fun SettingsScreen(
             showSwitch = true,
             isSwitchEnabled = appLockStatus,
             onClick = {
-                if(appLockStatus == false) {
+                if (appLockStatus == false) {
                     navigateToAppLockScreen()
-                }
-                else onAction(SettingsActions.ToggleAppLockStatus)
+                } else onAction(SettingsActions.ToggleAppLockStatus)
             }
         )
 

@@ -129,6 +129,29 @@ class TransactionRepositoryImpl(
         }
     }
 
+    override suspend fun editTransactionName(transaction: Transaction, newName: String): Result<Boolean> {
+        return try {
+
+            val snapshot = transactionsCollection
+                .whereEqualTo("timestampMillis", transaction.timestampMillis)
+                .get()
+                .await()
+
+            if(snapshot.isEmpty) {
+                return Result.failure(Exception("Transaction Not Found"))
+            }
+
+            for (document in snapshot) {
+                document.reference.update("name",newName).await()
+            }
+
+            Result.success(true)
+
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
     override suspend fun getBudget(): Flow<Float> {
         return flow {
             try {

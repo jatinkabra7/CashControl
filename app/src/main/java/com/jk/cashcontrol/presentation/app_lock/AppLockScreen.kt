@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -64,6 +66,7 @@ fun AppLockScreen(
                     stage = AppLockStage.CONFIRM
                     message = getStageMessage(stage)
                 }
+
                 AppLockStage.CONFIRM -> {
                     if (pin == setupPin) {
                         delay(1500)
@@ -72,16 +75,19 @@ fun AppLockScreen(
                         navigateUp()
                     } else {
                         pin = ""
-                        Toast.makeText(context, "Incorrect pin, try again", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Incorrect pin, try again", Toast.LENGTH_SHORT)
+                            .show()
                     }
                 }
+
                 AppLockStage.LOGIN -> {
                     if (pin == correctPin) {
                         delay(1500)
                         navigateToHome()
                     } else {
                         pin = ""
-                        Toast.makeText(context, "Incorrect pin, try again", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Incorrect pin, try again", Toast.LENGTH_SHORT)
+                            .show()
                     }
                 }
             }
@@ -93,6 +99,7 @@ fun AppLockScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
             .fillMaxSize()
+            .verticalScroll(rememberScrollState())
             .windowInsetsPadding(WindowInsets.systemBars)
             .padding(horizontal = dimensionResource(id = R.dimen.app_lock_horizontal_padding))
     ) {

@@ -105,22 +105,24 @@ fun AddTransactionScreen(
         )
 
         AmountSection(
-            state = state,
+            amount = state.amountTextFieldValue,
             onAction = { onAction(it) }
         )
 
         NameSection(
-            state = state,
+            transactionName = state.nameTextFieldValue,
             onAction = { onAction(it) }
         )
 
         CategorySection(
-            state = state,
+            transactionType = state.transactionType,
+            transactionCategory = state.category,
             onAction = { onAction(it) }
         )
 
         DatePickerSection(
-            state = state,
+            isDatePickerDialogOpen = state.isDatePickerDialogOpen,
+            timestamp = state.timestamp,
             onAction = { onAction(it) }
         )
 
@@ -172,7 +174,7 @@ fun AddTransactionScreen(
 
 @Composable
 private fun AmountSection(
-    state: AddTransactionState,
+    amount: String,
     onAction: (AddTransactionAction) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -189,7 +191,7 @@ private fun AmountSection(
         ) {
             TextField(
                 modifier = Modifier.fillMaxWidth(),
-                value = state.amountTextFieldValue,
+                value = amount,
                 placeholder = {
                     Text(
                         text = "Enter Amount",
@@ -226,7 +228,7 @@ private fun AmountSection(
 
 @Composable
 private fun NameSection(
-    state: AddTransactionState,
+    transactionName: String,
     onAction: (AddTransactionAction) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -243,7 +245,7 @@ private fun NameSection(
         ) {
             TextField(
                 modifier = Modifier.fillMaxWidth(),
-                value = if (state.nameTextFieldValue == "New Transaction") "" else state.nameTextFieldValue,
+                value = if (transactionName == "New Transaction") "" else transactionName,
                 placeholder = {
                     Text(
                         text = "Transaction Name",
@@ -279,11 +281,12 @@ private fun NameSection(
 
 @Composable
 private fun CategorySection(
-    state: AddTransactionState,
+    transactionType: TransactionType?,
+    transactionCategory: String,
     onAction: (AddTransactionAction) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val incomeCategories = listOf<Category>(
+    val incomeCategories = listOf(
         Category(name = "Salary", icon = R.drawable.salary),
         Category(name = "Business", icon = R.drawable.business),
         Category(name = "Investment", icon = R.drawable.investment),
@@ -291,7 +294,7 @@ private fun CategorySection(
         Category(name = "Other", icon = R.drawable.other),
     )
 
-    val expenseCategories = listOf<Category>(
+    val expenseCategories = listOf(
         Category(name = "Food", icon = R.drawable.food),
         Category(name = "Business", icon = R.drawable.business),
         Category(name = "Movies", icon = R.drawable.entertainment),
@@ -303,7 +306,7 @@ private fun CategorySection(
     )
 
     val categories =
-        if (state.transactionType == TransactionType.INCOME) incomeCategories
+        if (transactionType == TransactionType.INCOME) incomeCategories
         else expenseCategories
 
     Column(modifier.padding(dimensionResource(id = R.dimen.add_transaction_padding_medium))) {
@@ -345,14 +348,14 @@ private fun CategorySection(
                     categories.forEach { category ->
                         Card(
                             colors = CardDefaults.cardColors(
-                                containerColor = if (state.category == category.name) Color.White.copy(
+                                containerColor = if (transactionCategory == category.name) Color.White.copy(
                                     0.1f
                                 ) else Color.Transparent,
                                 disabledContainerColor = Color.Transparent
                             ),
                             border = BorderStroke(
                                 width = 1.dp,
-                                color = if (state.category == category.name) Color.White else Color.Transparent,
+                                color = if (transactionCategory == category.name) Color.White else Color.Transparent,
                             ),
                             modifier = Modifier
                                 .width(100.dp)
@@ -398,7 +401,8 @@ fun LocalDateTime.toMillis() =
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DatePickerSection(
-    state: AddTransactionState,
+    isDatePickerDialogOpen: Boolean,
+    timestamp: String,
     onAction: (AddTransactionAction) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -412,7 +416,7 @@ private fun DatePickerSection(
         initialDisplayedMonthMillis = null
     )
 
-    if (state.isDatePickerDialogOpen) {
+    if (isDatePickerDialogOpen) {
 
         DatePickerDialog(
             onDismissRequest = { onAction(AddTransactionAction.OnDatePickerDismiss) },
@@ -498,7 +502,7 @@ private fun DatePickerSection(
                     .fillMaxWidth()
             ) {
                 Text(
-                    text = state.timestamp,
+                    text = timestamp,
                     fontWeight = FontWeight.Normal,
                     fontSize = 22.sp,
                     color = Color.White.copy(0.7f),

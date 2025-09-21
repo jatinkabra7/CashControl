@@ -55,6 +55,7 @@ fun HistoryScreen(
     toggleSheet: () -> Unit,
     isDeletionInProgress: Boolean,
     onDeleteTransaction: (Transaction) -> Unit,
+    onEditTransactionName: (Transaction, newName: String) -> Unit,
     modifier: Modifier = Modifier
 ) {
 
@@ -66,7 +67,7 @@ fun HistoryScreen(
 
     val bottomSheetState = rememberModalBottomSheetState()
 
-    if(isTransactionInfoSheetOpen && selectedTransaction != null) {
+    if (isTransactionInfoSheetOpen && selectedTransaction != null) {
         ModalBottomSheet(
             sheetState = bottomSheetState,
             onDismissRequest = toggleSheet,
@@ -76,8 +77,9 @@ fun HistoryScreen(
         ) {
             TransactionInfoCard(
                 transaction = selectedTransaction!!,
-                onDeleteTransaction = {
-                    onDeleteTransaction(it)
+                onDeleteTransaction = { onDeleteTransaction(it) },
+                onEditTransactionName = { transaction, newName ->
+                    onEditTransactionName(transaction, newName)
                 },
                 isLoading = isDeletionInProgress
             )

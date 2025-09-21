@@ -9,7 +9,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,6 +19,8 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -28,6 +29,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.SuggestionChipDefaults
 import androidx.compose.material3.Text
@@ -45,7 +47,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalWindowInfo
@@ -67,6 +68,7 @@ import com.jk.cashcontrol.presentation.theme.ForegroundColor
 fun TransactionInfoCard(
     transaction: Transaction,
     onDeleteTransaction: (Transaction) -> Unit,
+    onEditTransactionName: (Transaction, newName: String) -> Unit,
     isLoading: Boolean,
     modifier: Modifier = Modifier
 ) {
@@ -80,10 +82,12 @@ fun TransactionInfoCard(
         else '-'
 
     var isDeleteTransactionDialogVisible by rememberSaveable { mutableStateOf(false) }
+    var isEditTransactionNameDialogVisible by rememberSaveable { mutableStateOf(false) }
+    var tName by remember { mutableStateOf(transaction.name) }
 
-    if(isDeleteTransactionDialogVisible) {
+    if (isDeleteTransactionDialogVisible) {
         AlertDialog(
-            onDismissRequest = {isDeleteTransactionDialogVisible = false},
+            onDismissRequest = { isDeleteTransactionDialogVisible = false },
             title = {
                 Text(
                     text = "Delete this transaction?",
@@ -99,13 +103,13 @@ fun TransactionInfoCard(
                     }
                 ) {
                     Text(
-                        text = if(!isLoading) "Delete" else "Deleting",
-                        color = Color.White
+                        text = if (!isLoading) "Delete" else "Deleting",
+                        color = if (!isLoading) Color.White else Color.DarkGray
                     )
                 }
             },
             dismissButton = {
-                if(!isLoading) {
+                if (!isLoading) {
                     TextButton(
                         onClick = { isDeleteTransactionDialogVisible = false }
                     ) {
@@ -114,6 +118,50 @@ fun TransactionInfoCard(
                             color = Color.White
                         )
                     }
+                }
+            },
+            containerColor = ForegroundColor
+        )
+    } else if (isEditTransactionNameDialogVisible) {
+        AlertDialog(
+            onDismissRequest = { isEditTransactionNameDialogVisible = false },
+            title = {
+                Text(
+                    text = "Edit Transaction Name",
+                    style = MaterialTheme.typography.titleLarge
+                )
+            },
+            text = {
+                OutlinedTextField(
+                    value = tName,
+                    onValueChange = { tName = it },
+                    singleLine = true
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    enabled = tName.length >= 3,
+                    onClick = {
+                        onEditTransactionName(transaction, tName)
+                        isEditTransactionNameDialogVisible = false
+                    }
+                ) {
+                    Text(
+                        text = "Save",
+                        color = if (tName.length >= 3) Color.White else Color.DarkGray
+                    )
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = {
+                        isEditTransactionNameDialogVisible = false
+                    }
+                ) {
+                    Text(
+                        text = "Cancel",
+                        color = Color.White
+                    )
                 }
 
             },
@@ -173,7 +221,16 @@ fun TransactionInfoCard(
         ) {
             CardItem(
                 title = "Name",
-                content = transaction.name
+                content = transaction.name,
+                actionButton = {
+                    IconButton(onClick = { isEditTransactionNameDialogVisible = true }) {
+                        Icon(
+                            imageVector = Icons.Default.Edit,
+                            contentDescription = "Edit Name",
+                            tint = Color.White
+                        )
+                    }
+                }
             )
 
             HorizontalDivider()
@@ -193,8 +250,6 @@ fun TransactionInfoCard(
         )
 
         Spacer(Modifier.height(10.dp))
-
-
     }
 }
 
@@ -202,31 +257,48 @@ fun TransactionInfoCard(
 private fun CardItem(
     title: String,
     content: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    actionButton: @Composable () -> Unit = {}
 ) {
-   Column(
-       verticalArrangement = Arrangement.Center,
-       modifier = modifier
-           .fillMaxWidth()
-           .padding(10.dp)
-   ) {
-       Text(
-           text = title,
-           style = MaterialTheme.typography.labelLarge,
-           fontWeight = FontWeight.Normal,
-           color = Color.Gray
-       )
+    Column(
+        verticalArrangement = Arrangement.Center,
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(10.dp)
+    ) {
 
-       Spacer(Modifier.height(5.dp))
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
+        ) {
 
-       Text(
-           text = content,
-           style = MaterialTheme.typography.bodyLarge,
-           fontWeight = FontWeight.Normal,
-           color = Color.White,
-           overflow = Ellipsis
-       )
-   }
+            Column {
+
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.labelLarge,
+                    fontWeight = FontWeight.Normal,
+                    color = Color.Gray
+                )
+
+                Spacer(Modifier.height(5.dp))
+
+                Text(
+                    text = content,
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Normal,
+                    color = Color.White,
+                    overflow = Ellipsis
+                )
+            }
+
+            actionButton()
+        }
+
+
+        Spacer(Modifier.height(5.dp))
+    }
 }
 
 @Composable
@@ -241,16 +313,16 @@ private fun DeleteTransactionSection(
         initialValue = -400f,
         targetValue = 1000f,
         animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 5000, easing = LinearEasing),
+            animation = tween(durationMillis = 2500, easing = LinearEasing),
             repeatMode = RepeatMode.Restart
         ),
         label = "gradientAnimation"
     )
 
     val gradient = Brush.linearGradient(
-        colors = listOf(Color.Black,Color.White,Color.Black),
-        start = Offset(animatedOffset - 400f,0f),
-        end = Offset(animatedOffset + 400f,0f)
+        colors = listOf(Color.Black, Color.White, Color.Black),
+        start = Offset(animatedOffset - 400f, 0f),
+        end = Offset(animatedOffset + 400f, 0f)
     )
 
     var swipingOffsetX by remember { mutableFloatStateOf(0f) }
@@ -271,7 +343,7 @@ private fun DeleteTransactionSection(
                 brush = gradient
             ),
             fontSize = 20.sp,
-            fontWeight = FontWeight.Thin,
+            fontWeight = FontWeight.Light,
             modifier = Modifier.align(Alignment.Center)
         )
 

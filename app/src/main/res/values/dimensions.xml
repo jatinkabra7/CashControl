@@ -37,6 +37,7 @@
 
     <!-- Spacers -->
     <dimen name="income_expense_card_spacer">10dp</dimen>
+    <dimen name="budget_card_spacer_extra_small">5dp</dimen>
     <dimen name="budget_card_spacer_small">10dp</dimen>
     <dimen name="budget_card_spacer_medium">16dp</dimen>
     <dimen name="budget_card_spacer_large">20dp</dimen>

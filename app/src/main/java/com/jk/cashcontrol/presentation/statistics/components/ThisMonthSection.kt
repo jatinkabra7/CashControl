@@ -41,15 +41,16 @@ import androidx.compose.ui.unit.sp
 import com.jk.cashcontrol.R
 import com.jk.cashcontrol.presentation.statistics.StatisticsAction
 import com.jk.cashcontrol.presentation.statistics.StatisticsState
+import com.jk.cashcontrol.presentation.statistics.ThisMonthState
 import com.jk.cashcontrol.presentation.theme.CustomLightBlue
 import com.jk.cashcontrol.presentation.theme.CustomPink
 import com.jk.cashcontrol.presentation.utils.parseMarkdown
 
 @Composable
 fun ThisMonthSection(
-    modifier: Modifier = Modifier,
-    state : StatisticsState,
-    onAction : (StatisticsAction) -> Unit
+    state : ThisMonthState,
+    onAction : (StatisticsAction) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val scrollState = rememberScrollState()
     Column(
