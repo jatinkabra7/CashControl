@@ -44,6 +44,7 @@ import org.koin.androidx.compose.koinViewModel
 fun NavGraph(
     navController: NavHostController,
     paddingValues: PaddingValues,
+    bannerAd: @Composable () -> Unit,
     homeViewModel: HomeViewModel = koinViewModel(),
     loginViewModel: LoginViewModel = koinViewModel(),
     historyViewModel: HistoryViewModel = koinViewModel(),
@@ -52,6 +53,7 @@ fun NavGraph(
     settingsViewModel: SettingsViewModel = koinViewModel(),
     appLockViewModel: AppLockViewModel = koinViewModel()
 ) {
+
     val context = LocalContext.current
 
     val activity = context as FragmentActivity
@@ -259,6 +261,7 @@ fun NavGraph(
             ProfileScreen(
                 user = appUser,
                 appLockStatus = appLockStatus!!,
+                bannerAd = bannerAd,
                 onAction = settingsViewModel::onAction,
                 navigateToAppInfoScreen = { navController.navigate(Route.AppInfo) },
                 navigateToAppLockScreen = { navController.navigate(Route.AppLock) },
@@ -287,7 +290,6 @@ fun NavGraph(
         }
 
         composable<Route.AppInfo> {
-
             AppInfoScreen(
                 navigateUp = { navController.navigateUp() },
                 modifier = Modifier.padding(paddingValues)

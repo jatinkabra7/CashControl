@@ -101,7 +101,6 @@ dependencies {
     implementation(libs.firebase.analytics)
     implementation(libs.androidx.material3.adaptive.navigation.suite)
     implementation(libs.accompanist.permissions)
-    implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.biometric)
     implementation("com.google.android.gms:play-services-ads:24.6.0")
     implementation("com.google.firebase:firebase-crashlytics-ndk")

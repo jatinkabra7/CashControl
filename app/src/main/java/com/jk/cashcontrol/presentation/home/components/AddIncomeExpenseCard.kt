@@ -105,7 +105,6 @@ fun AddIncomeExpenseCard(
                     .weight(1f)
             )
         }
-
     }
 }
 
