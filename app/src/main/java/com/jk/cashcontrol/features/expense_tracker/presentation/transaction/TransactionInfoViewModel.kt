@@ -1,0 +1,56 @@
+package com.jk.cashcontrol.features.expense_tracker.presentation.transaction
+
+import android.content.Context
+import android.widget.Toast
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.jk.cashcontrol.features.expense_tracker.domain.model.Transaction
+import com.jk.cashcontrol.features.expense_tracker.domain.repository.TransactionRepository
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+
+class TransactionInfoViewModel(
+    private val transactionRepository: TransactionRepository
+) : ViewModel() {
+
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading = _isLoading.asStateFlow()
+
+    fun deleteTransaction(
+        transaction: Transaction,
+        context: Context,
+        onSuccess: () -> Unit
+    ) {
+
+        viewModelScope.launch {
+
+            _isLoading.value = true
+
+            transactionRepository.deleteTransaction(transaction)
+                .onSuccess {
+                    onSuccess()
+                }
+                .onFailure {
+                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+                }
+
+            _isLoading.value = false
+        }
+    }
+
+    fun editTransactionName(
+        transaction: Transaction,
+        newName: String,
+        context: Context,
+        onSuccess: () -> Unit
+    ) {
+        viewModelScope.launch {
+            transactionRepository.editTransactionName(transaction, newName)
+                .onSuccess { onSuccess() }
+                .onFailure {
+                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+                }
+        }
+    }
+}

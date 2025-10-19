@@ -1,0 +1,145 @@
+package com.jk.cashcontrol.features.expense_tracker.presentation.statistics
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.google.ai.client.generativeai.GenerativeModel
+import com.jk.cashcontrol.BuildConfig
+import com.jk.cashcontrol.features.expense_tracker.domain.repository.TransactionRepository
+import com.jk.cashcontrol.core.presentation.utils.Constants
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+
+class StatisticsViewModel(
+    private val repository: TransactionRepository
+) : ViewModel() {
+
+    private val _state = MutableStateFlow(StatisticsState())
+    val state = _state.asStateFlow()
+
+    init {
+        getIncomeExpense()
+    }
+
+    val aiModel = GenerativeModel(
+        modelName = "gemini-2.5-flash",
+        apiKey = BuildConfig.GEMINI_API_KEY
+    )
+
+    val initialisingMessage = Constants.INITIALISING_MESSAGE
+
+    suspend fun getTodayReport(state : TodayState) {
+
+        val todayReport =
+            "today income = ${state.todayIncome} " +
+                    "today expense = ${state.todayExpense} " +
+                    "today top income category = ${state.todayTopIncomeCategory} " +
+                    "today top expense category = ${state.todayTopExpenseCategory}"
+
+        val response = aiModel.startChat().sendMessage(initialisingMessage + todayReport).text?: "Something Went Wrong."
+
+        _state.update {
+            it.copy(
+                isTodaySummaryGenerated = true,
+                todayGeneratedSummary = response
+            )
+        }
+    }
+
+    suspend fun getThisMonthReport(state : ThisMonthState) {
+
+        val thisMonthReport =
+            "this month income = ${state.thisMonthIncome} " +
+                    "this month expense = ${state.thisMonthExpense} " +
+                    "this month top income category = ${state.thisMonthTopIncomeCategory} " +
+                    "this month top expense category = ${state.thisMonthTopExpenseCategory}"
+
+        val response = aiModel.startChat().sendMessage(initialisingMessage + thisMonthReport).text?: "Something Went Wrong."
+
+        _state.update {
+            it.copy(
+                isThisMonthSummaryGenerated = true,
+                thisMonthGeneratedSummary = response
+            )
+        }
+    }
+
+    suspend fun getThisYearReport(state : ThisYearState) {
+
+        val thisYearReport =
+            "this year income = ${state.thisYearIncome} " +
+                    "this year expense = ${state.thisYearExpense} " +
+                    "this year top income category = ${state.thisYearTopIncomeCategory} " +
+                    "this year top expense category = ${state.thisYearTopExpenseCategory}"
+
+        val response = aiModel.startChat().sendMessage(initialisingMessage + thisYearReport).text?: "Something Went Wrong."
+
+        _state.update {
+            it.copy(
+                isThisYearSummaryGenerated = true,
+                thisYearGeneratedSummary = response
+            )
+        }
+    }
+
+    fun getIncomeExpense() {
+        viewModelScope.launch {
+            repository.getIncomeExpense().collect { newState ->
+
+                _state.update {
+                    it.copy(
+                        todayIncome = newState.todayIncome,
+                        todayExpense = newState.todayExpense,
+                        thisMonthIncome = newState.thisMonthIncome,
+                        thisMonthExpense = newState.thisMonthExpense,
+                        thisYearIncome = newState.thisYearIncome,
+                        thisYearExpense = newState.thisYearExpense,
+                        todayTopIncomeCategory = newState.todayTopIncomeCategory,
+                        todayTopExpenseCategory = newState.todayTopExpenseCategory,
+                        thisMonthTopIncomeCategory = newState.thisMonthTopIncomeCategory,
+                        thisMonthTopExpenseCategory = newState.thisMonthTopExpenseCategory,
+                        thisYearTopIncomeCategory = newState.thisYearTopIncomeCategory,
+                        thisYearTopExpenseCategory = newState.thisYearTopExpenseCategory
+                    )
+                }
+            }
+        }
+    }
+
+    fun onAction(action: StatisticsAction) {
+        viewModelScope.launch {
+
+            when (action) {
+                is StatisticsAction.ReloadData -> getIncomeExpense()
+                is StatisticsAction.OnTodayGenerateSummaryClick -> {
+                    _state.update {
+                        it.copy(isTodaySummaryLoading = true)
+                    }
+                    getTodayReport(action.state)
+
+                    _state.update {
+                        it.copy(isTodaySummaryLoading = false)
+                    }
+
+                }
+                is StatisticsAction.OnThisMonthGenerateSummaryClick -> {
+                    _state.update {
+                        it.copy(isThisMonthSummaryLoading = true)
+                    }
+                    getThisMonthReport(action.state)
+
+                    _state.update {
+                        it.copy(isThisMonthSummaryLoading = false)
+                    }
+
+                }
+                is StatisticsAction.OnThisYearGenerateSummaryClick -> {
+                    _state.update { it.copy(isThisYearSummaryLoading = true) }
+                    getThisYearReport(action.state)
+                    _state.update { it.copy(isThisYearSummaryLoading = false) }
+                }
+            }
+        }
+    }
+}
