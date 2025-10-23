@@ -1,10 +1,10 @@
 package com.jk.cashcontrol.features.expense_tracker.presentation.history
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.firestore.DocumentSnapshot
 import com.jk.cashcontrol.features.expense_tracker.data.repository.PAGE_SIZE
+import com.jk.cashcontrol.features.expense_tracker.domain.model.Transaction
 import com.jk.cashcontrol.features.expense_tracker.domain.repository.TransactionRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -26,6 +26,34 @@ class HistoryViewModel(
         getAllPaginatedTransactions()
     }
 
+    fun addTransaction(transaction: Transaction) {
+        _state.update {
+            it.copy(
+                allTransactions = listOf(transaction) + it.allTransactions
+            )
+        }
+    }
+
+    fun editTransactionName(transaction: Transaction, newName: String) {
+        _state.update { historyState ->
+            historyState.copy(
+                allTransactions = historyState.allTransactions.map { it ->
+                    if(it == transaction) {
+                        it.copy(name = newName)
+                    } else it
+                }
+            )
+        }
+    }
+
+    fun deleteTransaction(transaction: Transaction) {
+        _state.update {
+            it.copy(
+                allTransactions = it.allTransactions.minus(transaction)
+            )
+        }
+    }
+
     fun getAllPaginatedTransactions() {
         if(state.value.isLoading || isLastPageReached) {
             return
@@ -34,7 +62,6 @@ class HistoryViewModel(
             _state.update { it.copy(isLoading = true) }
             repository.getTransactionPage(lastVisibleDocument)
                 .onSuccess { page ->
-                    Log.i("Paginated transactions -> ",  "fetched 10 items")
                     _state.update { it.copy(
                         allTransactions = it.allTransactions + page.transactions,
                         isLoading = false

@@ -109,7 +109,7 @@ fun HistoryScreen(
 
     val focusManager = LocalFocusManager.current
 
-    LaunchedEffect(listState) {
+    LaunchedEffect(Unit) {
         snapshotFlow { listState.layoutInfo }
             .collect { layoutInfo ->
                 val lastVisibleItems = layoutInfo.visibleItemsInfo.lastOrNull()

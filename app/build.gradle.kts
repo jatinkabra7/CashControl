@@ -17,7 +17,7 @@ android {
     defaultConfig {
         applicationId = "com.jk.cashcontrol"
         minSdk = 26
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 14
         versionName = "2.0"
 
@@ -102,7 +102,7 @@ dependencies {
     implementation(libs.androidx.material3.adaptive.navigation.suite)
     implementation(libs.accompanist.permissions)
     implementation(libs.androidx.biometric)
-    implementation("com.google.android.gms:play-services-ads:24.6.0")
-    implementation("com.google.firebase:firebase-crashlytics-ndk")
-    implementation("com.google.firebase:firebase-analytics")
+    implementation(libs.play.services.ads)
+    implementation(libs.firebase.crashlytics.ndk)
+    implementation(libs.google.firebase.analytics)
 }

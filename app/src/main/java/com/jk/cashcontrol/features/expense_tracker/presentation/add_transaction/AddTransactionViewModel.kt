@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jk.cashcontrol.features.expense_tracker.domain.model.TransactionType
 import com.jk.cashcontrol.features.expense_tracker.domain.repository.TransactionRepository
+import com.jk.cashcontrol.features.expense_tracker.presentation.history.HistoryViewModel
 import com.jk.cashcontrol.features.expense_tracker.presentation.home.HomeViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,7 +15,7 @@ import kotlinx.coroutines.launch
 
 class AddTransactionViewModel(
     private val repository: TransactionRepository,
-    private val homeViewModel: HomeViewModel
+    private val homeViewModel: HomeViewModel,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(AddTransactionState())
@@ -73,7 +74,6 @@ class AddTransactionViewModel(
             is AddTransactionAction.OnSubmit -> {
                 viewModelScope.launch {
                     repository.insertTransaction(action.transaction)
-
                     homeViewModel.updateExpense(
                         expense = action.transaction.amount,
                         type = action.transaction.type

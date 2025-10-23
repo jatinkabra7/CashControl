@@ -19,9 +19,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -38,6 +35,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -209,7 +207,7 @@ fun BudgetCard(
                 title = "New Budget",
                 textStyle = MaterialTheme.typography.labelLarge,
                 fontWeight = FontWeight.Light,
-                icon = Icons.Default.Add,
+                icon = ImageVector.vectorResource(R.drawable.outline_add_24),
                 onClick = {
                     onAction(HomeActions.OnNewBudgetClick)
                 },
@@ -223,7 +221,7 @@ fun BudgetCard(
                 title = "Edit Budget",
                 textStyle = MaterialTheme.typography.labelLarge,
                 fontWeight = FontWeight.Light,
-                icon = Icons.Default.Edit,
+                icon = ImageVector.vectorResource(R.drawable.edit),
                 onClick = { onAction(HomeActions.OnEditBudgetClick) },
                 cornerRadius = dimensionResource(id = R.dimen.budget_card_button_corner_radius)
             )
