@@ -1,12 +1,13 @@
 package com.jk.cashcontrol.features.expense_tracker.presentation.history
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.firestore.DocumentSnapshot
+import com.jk.cashcontrol.features.expense_tracker.data.repository.PAGE_SIZE
 import com.jk.cashcontrol.features.expense_tracker.domain.repository.TransactionRepository
-import com.jk.cashcontrol.features.expense_tracker.presentation.add_transaction.toMillis
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -17,41 +18,43 @@ class HistoryViewModel(
     private val _state = MutableStateFlow(HistoryState())
     val state = _state.asStateFlow()
 
+    private var lastVisibleDocument: DocumentSnapshot? = null
+
+    private var isLastPageReached = false
+
     init {
-        getAllTransactions()
+        getAllPaginatedTransactions()
     }
 
-    fun getAllTransactions() {
+    fun getAllPaginatedTransactions() {
+        if(state.value.isLoading || isLastPageReached) {
+            return
+        }
         viewModelScope.launch {
-            repository.getAllTransactions()
-                .distinctUntilChanged()
-                .collect { transactions ->
-                val allTransactions = transactions
-                    .sortedWith(
-                        Comparator { t1, t2 ->
-                            val t1DateMillis = t1.timestamp.toMillis()
-                            val t2DateMillis = t2.timestamp.toMillis()
+            _state.update { it.copy(isLoading = true) }
+            repository.getTransactionPage(lastVisibleDocument)
+                .onSuccess { page ->
+                    Log.i("Paginated transactions -> ",  "fetched 10 items")
+                    _state.update { it.copy(
+                        allTransactions = it.allTransactions + page.transactions,
+                        isLoading = false
+                    ) }
 
-                            val dateCompare = t2DateMillis.compareTo(t1DateMillis)
+                    lastVisibleDocument = page.lastVisibleDocument
 
-                            if (dateCompare != 0) {
-                                dateCompare
-                            } else {
-                                t2.timestampMillis.toLong().compareTo(t1.timestampMillis.toLong())
-                            }
-                        }
-                    )
-
-                _state.update {
-                    it.copy(allTransactions = allTransactions)
+                    if(page.transactions.isEmpty() || page.transactions.size < PAGE_SIZE) {
+                        isLastPageReached = true
+                    }
                 }
-            }
+                .onFailure {
+
+                }
         }
     }
 
     fun onAction(action : HistoryAction) {
         when(action) {
-            is HistoryAction.ReloadData -> getAllTransactions()
+            is HistoryAction.ReloadData -> getAllPaginatedTransactions()
         }
     }
 }

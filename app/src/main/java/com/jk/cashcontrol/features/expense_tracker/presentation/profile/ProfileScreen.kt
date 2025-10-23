@@ -52,6 +52,8 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.jk.cashcontrol.R
+import com.jk.cashcontrol.app.presentation.navigation.BannerAd
+import com.jk.cashcontrol.core.presentation.utils.Constants
 import com.jk.cashcontrol.features.auth.domain.model.User
 import com.jk.cashcontrol.features.expense_tracker.presentation.settings.SettingsActions
 import com.jk.cashcontrol.features.expense_tracker.presentation.settings.SettingsScreen
@@ -61,7 +63,6 @@ import kotlinx.coroutines.launch
 fun ProfileScreen(
     user: User,
     appLockStatus: Boolean,
-    bannerAd: @Composable () -> Unit,
     onAction: (SettingsActions) -> Unit,
     navigateToAppInfoScreen: () -> Unit,
     navigateToAppLockScreen: () -> Unit,
@@ -144,8 +145,8 @@ fun ProfileScreen(
                 }
             )
 
-            bannerAd()
-            bannerAd()
+            BannerAd(Constants.AD_ID)
+            BannerAd(Constants.AD_ID)
         }
 
         if (isSettingsVisible) {

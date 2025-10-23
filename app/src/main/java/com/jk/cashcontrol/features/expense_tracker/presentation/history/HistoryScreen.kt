@@ -1,7 +1,9 @@
 package com.jk.cashcontrol.features.expense_tracker.presentation.history
 
 import androidx.compose.foundation.basicMarquee
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,6 +13,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -26,6 +29,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -105,6 +109,19 @@ fun HistoryScreen(
 
     val focusManager = LocalFocusManager.current
 
+    LaunchedEffect(listState) {
+        snapshotFlow { listState.layoutInfo }
+            .collect { layoutInfo ->
+                val lastVisibleItems = layoutInfo.visibleItemsInfo.lastOrNull()
+                if(lastVisibleItems != null) {
+                    val totalItems = layoutInfo.totalItemsCount
+                    if(lastVisibleItems.index >= totalItems - 5) {
+                        onAction(HistoryAction.ReloadData)
+                    }
+                }
+            }
+    }
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -163,7 +180,6 @@ fun HistoryScreen(
                         focusManager.clearFocus()
                     }
             ) {
-
                 items(filteredTransactions, key = { it.timestampMillis }) {
                     Column(
                         modifier = Modifier
@@ -190,6 +206,14 @@ fun HistoryScreen(
                         )
 
                         Spacer(Modifier.height(dimensionResource(id = R.dimen.history_screen_spacer_medium)))
+                    }
+                }
+
+                if (state.isLoading) {
+                    item {
+                        Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                            CircularProgressIndicator()
+                        }
                     }
                 }
             }

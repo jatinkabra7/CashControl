@@ -45,7 +45,6 @@ fun NavGraphBuilder.expenseTrackerGraph(
     user: FirebaseUser?,
     appLockStatus: Boolean?,
     context: Context,
-    bannerAd: @Composable () -> Unit,
     homeViewModel: HomeViewModel,
     statisticsViewModel: StatisticsViewModel,
     historyViewModel: HistoryViewModel,
@@ -206,7 +205,6 @@ fun NavGraphBuilder.expenseTrackerGraph(
             ProfileScreen(
                 user = appUser,
                 appLockStatus = appLockStatus!!,
-                bannerAd = bannerAd,
                 onAction = settingsViewModel::onAction,
                 navigateToAppInfoScreen = { navController.navigate(Route.AppInfo) },
                 navigateToAppLockScreen = { navController.navigate(Route.AppLock) },

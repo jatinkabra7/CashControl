@@ -50,8 +50,7 @@ fun EntryPoint() {
         ) { innerPadding ->
             RootGraph(
                 navController = navController,
-                paddingValues = innerPadding,
-                bannerAd = { BannerAd(adId = Constants.AD_ID) }
+                paddingValues = innerPadding
             )
         }
     }

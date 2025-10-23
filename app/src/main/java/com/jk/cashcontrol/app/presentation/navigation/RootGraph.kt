@@ -23,7 +23,6 @@ import org.koin.androidx.compose.koinViewModel
 fun RootGraph(
     navController: NavHostController,
     paddingValues: PaddingValues,
-    bannerAd: @Composable () -> Unit,
     loginViewModel: LoginViewModel = koinViewModel(),
     appLockViewModel: AppLockViewModel = koinViewModel(),
     homeViewModel: HomeViewModel = koinViewModel(),
@@ -69,7 +68,6 @@ fun RootGraph(
             user = user,
             appLockStatus = appLockStatus,
             context = context,
-            bannerAd = bannerAd,
             homeViewModel = homeViewModel,
             statisticsViewModel = statisticsViewModel,
             historyViewModel = historyViewModel,
