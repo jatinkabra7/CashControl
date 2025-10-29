@@ -91,7 +91,6 @@ fun NavGraphBuilder.expenseTrackerGraph(
                         transaction = transaction,
                         onSuccess = { isTransactionInfoSheetOpen = false }
                     )
-                    historyViewModel.deleteTransaction(transaction)
                 },
                 onEditTransactionName = { transaction, newName ->
                     transactionInfoViewModel.editTransactionName(
@@ -100,7 +99,6 @@ fun NavGraphBuilder.expenseTrackerGraph(
                         newName = newName,
                         onSuccess = { isTransactionInfoSheetOpen = false }
                     )
-                    historyViewModel.editTransactionName(transaction, newName)
                 }
             )
         }
@@ -133,9 +131,6 @@ fun NavGraphBuilder.expenseTrackerGraph(
                 state = state,
                 onAction = {
                     addTransactionViewModel.onAction(it)
-                    if(it is AddTransactionAction.OnSubmit) {
-                        historyViewModel.addTransaction(it.transaction)
-                    }
                 },
                 onEvent = { addTransactionViewModel.onEvent(it) },
                 navigateToHome = {
@@ -181,7 +176,6 @@ fun NavGraphBuilder.expenseTrackerGraph(
                         transaction = transaction,
                         onSuccess = { isTransactionInfoSheetOpen = false }
                     )
-                    historyViewModel.deleteTransaction(transaction)
                 },
                 onEditTransactionName = { transaction, newName ->
                     transactionInfoViewModel.editTransactionName(
@@ -190,7 +184,6 @@ fun NavGraphBuilder.expenseTrackerGraph(
                         newName = newName,
                         onSuccess = { isTransactionInfoSheetOpen = false }
                     )
-                    historyViewModel.editTransactionName(transaction, newName)
                 }
             )
         }

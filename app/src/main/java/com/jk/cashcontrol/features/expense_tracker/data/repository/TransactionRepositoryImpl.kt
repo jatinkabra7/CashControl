@@ -1,14 +1,11 @@
 package com.jk.cashcontrol.features.expense_tracker.data.repository
 
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.snapshots
 import com.jk.cashcontrol.features.expense_tracker.data.dto.TransactionDto
 import com.jk.cashcontrol.features.expense_tracker.data.mapper.toTransaction
 import com.jk.cashcontrol.features.expense_tracker.data.mapper.toTransactionDto
-import com.jk.cashcontrol.features.expense_tracker.data.model.TransactionPage
 import com.jk.cashcontrol.features.expense_tracker.domain.model.Transaction
 import com.jk.cashcontrol.features.expense_tracker.domain.model.TransactionType
 import com.jk.cashcontrol.features.expense_tracker.domain.repository.TransactionRepository
@@ -54,36 +51,6 @@ class TransactionRepositoryImpl(
 
             Result.success(true)
 
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
-    }
-
-    override suspend fun getTransactionPage(lastVisibleDocument: DocumentSnapshot?): Result<TransactionPage> {
-        return try {
-            val baseQuery = transactionsCollection
-                .orderBy("timestampMillis", Query.Direction.DESCENDING)
-
-            val query = if(lastVisibleDocument == null) {
-                // fetching the first page
-                baseQuery.limit(PAGE_SIZE)
-            } else {
-                // fetching after the last item of the current page
-                baseQuery.startAfter(lastVisibleDocument).limit(PAGE_SIZE)
-            }
-
-            val snapshot = query.get().await()
-
-            val newLastVisibleDocument = snapshot.documents.lastOrNull()
-
-            val transactions = snapshot.toObjects(TransactionDto::class.java).map { it.toTransaction() }
-
-            val page = TransactionPage(
-                transactions = transactions,
-                lastVisibleDocument = newLastVisibleDocument
-            )
-
-            Result.success(page)
         } catch (e: Exception) {
             Result.failure(e)
         }
