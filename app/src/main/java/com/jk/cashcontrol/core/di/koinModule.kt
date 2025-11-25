@@ -2,6 +2,8 @@ package com.jk.cashcontrol.core.di
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.jk.cashcontrol.core.data.networking.NetworkObserverImpl
+import com.jk.cashcontrol.core.domain.networking.NetworkObserver
 import com.jk.cashcontrol.features.auth.data.local_pref.DataStoreFactory
 import com.jk.cashcontrol.features.auth.data.local_pref.UserPrefImpl
 import com.jk.cashcontrol.features.auth.domain.local_pref.UserPref
@@ -28,6 +30,7 @@ val koinModule = module {
 
     singleOf(::TransactionRepositoryImpl).bind<TransactionRepository>()
     singleOf(::UserPrefImpl).bind<UserPref>()
+    singleOf(::NetworkObserverImpl).bind<NetworkObserver>()
 
     viewModelOf(::HomeViewModel)
     viewModelOf(::AddTransactionViewModel)

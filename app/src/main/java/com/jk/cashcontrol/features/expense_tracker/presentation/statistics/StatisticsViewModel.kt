@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import okio.IOException
 
 class StatisticsViewModel(
     private val repository: TransactionRepository
@@ -37,7 +38,11 @@ class StatisticsViewModel(
                     "today top income category = ${state.todayTopIncomeCategory} " +
                     "today top expense category = ${state.todayTopExpenseCategory}"
 
-        val response = aiModel.startChat().sendMessage(initialisingMessage + todayReport).text?: "Something Went Wrong."
+        val response = try {
+            aiModel.startChat().sendMessage(initialisingMessage + todayReport).text?: "Something Went Wrong."
+        } catch(e : Exception) {
+            e.message.toString()
+        }
 
         _state.update {
             it.copy(
@@ -55,7 +60,11 @@ class StatisticsViewModel(
                     "this month top income category = ${state.thisMonthTopIncomeCategory} " +
                     "this month top expense category = ${state.thisMonthTopExpenseCategory}"
 
-        val response = aiModel.startChat().sendMessage(initialisingMessage + thisMonthReport).text?: "Something Went Wrong."
+        val response = try {
+            aiModel.startChat().sendMessage(initialisingMessage + thisMonthReport).text?: "Something Went Wrong."
+        } catch(e : Exception) {
+            e.message.toString()
+        }
 
         _state.update {
             it.copy(
@@ -73,7 +82,11 @@ class StatisticsViewModel(
                     "this year top income category = ${state.thisYearTopIncomeCategory} " +
                     "this year top expense category = ${state.thisYearTopExpenseCategory}"
 
-        val response = aiModel.startChat().sendMessage(initialisingMessage + thisYearReport).text?: "Something Went Wrong."
+        val response = try {
+            aiModel.startChat().sendMessage(initialisingMessage + thisYearReport).text?: "Something Went Wrong."
+        } catch(e : Exception) {
+            e.message.toString()
+        }
 
         _state.update {
             it.copy(
@@ -100,7 +113,13 @@ class StatisticsViewModel(
                         thisMonthTopIncomeCategory = newState.thisMonthTopIncomeCategory,
                         thisMonthTopExpenseCategory = newState.thisMonthTopExpenseCategory,
                         thisYearTopIncomeCategory = newState.thisYearTopIncomeCategory,
-                        thisYearTopExpenseCategory = newState.thisYearTopExpenseCategory
+                        thisYearTopExpenseCategory = newState.thisYearTopExpenseCategory,
+                        todayExpenseCategories = newState.todayExpenseCategories,
+                        todayIncomeCategories = newState.todayIncomeCategories,
+                        thisMonthExpenseCategories = newState.thisMonthExpenseCategories,
+                        thisMonthIncomeCategories = newState.thisMonthIncomeCategories,
+                        thisYearExpenseCategories = newState.thisYearExpenseCategories,
+                        thisYearIncomeCategories = newState.thisYearIncomeCategories
                     )
                 }
             }

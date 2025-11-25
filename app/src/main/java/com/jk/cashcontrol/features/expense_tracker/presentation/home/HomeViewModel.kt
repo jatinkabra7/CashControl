@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jk.cashcontrol.features.expense_tracker.domain.model.TransactionType
 import com.jk.cashcontrol.features.expense_tracker.domain.repository.TransactionRepository
+import com.jk.cashcontrol.features.expense_tracker.presentation.add_transaction.roundToTwoDecimals
 import com.jk.cashcontrol.features.expense_tracker.presentation.add_transaction.toMillis
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -192,6 +193,8 @@ open class HomeViewModel(
             } else {
                 oldExpense
             }
+
+            totalExpense.roundToTwoDecimals()
 
             repository.updateExpense(totalExpense)
 

@@ -1,5 +1,7 @@
 package com.jk.cashcontrol.features.expense_tracker.presentation.statistics
 
+import com.jk.cashcontrol.features.expense_tracker.domain.model.CategoryWithAmount
+
 data class StatisticsState(
     val todayIncome: Float = 0f,
     val todayExpense: Float = 0f,
@@ -22,6 +24,12 @@ data class StatisticsState(
     val isTodaySummaryLoading: Boolean = false,
     val isThisMonthSummaryLoading: Boolean = false,
     val isThisYearSummaryLoading: Boolean = false,
+    val todayExpenseCategories: List<CategoryWithAmount> = emptyList(),
+    val todayIncomeCategories: List<CategoryWithAmount> = emptyList(),
+    val thisMonthExpenseCategories: List<CategoryWithAmount> = emptyList(),
+    val thisMonthIncomeCategories: List<CategoryWithAmount> = emptyList(),
+    val thisYearExpenseCategories: List<CategoryWithAmount> = emptyList(),
+    val thisYearIncomeCategories: List<CategoryWithAmount> = emptyList()
 )
 
 data class TodayState(
@@ -31,7 +39,9 @@ data class TodayState(
     val todayTopExpenseCategory: String = "Other",
     val isTodaySummaryGenerated: Boolean = false,
     val todayGeneratedSummary: String = "",
-    val isTodaySummaryLoading: Boolean = false
+    val isTodaySummaryLoading: Boolean = false,
+    val todayExpenseCategories: List<CategoryWithAmount> = emptyList(),
+    val todayIncomeCategories: List<CategoryWithAmount> = emptyList()
 )
 
 data class ThisMonthState(
@@ -41,7 +51,9 @@ data class ThisMonthState(
     val thisMonthTopExpenseCategory: String = "Other",
     val isThisMonthSummaryGenerated: Boolean = false,
     val thisMonthGeneratedSummary: String = "",
-    val isThisMonthSummaryLoading: Boolean = false
+    val isThisMonthSummaryLoading: Boolean = false,
+    val thisMonthExpenseCategories: List<CategoryWithAmount> = emptyList(),
+    val thisMonthIncomeCategories: List<CategoryWithAmount> = emptyList()
 )
 
 data class ThisYearState(
@@ -51,7 +63,9 @@ data class ThisYearState(
     val thisYearTopExpenseCategory: String = "Other",
     val thisYearGeneratedSummary: String = "",
     val isThisYearSummaryGenerated: Boolean = false,
-    val isThisYearSummaryLoading: Boolean = false
+    val isThisYearSummaryLoading: Boolean = false,
+    val thisYearExpenseCategories: List<CategoryWithAmount> = emptyList(),
+    val thisYearIncomeCategories: List<CategoryWithAmount> = emptyList()
 )
 
 fun StatisticsState.createTodayState(): TodayState {
@@ -62,7 +76,9 @@ fun StatisticsState.createTodayState(): TodayState {
         todayTopExpenseCategory = todayTopExpenseCategory,
         isTodaySummaryGenerated = isTodaySummaryGenerated,
         todayGeneratedSummary = todayGeneratedSummary,
-        isTodaySummaryLoading = isTodaySummaryLoading
+        isTodaySummaryLoading = isTodaySummaryLoading,
+        todayExpenseCategories = todayExpenseCategories,
+        todayIncomeCategories = todayIncomeCategories
     )
 }
 
@@ -74,7 +90,9 @@ fun StatisticsState.createThisMonthState(): ThisMonthState {
         thisMonthTopExpenseCategory = thisMonthTopExpenseCategory,
         isThisMonthSummaryGenerated = isThisMonthSummaryGenerated,
         thisMonthGeneratedSummary = thisMonthGeneratedSummary,
-        isThisMonthSummaryLoading = isThisMonthSummaryLoading
+        isThisMonthSummaryLoading = isThisMonthSummaryLoading,
+        thisMonthExpenseCategories = thisMonthExpenseCategories,
+        thisMonthIncomeCategories = thisMonthIncomeCategories
     )
 }
 
@@ -86,6 +104,8 @@ fun StatisticsState.createThisYearState(): ThisYearState {
         thisYearTopExpenseCategory = thisMonthTopExpenseCategory,
         thisYearGeneratedSummary = thisYearGeneratedSummary,
         isThisYearSummaryGenerated = isThisYearSummaryGenerated,
-        isThisYearSummaryLoading = isThisYearSummaryLoading
+        isThisYearSummaryLoading = isThisYearSummaryLoading,
+        thisYearExpenseCategories = thisYearExpenseCategories,
+        thisYearIncomeCategories = thisYearIncomeCategories
     )
 }

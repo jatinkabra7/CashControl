@@ -20,7 +20,8 @@ class TransactionInfoViewModel(
     fun deleteTransaction(
         transaction: Transaction,
         context: Context,
-        onSuccess: () -> Unit
+        onSuccess: () -> Unit,
+        onFailure: (Throwable) -> Unit,
     ) {
 
         viewModelScope.launch {
@@ -31,8 +32,8 @@ class TransactionInfoViewModel(
                 .onSuccess {
                     onSuccess()
                 }
-                .onFailure {
-                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+                .onFailure { exception ->
+                    onFailure(exception)
                 }
 
             _isLoading.value = false
@@ -43,13 +44,14 @@ class TransactionInfoViewModel(
         transaction: Transaction,
         newName: String,
         context: Context,
-        onSuccess: () -> Unit
+        onSuccess: () -> Unit,
+        onFailure: (Throwable) -> Unit,
     ) {
         viewModelScope.launch {
             transactionRepository.editTransactionName(transaction, newName)
                 .onSuccess { onSuccess() }
-                .onFailure {
-                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+                .onFailure { exception ->
+                    onFailure(exception)
                 }
         }
     }

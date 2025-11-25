@@ -12,7 +12,6 @@ import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
-import com.jk.cashcontrol.core.presentation.utils.Constants
 import com.jk.cashcontrol.app.presentation.theme.BackgroundColor
 import com.jk.cashcontrol.app.presentation.theme.CashControlTheme
 

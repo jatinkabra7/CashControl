@@ -4,9 +4,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jk.cashcontrol.features.expense_tracker.domain.repository.TransactionRepository
 import com.jk.cashcontrol.features.expense_tracker.presentation.add_transaction.toMillis
+import com.jk.cashcontrol.features.expense_tracker.presentation.home.HomeEvents
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -16,6 +19,9 @@ class HistoryViewModel(
 
     private val _state = MutableStateFlow(HistoryState())
     val state = _state.asStateFlow()
+
+    private val _event = Channel<HistoryEvents>()
+    val event = _event.receiveAsFlow()
 
     init {
         getAllTransactions()
@@ -53,6 +59,14 @@ class HistoryViewModel(
     fun onAction(action : HistoryAction) {
         when(action) {
             is HistoryAction.ReloadData -> getAllTransactions()
+        }
+    }
+
+    fun onEvent(event: HistoryEvents) {
+        when(event) {
+            is HistoryEvents.ShowToast -> {
+                _event.trySend(event)
+            }
         }
     }
 }

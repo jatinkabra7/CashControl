@@ -60,9 +60,9 @@ fun ThisYearSection(
 
         Spacer(Modifier.height(dimensionResource(id = R.dimen.statistics_spacer_large)))
 
-        TopIncomeExpense(
-            topIncomeCategory = state.thisYearTopIncomeCategory,
-            topExpenseCategory = state.thisYearTopExpenseCategory
+        IncomeExpenseBreakdown(
+            incomeCategories = state.thisYearIncomeCategories,
+            expenseCategories = state.thisYearExpenseCategories
         )
 
         Spacer(Modifier.height(dimensionResource(id = R.dimen.statistics_spacer_medium)))

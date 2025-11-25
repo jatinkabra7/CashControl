@@ -133,7 +133,6 @@ fun StatisticsScreen(
             Column(
                 modifier = Modifier.fillMaxSize()
             ) {
-
                 when (page) {
                     0 -> TodaySection(state = todayState, onAction = { onAction(it) })
                     1 -> ThisMonthSection(state = thisMonthState, onAction = { onAction(it) })

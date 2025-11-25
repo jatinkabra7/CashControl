@@ -26,6 +26,7 @@ import com.jk.cashcontrol.features.expense_tracker.presentation.add_transaction.
 import com.jk.cashcontrol.features.expense_tracker.presentation.add_transaction.AddTransactionScreen
 import com.jk.cashcontrol.features.expense_tracker.presentation.add_transaction.AddTransactionViewModel
 import com.jk.cashcontrol.features.expense_tracker.presentation.app_info.AppInfoScreen
+import com.jk.cashcontrol.features.expense_tracker.presentation.history.HistoryEvents
 import com.jk.cashcontrol.features.expense_tracker.presentation.history.HistoryScreen
 import com.jk.cashcontrol.features.expense_tracker.presentation.history.HistoryViewModel
 import com.jk.cashcontrol.features.expense_tracker.presentation.home.HomeEvents
@@ -66,7 +67,7 @@ fun NavGraphBuilder.expenseTrackerGraph(
                 when(it) {
                     is HomeEvents.ShowToast -> {
                         val now = System.currentTimeMillis()
-                        if(now - lastToastTime > 4000) {
+                        if(now - lastToastTime > 2500) {
                             lastToastTime = now
                             Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
                         }
@@ -89,7 +90,10 @@ fun NavGraphBuilder.expenseTrackerGraph(
                     transactionInfoViewModel.deleteTransaction(
                         context = context,
                         transaction = transaction,
-                        onSuccess = { isTransactionInfoSheetOpen = false }
+                        onSuccess = { isTransactionInfoSheetOpen = false },
+                        onFailure = { exception ->
+                            homeViewModel.onEvent(HomeEvents.ShowToast(exception.message.toString()))
+                        }
                     )
                 },
                 onEditTransactionName = { transaction, newName ->
@@ -97,7 +101,10 @@ fun NavGraphBuilder.expenseTrackerGraph(
                         context = context,
                         transaction = transaction,
                         newName = newName,
-                        onSuccess = { isTransactionInfoSheetOpen = false }
+                        onSuccess = { isTransactionInfoSheetOpen = false },
+                        onFailure = { exception ->
+                            homeViewModel.onEvent(HomeEvents.ShowToast(exception.message.toString()))
+                        }
                     )
                 }
             )
@@ -119,7 +126,7 @@ fun NavGraphBuilder.expenseTrackerGraph(
                 when (it) {
                     is AddTransactionEvent.ShowToast -> {
                         val now = System.currentTimeMillis()
-                        if(now - lastToastTime > 4000) {
+                        if(now - lastToastTime > 2500) {
                             lastToastTime = now
                             Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
                         }
@@ -162,6 +169,20 @@ fun NavGraphBuilder.expenseTrackerGraph(
 
             var isTransactionInfoSheetOpen by remember { mutableStateOf(false) }
 
+            var lastToastTime = 0L
+
+            ObserveAsEvents(historyViewModel.event) {
+                when (it) {
+                    is HistoryEvents.ShowToast -> {
+                        val now = System.currentTimeMillis()
+                        if(now - lastToastTime > 2500) {
+                            lastToastTime = now
+                            Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+            }
+
             HistoryScreen(
                 modifier = Modifier.padding(paddingValues),
                 state = state,
@@ -174,7 +195,10 @@ fun NavGraphBuilder.expenseTrackerGraph(
                     transactionInfoViewModel.deleteTransaction(
                         context = context,
                         transaction = transaction,
-                        onSuccess = { isTransactionInfoSheetOpen = false }
+                        onSuccess = { isTransactionInfoSheetOpen = false },
+                        onFailure = { exception ->
+                            historyViewModel.onEvent(HistoryEvents.ShowToast(exception.message.toString()))
+                        }
                     )
                 },
                 onEditTransactionName = { transaction, newName ->
@@ -182,7 +206,10 @@ fun NavGraphBuilder.expenseTrackerGraph(
                         context = context,
                         transaction = transaction,
                         newName = newName,
-                        onSuccess = { isTransactionInfoSheetOpen = false }
+                        onSuccess = { isTransactionInfoSheetOpen = false },
+                        onFailure = { exception ->
+                            historyViewModel.onEvent(HistoryEvents.ShowToast(exception.message.toString()))
+                        }
                     )
                 }
             )

@@ -62,9 +62,9 @@ fun TodaySection(
 
         Spacer(Modifier.height(dimensionResource(id = R.dimen.statistics_spacer_large)))
 
-        TopIncomeExpense(
-            topIncomeCategory = state.todayTopIncomeCategory,
-            topExpenseCategory = state.todayTopExpenseCategory
+        IncomeExpenseBreakdown(
+            incomeCategories = state.todayIncomeCategories,
+            expenseCategories = state.todayExpenseCategories
         )
 
         Spacer(Modifier.height(dimensionResource(id = R.dimen.statistics_spacer_medium)))

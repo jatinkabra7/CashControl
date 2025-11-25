@@ -43,7 +43,7 @@ fun StatsCard(
         modifier = modifier
             .fillMaxWidth()
             .height(150.dp)
-            .background(ForegroundColor, shape = RoundedCornerShape(20))
+            .background(ForegroundColor, shape = RoundedCornerShape(20.dp))
     ) {
 
         FlowRow(

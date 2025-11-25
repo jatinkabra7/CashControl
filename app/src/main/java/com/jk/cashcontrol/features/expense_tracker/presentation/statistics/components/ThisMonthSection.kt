@@ -60,9 +60,9 @@ fun ThisMonthSection(
 
         Spacer(Modifier.height(dimensionResource(id = R.dimen.statistics_spacer_large)))
 
-        TopIncomeExpense(
-            topIncomeCategory = state.thisMonthTopIncomeCategory,
-            topExpenseCategory = state.thisMonthTopExpenseCategory
+        IncomeExpenseBreakdown(
+            incomeCategories = state.thisMonthIncomeCategories,
+            expenseCategories = state.thisMonthExpenseCategories
         )
 
         Spacer(Modifier.height(dimensionResource(id = R.dimen.statistics_spacer_medium)))

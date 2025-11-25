@@ -12,6 +12,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.math.BigDecimal
+import java.math.RoundingMode
 
 class AddTransactionViewModel(
     private val repository: TransactionRepository,
@@ -115,4 +117,10 @@ class AddTransactionViewModel(
             false
         }
     }
+}
+
+fun Float.roundToTwoDecimals(): Float {
+    return BigDecimal(this.toDouble())
+        .setScale(2, RoundingMode.HALF_UP)
+        .toFloat()
 }

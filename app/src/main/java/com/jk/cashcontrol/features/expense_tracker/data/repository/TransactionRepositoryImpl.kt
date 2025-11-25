@@ -3,11 +3,13 @@ package com.jk.cashcontrol.features.expense_tracker.data.repository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.snapshots
+import com.jk.cashcontrol.core.domain.networking.NetworkObserver
 import com.jk.cashcontrol.features.expense_tracker.data.dto.TransactionDto
 import com.jk.cashcontrol.features.expense_tracker.data.mapper.toTransaction
 import com.jk.cashcontrol.features.expense_tracker.data.mapper.toTransactionDto
 import com.jk.cashcontrol.features.expense_tracker.domain.model.Transaction
 import com.jk.cashcontrol.features.expense_tracker.domain.model.TransactionType
+import com.jk.cashcontrol.features.expense_tracker.domain.model.toCategoryWithAmounts
 import com.jk.cashcontrol.features.expense_tracker.domain.repository.TransactionRepository
 import com.jk.cashcontrol.features.expense_tracker.presentation.add_transaction.formatMillisToDate
 import com.jk.cashcontrol.features.expense_tracker.presentation.statistics.StatisticsState
@@ -16,11 +18,10 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 
-const val PAGE_SIZE = 10L
-
 class TransactionRepositoryImpl(
     private val auth : FirebaseAuth,
-    private val firestore : FirebaseFirestore
+    private val firestore : FirebaseFirestore,
+    private val networkObserver: NetworkObserver
 ) : TransactionRepository {
 
     private val usersCollection get() = firestore.collection("users")
@@ -90,6 +91,10 @@ class TransactionRepositoryImpl(
     }
 
     override suspend fun deleteTransaction(transaction: Transaction): Result<Boolean> {
+
+        if(!networkObserver.isNetworkAvailable())
+            return Result.failure(Exception("Deleting transactions require an internet connection"))
+
         return try {
 
             val snapshot = transactionsCollection
@@ -128,6 +133,10 @@ class TransactionRepositoryImpl(
     }
 
     override suspend fun editTransactionName(transaction: Transaction, newName: String): Result<Boolean> {
+
+        if(!networkObserver.isNetworkAvailable())
+            return Result.failure(Exception("Editing transaction name requires an internet connection"))
+
         return try {
 
             val snapshot = transactionsCollection
@@ -221,7 +230,6 @@ class TransactionRepositoryImpl(
     override suspend fun getIncomeExpense(): Flow<StatisticsState> {
         return flow {
             try {
-
                 transactionsCollection
                     .snapshots()
                     .collect { snapshot ->
@@ -272,7 +280,6 @@ class TransactionRepositoryImpl(
                                     }
                                     else {
                                         todayExpense += amount
-
                                         todayExpenseCategories[category] = todayExpenseCategories.getOrDefault(category,0f) + amount
                                     }
                                 }
@@ -323,6 +330,12 @@ class TransactionRepositoryImpl(
                             thisMonthTopExpenseCategory = thisMonthTopExpenseCategory,
                             thisYearTopIncomeCategory = thisYearTopIncomeCategory,
                             thisYearTopExpenseCategory = thisYearTopExpenseCategory,
+                            todayExpenseCategories = todayExpenseCategories.toCategoryWithAmounts(),
+                            todayIncomeCategories = todayIncomeCategories.toCategoryWithAmounts(),
+                            thisMonthExpenseCategories = thisMonthExpenseCategories.toCategoryWithAmounts(),
+                            thisMonthIncomeCategories = thisMonthIncomeCategories.toCategoryWithAmounts(),
+                            thisYearExpenseCategories = thisYearExpenseCategories.toCategoryWithAmounts(),
+                            thisYearIncomeCategories = thisYearIncomeCategories.toCategoryWithAmounts()
                         ))
                     }
 
